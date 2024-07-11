@@ -356,26 +356,33 @@ class GameView extends StatelessWidget {
                   Positioned(
                     top: 8,
                     left: 0,
-                    child: Container(
+                    child: SizedBox(
                       width: 54,
                       height: 54,
-                      decoration: BoxDecoration(
-                        color: CompanionAppTheme.background.withOpacity(0.5),
-                        border: Border.all(color: getBorderColorOne(gamesListData?.winner ?? ""), width: 4),
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                  ),
-                  Positioned(
-                    top: 14,
-                    left: 6,
-                    child: SizedBox(
-                      width: 44,
-                      height: 44,
-                      child: FittedBox(
-                        child: Image.asset(
-                            gamesListData?.playerOneImagePath ?? ''),
-                        fit: BoxFit.fill,
+                      child: Stack(
+                        children: [
+                          ClipOval(
+                            child: Container(
+                              width: 54,
+                              height: 54,
+                              decoration: BoxDecoration(
+                                color: getBorderColorOne(gamesListData?.winner ?? ""),
+                                borderRadius: BorderRadius.circular(27),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(6.0),
+                            child: ClipOval(
+                              child: Image.asset(
+                                gamesListData?.playerOneImagePath ?? '',
+                                width: 42,
+                                height: 42,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
@@ -383,55 +390,67 @@ class GameView extends StatelessWidget {
                     Positioned(
                       top: 8,
                       right: 0,
-                      child: Container(
+                      child: SizedBox(
                         width: 54,
                         height: 54,
-                        decoration: BoxDecoration(
-                          color: CompanionAppTheme.background.withOpacity(0.5),
-                          border: Border.all(color: getBorderColorThree(gamesListData?.winner ?? ""), width: 4),
-                          shape: BoxShape.circle,
-                        ),
-                      ),
-                    ),
-                  if (gamesListData?.gamemode == Mode.koth)
-                    Positioned(
-                      top: 14,
-                      right: 6,
-                      child: SizedBox(
-                        width: 44,
-                        height: 44,
-                        child: FittedBox(
-                          child: Image.asset(
-                              gamesListData?.playerThreeImagePath ?? ''),
-                          fit: BoxFit.fill,
+                        child: Stack(
+                          children: [
+                            ClipOval(
+                              child: Container(
+                                width: 54,
+                                height: 54,
+                                decoration: BoxDecoration(
+                                  color: getBorderColorTwo(gamesListData?.winner ?? ""),
+                                  borderRadius: BorderRadius.circular(27),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(6.0),
+                              child: ClipOval(
+                                child: Image.asset(
+                                  gamesListData?.playerThreeImagePath ?? '',
+                                  width: 42,
+                                  height: 42,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
                   if (gamesListData?.gamemode == Mode.twovstwo)
                     Positioned(
-                      top: 8,
+                       top: 8,
                       left: 60,
-                      child: Container(
+                      child: SizedBox(
                         width: 54,
                         height: 54,
-                        decoration: BoxDecoration(
-                          color: CompanionAppTheme.background.withOpacity(0.5),
-                          border: Border.all(color: getBorderColorOne(gamesListData?.winner ?? ""), width: 4),
-                          shape: BoxShape.circle,
-                        ),
-                      ),
-                    ),
-                  if (gamesListData?.gamemode == Mode.twovstwo)
-                    Positioned(
-                      top: 14,
-                      left: 66,
-                      child: SizedBox(
-                        width: 44,
-                        height: 44,
-                        child: FittedBox(
-                          child: Image.asset(
-                              gamesListData?.playerThreeImagePath ?? ''),
-                          fit: BoxFit.fill,
+                        child: Stack(
+                          children: [
+                            ClipOval(
+                              child: Container(
+                                width: 54,
+                                height: 54,
+                                decoration: BoxDecoration(
+                                  color: getBorderColorOne(gamesListData?.winner ?? ""),
+                                  borderRadius: BorderRadius.circular(27),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(6.0),
+                              child: ClipOval(
+                                child: Image.asset(
+                                  gamesListData?.playerThreeImagePath ?? '',
+                                  width: 42,
+                                  height: 42,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
@@ -439,56 +458,69 @@ class GameView extends StatelessWidget {
                     Positioned(
                       bottom: 0,
                       right: 60,
-                      child: Container(
+                      child: SizedBox(
                         width: 54,
                         height: 54,
-                        decoration: BoxDecoration(
-                          color: CompanionAppTheme.background.withOpacity(0.5),
-                          border: Border.all(color: getBorderColorTwo(gamesListData?.winner ?? ""), width: 4),
-                          shape: BoxShape.circle,
-                        ),
-                      ),
-                    ),
-                  if (gamesListData?.gamemode == Mode.twovstwo)
-                    Positioned(
-                      bottom: 4,
-                      right: 66,
-                      child: SizedBox(
-                        width: 44,
-                        height: 44,
-                        child: FittedBox(
-                          child: Image.asset(
-                              gamesListData?.playerFourImagePath ?? ''),
-                          fit: BoxFit.fill,
+                        child: Stack(
+                          children: [
+                            ClipOval(
+                              child: Container(
+                                width: 54,
+                                height: 54,
+                                decoration: BoxDecoration(
+                                  color: getBorderColorTwo(gamesListData?.winner ?? ""),
+                                  borderRadius: BorderRadius.circular(27),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(6.0),
+                              child: ClipOval(
+                                child: Image.asset(
+                                  gamesListData?.playerFourImagePath ?? '',
+                                  width: 42,
+                                  height: 42,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
                   Positioned(
                     bottom: 0,
                     right: 0,
-                    child: Container(
+                    child: SizedBox(
                       width: 54,
                       height: 54,
-                      decoration: BoxDecoration(
-                        color: CompanionAppTheme.background.withOpacity(0.5),
-                        border: Border.all(color: getBorderColorTwo(gamesListData?.winner ?? ""), width: 4),
-                        shape: BoxShape.circle,
+                      child: Stack(
+                        children: [
+                          ClipOval(
+                            child: Container(
+                              width: 54,
+                              height: 54,
+                              decoration: BoxDecoration(
+                                color: getBorderColorTwo(gamesListData?.winner ?? ""),
+                                borderRadius: BorderRadius.circular(27),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(6.0),
+                            child: ClipOval(
+                              child: Image.asset(
+                                gamesListData?.playerTwoImagePath ?? '',
+                                width: 42,
+                                height: 42,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  ),
-                  Positioned(
-                    bottom: 4,
-                    right: 4,
-                    child: SizedBox(
-                      width: 44,
-                      height: 44,
-                      child: FittedBox(
-                        child: Image.asset(
-                            gamesListData?.playerTwoImagePath ?? ''),
-                        fit: BoxFit.fill,
-                      ),
-                    ),
-                  ),
+                  )
                 ],
               ),
             ),

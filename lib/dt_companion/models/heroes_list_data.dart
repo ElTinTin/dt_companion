@@ -21,7 +21,8 @@ enum Character {
   loki,
   scarletwitch,
   spiderman,
-  thor
+  thor,
+  moonelf
 }
 
 extension CharacterExtension on Character {
@@ -73,6 +74,8 @@ extension CharacterExtension on Character {
         return "Spider-Man";
       case Character.thor:
         return "Thor";
+      case Character.moonelf:
+        return "Moon Elf";
       default:
         return "";
     }
@@ -80,13 +83,12 @@ extension CharacterExtension on Character {
 }
 
 class HeroesListData {
-  HeroesListData({
-    this.name = '',
-    this.imagePath = '',
-    this.victories = 0,
-    this.defeats = 0,
-    this.draws = 0
-  });
+  HeroesListData(
+      {this.name = '',
+      this.imagePath = '',
+      this.victories = 0,
+      this.defeats = 0,
+      this.draws = 0});
 
   String name;
   String imagePath;

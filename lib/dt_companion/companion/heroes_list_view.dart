@@ -193,26 +193,35 @@ class HeroView extends StatelessWidget {
                     ),
                   ),
                   Positioned(
-                    top: 0,
-                    left: 0,
-                    child: Container(
-                      width: 84,
-                      height: 84,
-                      decoration: BoxDecoration(
-                        color: CompanionAppTheme.background.withOpacity(0.5),
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                  ),
-                  Positioned(
-                    top: 20,
+                    top: 8,
                     left: 16,
                     child: SizedBox(
                       width: 54,
                       height: 54,
-                      child: FittedBox(
-                        child: Image.asset(heroesListData?.imagePath ?? ''),
-                        fit: BoxFit.fill,
+                      child: Stack(
+                        children: [
+                          ClipOval(
+                            child: Container(
+                              width: 54,
+                              height: 54,
+                              decoration: BoxDecoration(
+                                color: CompanionAppTheme.dark_grey,
+                                borderRadius: BorderRadius.circular(27),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(6.0),
+                            child: ClipOval(
+                              child: Image.asset(
+                                heroesListData?.imagePath ?? '',
+                                width: 42,
+                                height: 42,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   )
