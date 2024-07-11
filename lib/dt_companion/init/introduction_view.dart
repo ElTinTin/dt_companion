@@ -60,7 +60,7 @@ class OnBoarding extends StatelessWidget {
                       ),
                       child: Image.asset(
                         'assets/dt_companion/slide_1.png',
-                        height: 450,
+                        height: 400,
                       ),
                     ))
             ),
@@ -84,7 +84,7 @@ class OnBoarding extends StatelessWidget {
                       ),
                       child: Image.asset(
                         'assets/dt_companion/slide_2.png',
-                        height: 450,
+                        height: 400,
                       ),
                     ))
             ),
@@ -108,7 +108,7 @@ class OnBoarding extends StatelessWidget {
                       ),
                       child: Image.asset(
                         'assets/dt_companion/slide_3.png',
-                        height: 450,
+                        height: 400,
                       ),
                     ))
             ),
@@ -126,7 +126,7 @@ class OnBoarding extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               const SizedBox(
-                height: 520,
+                height: 470,
               ),
               Text(
                 'All your stats ...',
@@ -161,7 +161,7 @@ class OnBoarding extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               const SizedBox(
-                height: 520,
+                height: 470,
               ),
               Text(
                 'Simply way to add a match.',
@@ -196,7 +196,7 @@ class OnBoarding extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               const SizedBox(
-                height: 520,
+                height: 470,
               ),
               Text(
                 'Access FAQ, more is coming.',
