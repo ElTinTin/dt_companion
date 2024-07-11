@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 import 'dart:io';
 import 'package:best_flutter_ui_templates/dt_companion/companion_app_home_screen.dart';
 import 'package:best_flutter_ui_templates/dt_companion/companion_app_theme.dart';

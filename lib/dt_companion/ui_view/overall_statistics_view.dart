@@ -4,7 +4,6 @@ import 'package:best_flutter_ui_templates/main.dart';
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
-import 'package:best_flutter_ui_templates/dt_companion/db_helper/heroes_dao.dart';
 import 'package:provider/provider.dart';
 
 class OverallStatisticsView extends StatefulWidget {
