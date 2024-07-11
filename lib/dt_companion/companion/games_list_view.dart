@@ -1,5 +1,4 @@
 import 'package:best_flutter_ui_templates/dt_companion/companion/heroes_list_view.dart';
-import 'package:best_flutter_ui_templates/dt_companion/db_helper/games_dao.dart';
 import 'package:best_flutter_ui_templates/dt_companion/companion_app_theme.dart';
 import 'package:best_flutter_ui_templates/dt_companion/models/games_list_data.dart';
 import 'package:best_flutter_ui_templates/dt_companion/service.dart';

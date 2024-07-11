@@ -1,7 +1,5 @@
 import 'dart:io' show Platform;
 import 'package:best_flutter_ui_templates/dt_companion/companion/games_list_view.dart';
-import 'package:best_flutter_ui_templates/dt_companion/db_helper/games_dao.dart';
-import 'package:best_flutter_ui_templates/dt_companion/db_helper/heroes_dao.dart';
 import 'package:best_flutter_ui_templates/dt_companion/ui_view/overall_statistics_view.dart';
 import 'package:best_flutter_ui_templates/dt_companion/ui_view/title_view.dart';
 import 'package:best_flutter_ui_templates/dt_companion/companion_app_theme.dart';

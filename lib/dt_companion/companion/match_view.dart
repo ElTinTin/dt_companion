@@ -1,10 +1,7 @@
 import 'dart:math';
 import 'dart:io' show Platform;
 import 'package:best_flutter_ui_templates/dt_companion/companion_app_home_screen.dart';
-import 'package:best_flutter_ui_templates/dt_companion/db_helper/games_dao.dart';
-import 'package:best_flutter_ui_templates/dt_companion/db_helper/heroes_dao.dart';
 import 'package:best_flutter_ui_templates/dt_companion/companion_app_theme.dart';
-import 'package:best_flutter_ui_templates/dt_companion/db_helper/user_dao.dart';
 import 'package:best_flutter_ui_templates/dt_companion/models/games_list_data.dart';
 import 'package:best_flutter_ui_templates/dt_companion/models/heroes_list_data.dart';
 import 'package:best_flutter_ui_templates/dt_companion/service.dart';

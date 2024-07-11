@@ -1,9 +1,5 @@
 import 'package:best_flutter_ui_templates/dt_companion/profile/faq_screen.dart';
-import 'package:best_flutter_ui_templates/dt_companion/models/user_data.dart';
-import 'package:best_flutter_ui_templates/dt_companion/service.dart';
-import 'package:best_flutter_ui_templates/dt_companion/ui_view/title_view.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../companion_app_theme.dart';

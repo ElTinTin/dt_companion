@@ -1,5 +1,4 @@
 import 'package:best_flutter_ui_templates/dt_companion/companion_app_theme.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
