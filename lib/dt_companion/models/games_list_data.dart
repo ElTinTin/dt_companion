@@ -12,7 +12,8 @@ class GamesListData {
       this.playerFour = '',
       this.gamemode = Mode.onevsone,
       this.id = 0101,
-      this.winner = ''});
+      this.winner = '',
+      this.date = 0});
 
   String playerOneImagePath;
   String playerOne;
@@ -25,6 +26,7 @@ class GamesListData {
   Mode gamemode;
   int id;
   String winner;
+  int date;
 
   Map<String, dynamic> toMap() {
     return {
@@ -39,6 +41,7 @@ class GamesListData {
       'gamemode': gamemode.toString().split('.').last,
       'id': id,
       'winner': winner,
+      'date': date
     };
   }
 
@@ -52,9 +55,11 @@ class GamesListData {
       playerThree: map['playerThree'] ?? '',
       playerFourImagePath: map['playerFourImagePath'] ?? '',
       playerFour: map['playerFour'] ?? '',
-      gamemode: Mode.values.firstWhere((e) => e.toString().split('.').last == map['gamemode']),
+      gamemode: Mode.values
+          .firstWhere((e) => e.toString().split('.').last == map['gamemode']),
       id: map['id'] ?? 0101,
       winner: map['winner'] ?? '',
+      date: map['date'] ?? 0
     );
   }
 }

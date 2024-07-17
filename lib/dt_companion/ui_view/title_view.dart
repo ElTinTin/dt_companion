@@ -1,3 +1,4 @@
+import 'package:best_flutter_ui_templates/dt_companion/companion/all_games_list_view.dart';
 import 'package:best_flutter_ui_templates/dt_companion/companion_app_theme.dart';
 import 'package:flutter/material.dart';
 
@@ -6,13 +7,15 @@ class TitleView extends StatelessWidget {
   final String subTxt;
   final AnimationController? animationController;
   final Animation<double>? animation;
+  final Widget? route;
 
   const TitleView(
       {Key? key,
       this.titleTxt = "",
       this.subTxt = "",
       this.animationController,
-      this.animation})
+      this.animation,
+      this.route})
       : super(key: key);
 
   @override
@@ -27,7 +30,7 @@ class TitleView extends StatelessWidget {
                 0.0, 30 * (1.0 - animation!.value), 0.0),
             child: Container(
               child: Padding(
-                padding: const EdgeInsets.only(left: 24, right: 24),
+                padding: const EdgeInsets.only(left: 24, right: 24, bottom: 16),
                 child: Row(
                   children: <Widget>[
                     Expanded(
@@ -36,8 +39,8 @@ class TitleView extends StatelessWidget {
                         textAlign: TextAlign.left,
                         style: TextStyle(
                           fontFamily: CompanionAppTheme.fontName,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 24,
                           letterSpacing: 0.5,
                           color: CompanionAppTheme.lightText,
                         ),
@@ -46,7 +49,14 @@ class TitleView extends StatelessWidget {
                     InkWell(
                       highlightColor: Colors.transparent,
                       borderRadius: BorderRadius.all(Radius.circular(4.0)),
-                      onTap: () {},
+                      onTap: () {
+                        if (route != null) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => route!),
+                          );
+                        }
+                      },
                       child: Padding(
                         padding: const EdgeInsets.only(left: 8),
                         child: Row(
@@ -56,10 +66,10 @@ class TitleView extends StatelessWidget {
                               textAlign: TextAlign.left,
                               style: TextStyle(
                                 fontFamily: CompanionAppTheme.fontName,
-                                fontWeight: FontWeight.normal,
-                                fontSize: 16,
+                                fontWeight: FontWeight.w100,
+                                fontSize: 14,
                                 letterSpacing: 0.5,
-                                color: CompanionAppTheme.nearlyDarkBlue,
+                                color: CompanionAppTheme.lightText,
                               ),
                             ),
                           ],

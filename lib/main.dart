@@ -20,7 +20,6 @@ Future<void> main() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   initScreen = await prefs.getInt("initScreen") ?? 0;
   await prefs.setInt("initScreen", 1);
-  print('initScreen ${initScreen}');
   // Mobile Ads
   unawaited(MobileAds.instance.initialize());
   // Device Orientation

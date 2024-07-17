@@ -65,7 +65,7 @@ class _HeroesListViewState extends State<HeroesListView>
     return AnimatedBuilder(
       animation: widget.mainScreenAnimationController!,
       builder: (BuildContext context, Widget? child) {
-        final count = userService.heroesListData.isEmpty ? 1 : userService.heroesListData.length;
+        final count = userService.heroesListData.isEmpty ? 1 : 10;
         final Animation<double> animation = Tween<double>(begin: 0.0, end: 1.0)
             .animate(CurvedAnimation(
                 parent: animationController!,
@@ -84,7 +84,7 @@ class _HeroesListViewState extends State<HeroesListView>
                 child: Stack(
                   children: [
                     if (!userService.heroesListData.isEmpty)
-                      getHeroesList(userService.heroesListData)
+                      getHeroesList(userService.heroesListData.take(10).toList())
                     else
                       Padding(
                         padding: const EdgeInsets.only(

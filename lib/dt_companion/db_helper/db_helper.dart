@@ -56,7 +56,7 @@ class HeroesDBHelper {
 
     return await openDatabase(
       path,
-      version: 3,
+      version: 4,
       readOnly: false,
       onCreate: (db, version) async {
         await db.execute('''
@@ -64,15 +64,15 @@ class HeroesDBHelper {
             name TEXT PRIMARY KEY, 
             imagePath TEXT, 
             victories INTEGER, 
-            defeats INTEGER
-            draws INTEGER
+            defeats INTEGER,
+            draws INTEGER DEFAULT 0
           )
         ''');
       },
       onUpgrade: (db, oldVersion, newVersion) {
-        if (oldVersion < 3) {
+        if (oldVersion < 4) {
           db.execute(
-            "ALTER TABLE heroes ADD COLUMN draws INTEGER",
+            "ALTER TABLE heroes ADD COLUMN draws INTEGER DEFAULT 0",
           );
         }
         // Handle other versions if necessary
@@ -101,7 +101,7 @@ class GamesDBHelper {
 
     return await openDatabase(
       path,
-      version: 2,
+      version: 3,
       readOnly: false,
       onCreate: (db, version) async {
         await db.execute('''
@@ -116,14 +116,15 @@ class GamesDBHelper {
             playerFourImagePath TEXT,
             playerFour TEXT,
             gamemode TEXT,
-            winner TEXT
+            winner TEXT,
+            date INTEGER DEFAULT 0
           )
         ''');
       },
       onUpgrade: (db, oldVersion, newVersion) {
-        if (oldVersion < 2) {
+        if (oldVersion < 3) {
           db.execute(
-            "ALTER TABLE games ADD COLUMN gamemode TEXT",
+            "ALTER TABLE games ADD COLUMN date INTEGER DEFAULT 0",
           );
         }
         // Handle other versions if necessary

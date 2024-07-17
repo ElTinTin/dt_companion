@@ -115,4 +115,6 @@ class HeroesListData {
       'draws': draws,
     };
   }
+
+  int get totalGamesPlayed => victories + defeats + draws;
 }

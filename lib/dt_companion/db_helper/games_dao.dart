@@ -12,9 +12,15 @@ class GamesDAO {
   Future<List<GamesListData>> getGamesListData() async {
     final db = await dbHelper.database;
     final List<Map<String, dynamic>> maps = await db.query('games');
-    return List.generate(maps.length, (i) {
+
+    List<GamesListData> gamesList = List.generate(maps.length, (i) {
       return GamesListData.fromMap(maps[i]);
     });
+
+    // Trier par date décroissante (du plus récent au plus ancien)
+    gamesList.sort((a, b) => DateTime.fromMillisecondsSinceEpoch(b.date).compareTo(DateTime.fromMillisecondsSinceEpoch(a.date)));
+
+    return gamesList;
   }
 
   Future<void> updateGamesListData(GamesListData games) async {

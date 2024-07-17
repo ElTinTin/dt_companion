@@ -13,9 +13,14 @@ class HeroesDAO {
   Future<List<HeroesListData>> getHeroesListData() async {
     final db = await dbHelper.database;
     final List<Map<String, dynamic>> maps = await db.query('heroes');
-    return List.generate(maps.length, (i) {
+    List<HeroesListData> heroesList = List.generate(maps.length, (i) {
       return HeroesListData.fromMap(maps[i]);
     });
+
+    // Tri de la liste par nombre de parties jouées, du plus au moins joué
+    heroesList.sort((a, b) => b.totalGamesPlayed.compareTo(a.totalGamesPlayed));
+
+    return heroesList;
   }
 
   Future<void> updateHeroesListData(HeroesListData heroes) async {

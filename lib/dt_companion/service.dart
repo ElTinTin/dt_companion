@@ -77,8 +77,6 @@ class UserService with ChangeNotifier {
     int totalVictories = 0;
 
     for (var hero in heroesListData) {
-      print(hero.name);
-      print(hero.victories);
       totalVictories += hero.victories;
     }
 

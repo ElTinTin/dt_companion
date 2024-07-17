@@ -1,4 +1,6 @@
 import 'dart:io' show Platform;
+import 'package:best_flutter_ui_templates/dt_companion/companion/all_games_list_view.dart';
+import 'package:best_flutter_ui_templates/dt_companion/companion/all_heroes_list_view.dart';
 import 'package:best_flutter_ui_templates/dt_companion/companion/games_list_view.dart';
 import 'package:best_flutter_ui_templates/dt_companion/ui_view/overall_statistics_view.dart';
 import 'package:best_flutter_ui_templates/dt_companion/ui_view/title_view.dart';
@@ -6,6 +8,7 @@ import 'package:best_flutter_ui_templates/dt_companion/companion_app_theme.dart'
 import 'package:best_flutter_ui_templates/dt_companion/companion/heroes_list_view.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CompanionScreen extends StatefulWidget {
   const CompanionScreen({Key? key, this.animationController}) : super(key: key);
@@ -38,6 +41,8 @@ class _CompanionScreenState extends State<CompanionScreen>
   BannerAd? _bannerAdOne;
   BannerAd? _bannerAdTwo;
 
+  int adStatus = 0;
+
   @override
   void dispose() {
     _bannerAdOne?.dispose();
@@ -52,6 +57,7 @@ class _CompanionScreenState extends State<CompanionScreen>
             curve: Interval(0, 0.5, curve: Curves.fastOutSlowIn)));
 
     _loadAd();
+    _getAdStatus();
 
     scrollController.addListener(() {
       if (scrollController.offset >= 24) {
@@ -76,6 +82,11 @@ class _CompanionScreenState extends State<CompanionScreen>
       }
     });
     super.initState();
+  }
+
+  Future<void> _getAdStatus() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    adStatus = await prefs.getInt("adStatus") ?? 0;
   }
 
   /// Loads a banner ad.
@@ -217,12 +228,15 @@ class _CompanionScreenState extends State<CompanionScreen>
                     ),
                     TitleView(
                       titleTxt: 'Heroes statistics',
-                      subTxt: '',
+                      subTxt: 'More',
                       animation: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
                           parent: widget.animationController!,
                           curve:
                           Interval((1 / 8) * 4, 1.0, curve: Curves.fastOutSlowIn))),
                       animationController: widget.animationController!,
+                      route: AllHeroesListView(
+                        animationController: widget.animationController,
+                      ),
                     ),
                     HeroesListView(
                       mainScreenAnimation: Tween<double>(begin: 0.0, end: 1.0).animate(
@@ -261,12 +275,15 @@ class _CompanionScreenState extends State<CompanionScreen>
                     ),
                     TitleView(
                       titleTxt: 'Games History',
-                      subTxt: '',
+                      subTxt: 'More',
                       animation: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
                           parent: widget.animationController!,
                           curve:
                           Interval((1 / 8) * 7, 1.0, curve: Curves.fastOutSlowIn))),
                       animationController: widget.animationController!,
+                      route: AllGamesListView(
+                        animationController: widget.animationController,
+                      ),
                     ),
                     GamesListView(
                       mainScreenAnimation: Tween<double>(begin: 0.0, end: 1.0).animate(
