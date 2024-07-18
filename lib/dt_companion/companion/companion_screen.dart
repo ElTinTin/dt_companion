@@ -6,6 +6,7 @@ import 'package:best_flutter_ui_templates/dt_companion/ui_view/overall_statistic
 import 'package:best_flutter_ui_templates/dt_companion/ui_view/title_view.dart';
 import 'package:best_flutter_ui_templates/dt_companion/companion_app_theme.dart';
 import 'package:best_flutter_ui_templates/dt_companion/companion/heroes_list_view.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -58,6 +59,7 @@ class _CompanionScreenState extends State<CompanionScreen>
 
     _loadAd();
     _getAdStatus();
+    _analytics();
 
     scrollController.addListener(() {
       if (scrollController.offset >= 24) {
@@ -82,6 +84,12 @@ class _CompanionScreenState extends State<CompanionScreen>
       }
     });
     super.initState();
+  }
+
+  Future<void> _analytics() async {
+    // Analytics
+    await FirebaseAnalytics.instance
+        .logScreenView(screenName: 'HomeView');
   }
 
   Future<void> _getAdStatus() async {

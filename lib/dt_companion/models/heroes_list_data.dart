@@ -22,7 +22,9 @@ enum Character {
   scarletwitch,
   spiderman,
   thor,
-  moonelf
+  moonelf,
+  santa,
+  krampus
 }
 
 extension CharacterExtension on Character {
@@ -76,6 +78,10 @@ extension CharacterExtension on Character {
         return "Thor";
       case Character.moonelf:
         return "Moon Elf";
+      case Character.santa:
+        return "Santa";
+      case Character.krampus:
+        return "Krampus";
       default:
         return "";
     }

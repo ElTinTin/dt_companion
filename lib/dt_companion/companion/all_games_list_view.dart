@@ -1,6 +1,7 @@
 import 'package:best_flutter_ui_templates/dt_companion/companion_app_theme.dart';
 import 'package:best_flutter_ui_templates/dt_companion/service.dart';
 import 'package:best_flutter_ui_templates/dt_companion/ui_view/games_statistics_view.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -30,6 +31,8 @@ class _AllGamesListScreenState extends State<AllGamesListView>
             parent: widget.animationController!,
             curve: Interval(0, 0.5, curve: Curves.fastOutSlowIn)));
 
+    _analytics();
+
     scrollController.addListener(() {
       if (scrollController.offset >= 24) {
         if (topBarOpacity != 1.0) {
@@ -54,6 +57,12 @@ class _AllGamesListScreenState extends State<AllGamesListView>
     });
 
     super.initState();
+  }
+
+  Future<void> _analytics() async {
+    // Analytics
+    await FirebaseAnalytics.instance
+        .logScreenView(screenName: 'GamesView');
   }
 
   @override

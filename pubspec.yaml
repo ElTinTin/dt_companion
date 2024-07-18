@@ -45,6 +45,8 @@ dependencies:
     shared_preferences: any
     google_mobile_ads: any
     flutter_launcher_icons: ^0.13.1
+    firebase_analytics: ^11.2.0
+    firebase_core: ^3.2.0
 
 flutter_launcher_icons:
     android: "launcher_icon"

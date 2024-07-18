@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "101254347872",
+    "project_id": "dtcompanion-ddeac",
+    "storage_bucket": "dtcompanion-ddeac.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:101254347872:android:ac7c34f632031f5d37d705",
+        "android_client_info": {
+          "package_name": "com.deschampsquentin.dt_companion"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCUCxeQ4nk2YoJ5yt_Er7jEG61mgA8iPek"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
