@@ -28,9 +28,9 @@ class HeroesDAO {
     await db.update('heroes', heroes.toMap(), where: 'name = ?', whereArgs: [heroes.name]);
   }
 
-  Future<void> deleteHeroesListData(int id) async {
+  Future<void> deleteHeroesListData(String name) async {
     final db = await dbHelper.database;
-    await db.delete('heroes', where: 'name = ?', whereArgs: [id]);
+    await db.delete('heroes', where: 'name = ?', whereArgs: [name]);
   }
 
   Future<void> clearData() async {

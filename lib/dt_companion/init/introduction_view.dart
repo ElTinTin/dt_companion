@@ -141,7 +141,7 @@ class OnBoarding extends StatelessWidget {
                 height: 20,
               ),
               const Text(
-                'on your pocket! Show your supremacy yo your friends.',
+                'on your pocket! Show your supremacy to your friends.',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: CompanionAppTheme.lightText,

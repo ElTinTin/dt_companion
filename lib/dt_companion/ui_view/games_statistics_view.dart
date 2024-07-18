@@ -1,7 +1,11 @@
 import 'package:best_flutter_ui_templates/dt_companion/companion_app_theme.dart';
+import 'package:best_flutter_ui_templates/dt_companion/models/heroes_list_data.dart';
+import 'package:best_flutter_ui_templates/dt_companion/service.dart';
 import 'package:best_flutter_ui_templates/main.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:path/path.dart' as p;
 
 import '../companion/match_view.dart';
 import '../models/games_list_data.dart';
@@ -54,10 +58,30 @@ class _GamesStatisticsViewState extends State<GamesStatisticsView>
   Color getBorderColorThree(String winner) {
     if (winner == 'Draw') {
       return CompanionAppTheme.drawOrange;
-    } else if (winner == 'Player 3'){
+    } else if (winner == 'Player 3') {
       return CompanionAppTheme.victoryGreen;
     } else {
       return CompanionAppTheme.defeatRed;
+    }
+  }
+
+  Future<void> deleteGame(UserService service) async {
+    service.deleteGamesData(widget.gamesListData ?? GamesListData());
+    String path = widget.gamesListData?.playerOneImagePath ?? '';
+    String fileName = p.basenameWithoutExtension(path);
+    HeroesListData hero = service.heroesListData.firstWhere((hero) => p.basenameWithoutExtension(hero.imagePath) == fileName);
+
+    if (hero.totalGamesPlayed == 1) {
+      service.deleteHeroesData(fileName);
+    } else {
+      if (widget.gamesListData?.winner == 'You' || widget.gamesListData?.playerOne == 'Team 1') {
+        hero.victories -= 1;
+      } else if (widget.gamesListData?.winner == 'Draw') {
+        hero.draws -= 1;
+      } else {
+        hero.defeats -= 1;
+      }
+      service.updateHeroesData(hero);
     }
   }
 
@@ -115,6 +139,8 @@ class _GamesStatisticsViewState extends State<GamesStatisticsView>
 
   @override
   Widget build(BuildContext context) {
+    final userService = Provider.of<UserService>(context);
+
     return AnimatedBuilder(
       animation: widget.animationController!,
       builder: (BuildContext context, Widget? child) {
@@ -462,7 +488,7 @@ class _GamesStatisticsViewState extends State<GamesStatisticsView>
                                     ),
                                   if (widget.gamesListData?.gamemode == Mode.twovstwo)
                                     Positioned(
-                                      bottom: 0,
+                                      bottom: -16,
                                       right: 60,
                                       child: SizedBox(
                                         width: 54,
@@ -495,7 +521,7 @@ class _GamesStatisticsViewState extends State<GamesStatisticsView>
                                       ),
                                     ),
                                   Positioned(
-                                    bottom: 0,
+                                    bottom: -16,
                                     right: 0,
                                     child: SizedBox(
                                       width: 54,
@@ -534,6 +560,25 @@ class _GamesStatisticsViewState extends State<GamesStatisticsView>
                         ],
                       ),
                     ),
+                    Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(right: 16, bottom: 16),
+                          child: InkWell(
+                            onTap: () => {
+                              deleteGame(userService)
+                            },
+                            child: Icon(
+                              Icons.delete_forever,
+                              color: CompanionAppTheme.lightText,
+                              size: 26,
+                            ),
+                          )
+                        ),
+                      ],
+                    )
                   ],
                 ),
               ),

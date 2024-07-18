@@ -73,6 +73,22 @@ class UserService with ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> deleteHeroesData(String hero) async {
+    heroesDAO.deleteHeroesListData(hero);
+    this.heroesListData.isNotEmpty
+        ? this.heroesListData.removeWhere((item)=>item.name == hero)
+        : null;
+    notifyListeners();
+  }
+
+  Future<void> deleteGamesData(GamesListData game) async {
+    gamesDAO.deleteGamesListData(game.id);
+    this.gamesListData.isNotEmpty
+        ? this.gamesListData.removeWhere((item)=> item.id == game.id)
+        : null;
+    notifyListeners();
+  }
+
   void getUserVictories() {
     int totalVictories = 0;
 
