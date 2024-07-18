@@ -1,31 +1,41 @@
 enum Character {
-  pyromancer,
-  monk,
-  shadowthief,
-  samurai,
   artificer,
   barbarian,
-  cursedpirate,
-  gunslinger,
-  huntress,
-  ninja,
-  paladin,
-  seraph,
-  tactician,
-  treant,
-  vampire,
   blackpanther,
   blackwidow,
   captainmarvel,
+  cursedpirate,
+  cyclops,
+  deadpool,
   drstrange,
+  gambit,
+  gunslinger,
+  huntress,
+  iceman,
+  jeangrey,
+  krampus,
   loki,
-  scarletwitch,
-  spiderman,
-  thor,
+  monk,
   moonelf,
+  ninja,
+  paladin,
+  psylocke,
+  pyromancer,
+  rogue,
+  samurai,
   santa,
-  krampus
+  scarletwitch,
+  seraph,
+  shadowthief,
+  spiderman,
+  storm,
+  tactician,
+  thor,
+  treant,
+  vampire,
+  wolverine
 }
+
 
 extension CharacterExtension on Character {
   String get displayName {
@@ -82,8 +92,24 @@ extension CharacterExtension on Character {
         return "Santa";
       case Character.krampus:
         return "Krampus";
-      default:
-        return "";
+      case Character.cyclops:
+        return "Cyclops";
+      case Character.deadpool:
+        return "Deadpool";
+      case Character.gambit:
+        return "Gambit";
+      case Character.iceman:
+        return "Iceman";
+      case Character.jeangrey:
+        return "Jean Grey";
+      case Character.psylocke:
+        return "Psylocke";
+      case Character.rogue:
+        return "Rogue";
+      case Character.storm:
+        return "Storm";
+      case Character.wolverine:
+        return "Wolverine";
     }
   }
 }

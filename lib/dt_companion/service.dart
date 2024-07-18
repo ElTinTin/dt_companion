@@ -50,7 +50,7 @@ class UserService with ChangeNotifier {
 
   Future<void> insertHeroesData(HeroesListData heroesListData) async {
     heroesDAO.insertHeroesListData(heroesListData);
-    this.heroesListData.insert(0, heroesListData);
+    this.heroesListData.add(heroesListData);
     getUserVictories();
     getUserDefeats();
     notifyListeners();
