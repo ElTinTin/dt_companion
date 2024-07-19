@@ -13,7 +13,6 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
 
 int initScreen = 0;
 

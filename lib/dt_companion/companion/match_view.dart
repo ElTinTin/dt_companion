@@ -909,7 +909,7 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                           );
                         }).toList(),
                       ),
-                      SafeArea(
+                      /*SafeArea(
                         child: SizedBox(
                           width: adSize.width.toDouble(),
                           height: adSize.height.toDouble(),
@@ -919,7 +919,7 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                           // The actual ad.
                               : AdWidget(ad: _bannerAdOne!),
                         ),
-                      ),
+                      ),*/
                       SizedBox(
                         height: 8,
                       ),

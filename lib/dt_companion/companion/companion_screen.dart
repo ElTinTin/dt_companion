@@ -209,7 +209,7 @@ class _CompanionScreenState extends State<CompanionScreen>
                             Interval((1 / 8) * 2, 1.0, curve: Curves.fastOutSlowIn))),
                         animationController: widget.animationController!
                     ),
-                    AnimatedBuilder(
+                    /*AnimatedBuilder(
                       animation: widget.animationController!,
                       builder: (BuildContext context, Widget? child) {
                         return FadeTransition(
@@ -235,7 +235,7 @@ class _CompanionScreenState extends State<CompanionScreen>
                           ),
                         );
                       },
-                    ),
+                    ),*/
                     TitleView(
                       titleTxt: 'Heroes statistics',
                       subTxt: 'More',
@@ -256,7 +256,7 @@ class _CompanionScreenState extends State<CompanionScreen>
                                   curve: Curves.fastOutSlowIn))),
                       mainScreenAnimationController: widget.animationController,
                     ),
-                    AnimatedBuilder(
+                    /*AnimatedBuilder(
                       animation: widget.animationController!,
                       builder: (BuildContext context, Widget? child) {
                         return FadeTransition(
@@ -282,7 +282,7 @@ class _CompanionScreenState extends State<CompanionScreen>
                           ),
                         );
                       },
-                    ),
+                    ),*/
                     TitleView(
                       titleTxt: 'Games History',
                       subTxt: 'More',
