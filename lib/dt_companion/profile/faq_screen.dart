@@ -38,7 +38,7 @@ class FAQScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'FAQ',
+          'Rulepop',
           style: TextStyle(
             fontFamily: CompanionAppTheme.fontName,
             fontWeight: FontWeight.bold,

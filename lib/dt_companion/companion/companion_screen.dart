@@ -2,6 +2,8 @@ import 'dart:io' show Platform;
 import 'package:best_flutter_ui_templates/dt_companion/companion/all_games_list_view.dart';
 import 'package:best_flutter_ui_templates/dt_companion/companion/all_heroes_list_view.dart';
 import 'package:best_flutter_ui_templates/dt_companion/companion/games_list_view.dart';
+import 'package:best_flutter_ui_templates/dt_companion/db_helper/games_dao.dart';
+import 'package:best_flutter_ui_templates/dt_companion/db_helper/heroes_dao.dart';
 import 'package:best_flutter_ui_templates/dt_companion/ui_view/overall_statistics_view.dart';
 import 'package:best_flutter_ui_templates/dt_companion/ui_view/title_view.dart';
 import 'package:best_flutter_ui_templates/dt_companion/companion_app_theme.dart';
@@ -357,13 +359,19 @@ class _CompanionScreenState extends State<CompanionScreen>
                                     right: 32,
                                     top: 0,
                                     bottom: 8),
-                                child: SizedBox(
-                                  width: 20,
-                                  height: 88,
-                                  child: FittedBox(
-                                    child: Image.asset(
-                                        'assets/dt_companion/dicethronelogo.webp'),
-                                    fit: BoxFit.fitHeight,
+                                child: InkWell(
+                                  onTap: () => {
+                                    GamesDAO().clearData(),
+                                    HeroesDAO().clearData()
+                                  },
+                                  child: SizedBox(
+                                    width: 20,
+                                    height: 88,
+                                    child: FittedBox(
+                                      child: Image.asset(
+                                          'assets/dt_companion/dicethronelogo.webp'),
+                                      fit: BoxFit.fitHeight,
+                                    ),
                                   ),
                                 )
                               ),

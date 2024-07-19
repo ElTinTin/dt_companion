@@ -96,7 +96,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
                               color: CompanionAppTheme.darkerText)),
-                      child: const Text('FAQ'),
+                      child: const Text('Rulepop'),
                       onPressed: () {
                         Navigator.push(
                           context,

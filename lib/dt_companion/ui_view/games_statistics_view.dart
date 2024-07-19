@@ -35,6 +35,59 @@ class _GamesStatisticsViewState extends State<GamesStatisticsView>
     super.initState();
   }
 
+  void showAlertDialog(BuildContext context, UserService service) {
+    // set up the buttons
+    Widget cancelButton = TextButton(
+      child: Text(
+        "Cancel",
+        style: TextStyle(color: CompanionAppTheme.lightText),
+      ),
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+      style: ButtonStyle(
+        backgroundColor: MaterialStateProperty.all<Color>(CompanionAppTheme.dark_grey),
+      ),
+    );
+    Widget continueButton = TextButton(
+      child: Text(
+        "Continue",
+        style: TextStyle(color: CompanionAppTheme.lightText),
+      ),
+      onPressed: () {
+        Navigator.of(context).pop();
+        deleteGame(service);
+      },
+      style: ButtonStyle(
+        backgroundColor: MaterialStateProperty.all<Color>(CompanionAppTheme.darkerText),
+      ),
+    );
+
+    AlertDialog alert = AlertDialog(
+      title: Text(
+        "Are you sure ?",
+        style: TextStyle(color: CompanionAppTheme.dark_grey),
+      ),
+      content: Text(
+        "Do you want to delete this game? This action is irreversible.",
+        style: TextStyle(color: CompanionAppTheme.dark_grey),
+      ),
+      backgroundColor: CompanionAppTheme.lightText,
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
   Color getBorderColorOne(String winner) {
     if (winner == 'Draw') {
       return CompanionAppTheme.drawOrange;
@@ -178,25 +231,12 @@ class _GamesStatisticsViewState extends State<GamesStatisticsView>
                   children: <Widget>[
                     Padding(
                       padding: const EdgeInsets.only(
-                          top: 16, left: 16, right: 16, bottom: 16),
+                          top: 16, left: 16, right: 16, bottom: 8),
                       child: Row(
                         children: <Widget>[
                           Expanded(
                             child: Column(
                               children: [
-                                Text(
-                                    DateFormat('dd/MM/yyyy').format(DateTime.fromMillisecondsSinceEpoch(widget.gamesListData?.date ?? 0)),
-                                  style: TextStyle(
-                                    fontFamily: CompanionAppTheme
-                                        .fontName,
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 16,
-                                    letterSpacing: -0.1,
-                                    color: CompanionAppTheme
-                                        .lightText
-                                        .withOpacity(0.5),
-                                  ),
-                                ),
                                 Padding(
                                   padding: const EdgeInsets.only(
                                       left: 8, right: 8, top: 4),
@@ -418,6 +458,31 @@ class _GamesStatisticsViewState extends State<GamesStatisticsView>
                                       ),
                                     ),
                                   ),
+                                  Positioned(
+                                    top: 48,
+                                    left: 32,
+                                    child: SizedBox(
+                                      width: 54,
+                                      height: 54,
+                                      child: Padding(
+                                          padding: const EdgeInsets.all(6.0),
+                                          child: Text(
+                                              'vs.',
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              fontFamily:
+                                              CompanionAppTheme
+                                                  .fontName,
+                                              fontWeight:
+                                              FontWeight.w100,
+                                              fontSize: 16,
+                                              color: CompanionAppTheme
+                                                  .lightText,
+                                            ),
+                                          )
+                                      ),
+                                    ),
+                                  ),
                                   if (widget.gamesListData?.gamemode == Mode.koth)
                                     Positioned(
                                       top: 0,
@@ -560,15 +625,36 @@ class _GamesStatisticsViewState extends State<GamesStatisticsView>
                         ],
                       ),
                     ),
+                    Divider(
+                      color: CompanionAppTheme.lightText,
+                      thickness: 1,
+                    ),
                     Row(
                       mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.end,
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(right: 16, bottom: 16),
+                          padding: const EdgeInsets.only(left: 16, bottom: 8),
+                          child: Text(
+                            DateFormat('dd/MM/yyyy').format(DateTime.fromMillisecondsSinceEpoch(widget.gamesListData?.date ?? 0)),
+                            style: TextStyle(
+                              fontFamily: CompanionAppTheme
+                                  .fontName,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 16,
+                              letterSpacing: -0.1,
+                              color: CompanionAppTheme
+                                  .lightText
+                                  .withOpacity(0.5),
+                            ),
+                          ),
+                        ),
+                        Spacer(),
+                        Padding(
+                          padding: const EdgeInsets.only(right: 16, bottom: 8),
                           child: InkWell(
                             onTap: () => {
-                              deleteGame(userService)
+                              showAlertDialog(context, userService)
                             },
                             child: Icon(
                               Icons.delete_forever,
