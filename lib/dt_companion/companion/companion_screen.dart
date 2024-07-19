@@ -361,8 +361,6 @@ class _CompanionScreenState extends State<CompanionScreen>
                                     bottom: 8),
                                 child: InkWell(
                                   onTap: () => {
-                                    GamesDAO().clearData(),
-                                    HeroesDAO().clearData()
                                   },
                                   child: SizedBox(
                                     width: 20,
