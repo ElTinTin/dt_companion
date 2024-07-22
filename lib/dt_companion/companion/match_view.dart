@@ -122,8 +122,8 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
             parent: widget.animationController!,
             curve: Interval(0, 0.5, curve: Curves.fastOutSlowIn)));
 
-    _loadAd();
-    _getAdStatus();
+    /*_loadAd();
+    _getAdStatus();*/
     _analytics();
 
     scrollController.addListener(() {
@@ -921,7 +921,7 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                         ),
                       ),*/
                       SizedBox(
-                        height: 8,
+                        height: 16,
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,

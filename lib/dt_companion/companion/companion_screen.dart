@@ -59,8 +59,8 @@ class _CompanionScreenState extends State<CompanionScreen>
             parent: widget.animationController!,
             curve: Interval(0, 0.5, curve: Curves.fastOutSlowIn)));
 
-    _loadAd();
-    _getAdStatus();
+    /*_loadAd();
+    _getAdStatus();*/
     _analytics();
 
     scrollController.addListener(() {
@@ -236,6 +236,7 @@ class _CompanionScreenState extends State<CompanionScreen>
                         );
                       },
                     ),*/
+                    SizedBox(height: 32,),
                     TitleView(
                       titleTxt: 'Heroes statistics',
                       subTxt: 'More',
@@ -283,6 +284,7 @@ class _CompanionScreenState extends State<CompanionScreen>
                         );
                       },
                     ),*/
+                    SizedBox(height: 16,),
                     TitleView(
                       titleTxt: 'Games History',
                       subTxt: 'More',
