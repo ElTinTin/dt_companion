@@ -1,16 +1,15 @@
-import 'dart:io' show Platform;
 import 'package:best_flutter_ui_templates/dt_companion/companion/all_games_list_view.dart';
 import 'package:best_flutter_ui_templates/dt_companion/companion/all_heroes_list_view.dart';
 import 'package:best_flutter_ui_templates/dt_companion/companion/games_list_view.dart';
-import 'package:best_flutter_ui_templates/dt_companion/db_helper/games_dao.dart';
-import 'package:best_flutter_ui_templates/dt_companion/db_helper/heroes_dao.dart';
+import 'package:best_flutter_ui_templates/dt_companion/service.dart';
 import 'package:best_flutter_ui_templates/dt_companion/ui_view/overall_statistics_view.dart';
 import 'package:best_flutter_ui_templates/dt_companion/ui_view/title_view.dart';
 import 'package:best_flutter_ui_templates/dt_companion/companion_app_theme.dart';
 import 'package:best_flutter_ui_templates/dt_companion/companion/heroes_list_view.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:in_app_review/in_app_review.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CompanionScreen extends StatefulWidget {
@@ -29,26 +28,13 @@ class _CompanionScreenState extends State<CompanionScreen>
   final ScrollController scrollController = ScrollController();
   double topBarOpacity = 0.0;
 
-  final AdSize adSize = AdSize.banner;
-  final String adOneUnitId = Platform.isAndroid
-  // Use this ad unit on Android...
-      ? 'ca-app-pub-9004659002329377/1360544789'
-  // ... or this one on iOS.
-      : 'ca-app-pub-9004659002329377/4587960461';
-  final String adTwoUnitId = Platform.isAndroid
-  // Use this ad unit on Android...
-      ? 'ca-app-pub-9004659002329377/2286613642'
-  // ... or this one on iOS.
-      : 'ca-app-pub-9004659002329377/5459571898';
+  final InAppReview inAppReview = InAppReview.instance;
 
-  BannerAd? _bannerAdOne;
-  BannerAd? _bannerAdTwo;
-
-  int adStatus = 0;
+  int inAppReviewStatus = 0;
+  int inAppReviewDate = 0;
 
   @override
   void dispose() {
-    _bannerAdOne?.dispose();
     super.dispose();
   }
 
@@ -59,9 +45,9 @@ class _CompanionScreenState extends State<CompanionScreen>
             parent: widget.animationController!,
             curve: Interval(0, 0.5, curve: Curves.fastOutSlowIn)));
 
-    /*_loadAd();
-    _getAdStatus();*/
+    _getInAppReviewStatus();
     _analytics();
+    _inAppReview();
 
     scrollController.addListener(() {
       if (scrollController.offset >= 24) {
@@ -94,64 +80,27 @@ class _CompanionScreenState extends State<CompanionScreen>
         .logScreenView(screenName: 'HomeView');
   }
 
-  Future<void> _getAdStatus() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    adStatus = await prefs.getInt("adStatus") ?? 0;
+  Future<void> _inAppReview() async {
+    if (await inAppReview.isAvailable()) {
+      DateTime referenceDate = DateTime.parse('1970-01-01T00:00:00Z');
+      DateTime inAppDate = DateTime.fromMillisecondsSinceEpoch(inAppReviewDate);
+      var dateIsCorrect = inAppDate == referenceDate ? false : true;
+      if (inAppReviewStatus == 1 && dateIsCorrect ? inAppDate.difference(DateTime.now()).inDays > 90 : true) {
+        inAppReview.requestReview();
+        _setInAppReviewDate();
+      }
+    }
   }
 
-  /// Loads a banner ad.
-  void _loadAd() {
-    final bannerAdOne = BannerAd(
-      size: adSize,
-      adUnitId: adOneUnitId,
-      request: const AdRequest(),
-      listener: BannerAdListener(
-        // Called when an ad is successfully received.
-        onAdLoaded: (ad) {
-          if (!mounted) {
-            ad.dispose();
-            return;
-          }
-          setState(() {
-            _bannerAdOne = ad as BannerAd;
-          });
-        },
-        // Called when an ad request failed.
-        onAdFailedToLoad: (ad, error) {
-          debugPrint('BannerAd failed to load: $error');
-          ad.dispose();
-        },
-      ),
-    );
+  Future<void> _getInAppReviewStatus() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    inAppReviewStatus = await prefs.getInt("inAppReviewStatus") ?? 0;
+    inAppReviewDate = await prefs.getInt("inAppReviewDate") ?? 0;
+  }
 
-    // Start loading.
-    bannerAdOne.load();
-
-    final bannerAdTwo = BannerAd(
-      size: adSize,
-      adUnitId: adTwoUnitId,
-      request: const AdRequest(),
-      listener: BannerAdListener(
-        // Called when an ad is successfully received.
-        onAdLoaded: (ad) {
-          if (!mounted) {
-            ad.dispose();
-            return;
-          }
-          setState(() {
-            _bannerAdTwo = ad as BannerAd;
-          });
-        },
-        // Called when an ad request failed.
-        onAdFailedToLoad: (ad, error) {
-          debugPrint('BannerAd failed to load: $error');
-          ad.dispose();
-        },
-      ),
-    );
-
-    // Start loading.
-    bannerAdTwo.load();
+  Future<void> _setInAppReviewDate() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setInt("inAppReviewDate", DateTime.now().millisecondsSinceEpoch);
   }
 
   @override
@@ -209,33 +158,6 @@ class _CompanionScreenState extends State<CompanionScreen>
                             Interval((1 / 8) * 2, 1.0, curve: Curves.fastOutSlowIn))),
                         animationController: widget.animationController!
                     ),
-                    /*AnimatedBuilder(
-                      animation: widget.animationController!,
-                      builder: (BuildContext context, Widget? child) {
-                        return FadeTransition(
-                          opacity: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
-                              parent: widget.animationController!,
-                              curve: Interval((1 / 8) * 3, 1.0, curve: Curves.fastOutSlowIn))),
-                          child: new Transform(
-                            transform: new Matrix4.translationValues(
-                                0.0, 30 * (1.0 - Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
-                                parent: widget.animationController!,
-                                curve: Interval((1 / 8) * 3, 1.0, curve: Curves.fastOutSlowIn))).value), 0.0),
-                            child: SafeArea(
-                              child: SizedBox(
-                                width: adSize.width.toDouble(),
-                                height: adSize.height.toDouble(),
-                                child: _bannerAdOne == null
-                                // Nothing to render yet.
-                                    ? SizedBox()
-                                // The actual ad.
-                                    : AdWidget(ad: _bannerAdOne!),
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    ),*/
                     SizedBox(height: 32,),
                     TitleView(
                       titleTxt: 'Heroes statistics',
@@ -257,33 +179,6 @@ class _CompanionScreenState extends State<CompanionScreen>
                                   curve: Curves.fastOutSlowIn))),
                       mainScreenAnimationController: widget.animationController,
                     ),
-                    /*AnimatedBuilder(
-                      animation: widget.animationController!,
-                      builder: (BuildContext context, Widget? child) {
-                        return FadeTransition(
-                          opacity: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
-                              parent: widget.animationController!,
-                              curve: Interval((1 / 8) * 6, 1.0, curve: Curves.fastOutSlowIn))),
-                          child: new Transform(
-                            transform: new Matrix4.translationValues(
-                                0.0, 30 * (1.0 - Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
-                                parent: widget.animationController!,
-                                curve: Interval((1 / 8) * 6, 1.0, curve: Curves.fastOutSlowIn))).value), 0.0),
-                            child: SafeArea(
-                              child: SizedBox(
-                                width: adSize.width.toDouble(),
-                                height: adSize.height.toDouble(),
-                                child: _bannerAdTwo == null
-                                // Nothing to render yet.
-                                    ? SizedBox()
-                                // The actual ad.
-                                    : AdWidget(ad: _bannerAdTwo!),
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    ),*/
                     SizedBox(height: 16,),
                     TitleView(
                       titleTxt: 'Games History',

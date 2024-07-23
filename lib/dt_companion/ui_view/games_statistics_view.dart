@@ -149,17 +149,23 @@ class _GamesStatisticsViewState extends State<GamesStatisticsView>
       }
     } else if (widget.gamesListData?.gamemode == Mode.twovstwo) {
       if (winner == 'Team 1') {
-        return '${widget.gamesListData?.playerOne} - ${widget.gamesListData?.playerTwo}';
+        return '${widget.gamesListData?.playerOne} \n${widget.gamesListData?.playerTwo}';
       } else {
-        return '${widget.gamesListData?.playerThree} - ${widget.gamesListData?.playerFour}';
+        return '${widget.gamesListData?.playerThree} \n${widget.gamesListData?.playerFour}';
       }
-    } else {
+    } else if (widget.gamesListData?.gamemode == Mode.koth) {
       if (winner == 'You') {
         return '${widget.gamesListData?.playerOne}';
       } else if (winner == 'Player 2'){
         return '${widget.gamesListData?.playerTwo}';
       } else {
         return '${widget.gamesListData?.playerThree}';
+      }
+    } else {
+      if (winner == 'Team 1') {
+        return '${widget.gamesListData?.playerOne} \n${widget.gamesListData?.playerTwo} \n${widget.gamesListData?.playerFive}';
+      } else {
+        return '${widget.gamesListData?.playerThree} \n${widget.gamesListData?.playerFour} \n${widget.gamesListData?.playerSix}';
       }
     }
   }
@@ -175,18 +181,34 @@ class _GamesStatisticsViewState extends State<GamesStatisticsView>
       }
     } else if (widget.gamesListData?.gamemode == Mode.twovstwo) {
       if (winner == 'Team 2') {
-        return '${widget.gamesListData?.playerOne} - ${widget.gamesListData?.playerTwo}';
+        return '${widget.gamesListData?.playerOne} \n${widget.gamesListData?.playerTwo}';
       } else {
-        return '${widget.gamesListData?.playerThree} - ${widget.gamesListData?.playerFour}';
+        return '${widget.gamesListData?.playerThree} \n${widget.gamesListData?.playerFour}';
+      }
+    } else if (widget.gamesListData?.gamemode == Mode.koth) {
+      if (winner == 'You') {
+        return '${widget.gamesListData?.playerTwo} \n${widget.gamesListData?.playerThree}';
+      } else if (winner == 'Player 2'){
+        return '${widget.gamesListData?.playerOne} \n${widget.gamesListData?.playerThree}';
+      } else {
+        return '${widget.gamesListData?.playerOne} \n${widget.gamesListData?.playerTwo}';
       }
     } else {
-      if (winner == 'You') {
-        return '${widget.gamesListData?.playerTwo} - ${widget.gamesListData?.playerThree}';
-      } else if (winner == 'Player 2'){
-        return '${widget.gamesListData?.playerOne} - ${widget.gamesListData?.playerThree}';
+      if (winner == 'Team 2') {
+        return '${widget.gamesListData?.playerOne} \n${widget.gamesListData?.playerTwo} \n${widget.gamesListData?.playerFive}';
       } else {
-        return '${widget.gamesListData?.playerOne} - ${widget.gamesListData?.playerTwo}';
+        return '${widget.gamesListData?.playerThree} \n${widget.gamesListData?.playerFour} \n${widget.gamesListData?.playerSix}';
       }
+    }
+  }
+
+  double getBorderHeight() {
+    if (widget.gamesListData?.gamemode == Mode.onevsone) {
+      return 48;
+    } else if (widget.gamesListData?.gamemode == Mode.twovstwo) {
+      return 80;
+    } else {
+      return 110;
     }
   }
 
@@ -245,7 +267,7 @@ class _GamesStatisticsViewState extends State<GamesStatisticsView>
                                       Row(
                                         children: <Widget>[
                                           Container(
-                                            height: 48,
+                                            height: getBorderHeight(),
                                             width: 2,
                                             decoration: BoxDecoration(
                                               color: HexColor('#A6BC04')
@@ -318,7 +340,7 @@ class _GamesStatisticsViewState extends State<GamesStatisticsView>
                                       Row(
                                         children: <Widget>[
                                           Container(
-                                            height: 48,
+                                            height: getBorderHeight(),
                                             width: 2,
                                             decoration: BoxDecoration(
                                               color: CompanionAppTheme.defeatRed
@@ -517,7 +539,7 @@ class _GamesStatisticsViewState extends State<GamesStatisticsView>
                                         ),
                                       ),
                                     ),
-                                  if (widget.gamesListData?.gamemode == Mode.twovstwo)
+                                  if (widget.gamesListData?.gamemode == Mode.twovstwo || widget.gamesListData?.gamemode == Mode.threevsthree)
                                     Positioned(
                                       top: 0,
                                       left: 60,
@@ -551,7 +573,7 @@ class _GamesStatisticsViewState extends State<GamesStatisticsView>
                                         ),
                                       ),
                                     ),
-                                  if (widget.gamesListData?.gamemode == Mode.twovstwo)
+                                  if (widget.gamesListData?.gamemode == Mode.twovstwo || widget.gamesListData?.gamemode == Mode.threevsthree)
                                     Positioned(
                                       bottom: -16,
                                       right: 60,
@@ -575,6 +597,74 @@ class _GamesStatisticsViewState extends State<GamesStatisticsView>
                                               child: ClipOval(
                                                 child: Image.asset(
                                                   widget.gamesListData?.playerFourImagePath ?? '',
+                                                  width: 42,
+                                                  height: 42,
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  if (widget.gamesListData?.gamemode == Mode.threevsthree)
+                                    Positioned(
+                                      bottom: -64,
+                                      right: 30,
+                                      child: SizedBox(
+                                        width: 54,
+                                        height: 54,
+                                        child: Stack(
+                                          children: [
+                                            ClipOval(
+                                              child: Container(
+                                                width: 54,
+                                                height: 54,
+                                                decoration: BoxDecoration(
+                                                  color: getBorderColorTwo(widget.gamesListData?.winner ?? ""),
+                                                  borderRadius: BorderRadius.circular(27),
+                                                ),
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.all(6.0),
+                                              child: ClipOval(
+                                                child: Image.asset(
+                                                  widget.gamesListData?.playerSixImagePath ?? '',
+                                                  width: 42,
+                                                  height: 42,
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  if (widget.gamesListData?.gamemode == Mode.threevsthree)
+                                    Positioned(
+                                      top: -50,
+                                      right: 31,
+                                      child: SizedBox(
+                                        width: 54,
+                                        height: 54,
+                                        child: Stack(
+                                          children: [
+                                            ClipOval(
+                                              child: Container(
+                                                width: 54,
+                                                height: 54,
+                                                decoration: BoxDecoration(
+                                                  color: getBorderColorOne(widget.gamesListData?.winner ?? ""),
+                                                  borderRadius: BorderRadius.circular(27),
+                                                ),
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.all(6.0),
+                                              child: ClipOval(
+                                                child: Image.asset(
+                                                  widget.gamesListData?.playerFiveImagePath ?? '',
                                                   width: 42,
                                                   height: 42,
                                                   fit: BoxFit.cover,

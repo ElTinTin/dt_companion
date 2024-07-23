@@ -1,5 +1,4 @@
 import 'dart:math';
-import 'dart:io' show Platform;
 import 'package:best_flutter_ui_templates/dt_companion/companion_app_home_screen.dart';
 import 'package:best_flutter_ui_templates/dt_companion/companion_app_theme.dart';
 import 'package:best_flutter_ui_templates/dt_companion/models/games_list_data.dart';
@@ -8,15 +7,10 @@ import 'package:best_flutter_ui_templates/dt_companion/service.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-enum Mode {
-  onevsone,
-  twovstwo,
-  koth,
-}
+enum Mode { onevsone, twovstwo, koth, threevsthree }
 
 class MatchView extends StatefulWidget {
   const MatchView({Key? key, this.animationController}) : super(key: key);
@@ -34,23 +28,16 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
   Character? _playerTwo;
   Character? _playerThree;
   Character? _playerFour;
+  Character? _playerFive;
+  Character? _playerSix;
   Mode _gamemode = Mode.onevsone;
   String? _winningTeam;
   TextEditingController _player2Controller = TextEditingController();
   TextEditingController _player3Controller = TextEditingController();
   TextEditingController _player4Controller = TextEditingController();
+  TextEditingController _player5Controller = TextEditingController();
+  TextEditingController _player6Controller = TextEditingController();
   final ScrollController scrollController = ScrollController();
-
-  final AdSize adSize = AdSize.banner;
-
-  final String adOneUnitId = Platform.isAndroid
-      // Use this ad unit on Android...
-      ? 'ca-app-pub-9004659002329377/3177727752'
-      // ... or this one on iOS.
-      : 'ca-app-pub-9004659002329377/1605641694';
-  BannerAd? _bannerAdOne;
-
-  int adStatus = 0;
 
   bool get _isFormValid1v1 {
     return _playerOne != null && _playerTwo != null && _winningTeam != null;
@@ -59,60 +46,21 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
   List<String> get teams {
     if (_gamemode == Mode.koth) {
       return ['You', 'Player 2', 'Player 3'];
-    } else if (_gamemode == Mode.twovstwo) {
+    } else if (_gamemode == Mode.twovstwo || _gamemode == Mode.threevsthree) {
       return ['Team 1', 'Team 2', 'Draw'];
     } else {
       return ['You', 'Player 2', 'Draw'];
     }
   }
 
-  /// Loads a banner ad.
-  void _loadAd() {
-    final bannerAdOne = BannerAd(
-      size: adSize,
-      adUnitId: adOneUnitId,
-      request: const AdRequest(),
-      listener: BannerAdListener(
-        // Called when an ad is successfully received.
-        onAdLoaded: (ad) {
-          if (!mounted) {
-            ad.dispose();
-            return;
-          }
-          setState(() {
-            _bannerAdOne = ad as BannerAd;
-          });
-        },
-        // Called when an ad request failed.
-        onAdFailedToLoad: (ad, error) {
-          debugPrint('BannerAd failed to load: $error');
-          ad.dispose();
-        },
-      ),
-    );
-
-    // Start loading.
-    bannerAdOne.load();
-  }
-
-
-  Future<void> _getAdStatus() async {
+  Future<void> _setInAppReviewStatus() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    adStatus = await prefs.getInt("adStatus") ?? 0;
-  }
-
-  Future<void> _setAdStatus() async {
-    if (_player3Controller.text == 'ckdolescopains') {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      adStatus = 1;
-      await prefs.setInt("adStatus", 1);
-    }
+    await prefs.setInt("inAppReviewStatus", 1);
   }
 
   Future<void> _analytics() async {
     // Analytics
-    await FirebaseAnalytics.instance
-        .logScreenView(screenName: 'MatchView');
+    await FirebaseAnalytics.instance.logScreenView(screenName: 'MatchView');
   }
 
   @override
@@ -122,8 +70,6 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
             parent: widget.animationController!,
             curve: Interval(0, 0.5, curve: Curves.fastOutSlowIn)));
 
-    /*_loadAd();
-    _getAdStatus();*/
     _analytics();
 
     scrollController.addListener(() {
@@ -154,7 +100,6 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    _bannerAdOne?.dispose();
     super.dispose();
   }
 
@@ -230,6 +175,16 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                 : "",
             playerFour:
                 _player4Controller.text != "" ? _player4Controller.text : "",
+            playerFiveImagePath: _playerFive != null
+                ? "assets/dt_companion/${_playerFive!.name}.png"
+                : "",
+            playerFive:
+                _player5Controller.text != "" ? _player5Controller.text : "",
+            playerSixImagePath: _playerSix != null
+                ? "assets/dt_companion/${_playerSix!.name}.png"
+                : "",
+            playerSix:
+                _player6Controller.text != "" ? _player6Controller.text : "",
             gamemode: _gamemode,
             id: generateRandomId(),
             winner: _winningTeam ?? "",
@@ -238,6 +193,8 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
       } catch (e) {
         print(e);
       }
+
+      _setInAppReviewStatus();
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Game submitted!')),
@@ -297,9 +254,7 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                   padding: EdgeInsets.only(
                                       left: 32, right: 32, top: 0, bottom: 8),
                                   child: InkWell(
-                                    onTap: () => {
-                                      _setAdStatus()
-                                    },
+                                    onTap: () => {},
                                     child: SizedBox(
                                       width: 20,
                                       height: 88,
@@ -386,6 +341,11 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                             padding: const EdgeInsets.symmetric(
                                 vertical: 10.0, horizontal: 16.0),
                             child: Text('KOTH'),
+                          ),
+                          Mode.threevsthree: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 10.0, horizontal: 16.0),
+                            child: Text('3v3'),
                           ),
                         },
                         onValueChanged: (Mode value) {
@@ -484,7 +444,8 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                     SizedBox(
                                       height: 32,
                                     ),
-                                    if (_gamemode == Mode.twovstwo)
+                                    if (_gamemode == Mode.twovstwo ||
+                                        _gamemode == Mode.threevsthree) ...[
                                       DropdownButton<Character>(
                                         menuMaxHeight: 300,
                                         hint: Text(
@@ -523,11 +484,9 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                           );
                                         }).toList(),
                                       ),
-                                    if (_gamemode == Mode.twovstwo)
                                       SizedBox(
                                         height: 16,
                                       ),
-                                    if (_gamemode == Mode.twovstwo)
                                       SizedBox(
                                         width: 300,
                                         child: TextField(
@@ -561,7 +520,88 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                               CompanionAppTheme.darkerText,
                                         ),
                                       ),
-                                    if (_gamemode == Mode.twovstwo)
+                                      SizedBox(
+                                        height: 16,
+                                      ),
+                                    ],
+                                    if (_gamemode == Mode.threevsthree)
+                                      DropdownButton<Character>(
+                                        menuMaxHeight: 300,
+                                        hint: Text(
+                                          'Select Character',
+                                          style: TextStyle(
+                                            fontFamily:
+                                                CompanionAppTheme.fontName,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 14,
+                                            letterSpacing: 0.2,
+                                            color: CompanionAppTheme.lightText,
+                                          ),
+                                        ),
+                                        value: _playerFive,
+                                        onChanged: (Character? newValue) {
+                                          setState(() {
+                                            _playerFive = newValue;
+                                          });
+                                        },
+                                        items: Character.values
+                                            .map((Character character) {
+                                          return DropdownMenuItem<Character>(
+                                            value: character,
+                                            child: Text(
+                                              character.displayName,
+                                              style: TextStyle(
+                                                fontFamily:
+                                                    CompanionAppTheme.fontName,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 14,
+                                                letterSpacing: 0.2,
+                                                color:
+                                                    CompanionAppTheme.lightText,
+                                              ),
+                                            ),
+                                          );
+                                        }).toList(),
+                                      ),
+                                    if (_gamemode == Mode.threevsthree)
+                                      SizedBox(
+                                        height: 16,
+                                      ),
+                                    if (_gamemode == Mode.threevsthree)
+                                      SizedBox(
+                                        width: 300,
+                                        child: TextField(
+                                          controller: _player5Controller,
+                                          decoration: InputDecoration(
+                                            filled: true,
+                                            fillColor:
+                                                CompanionAppTheme.lightText,
+                                            hintText: 'Player Three',
+                                            contentPadding:
+                                                const EdgeInsets.only(
+                                                    left: 14.0,
+                                                    bottom: 8.0,
+                                                    top: 8.0),
+                                            focusedBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: CompanionAppTheme
+                                                      .lightText),
+                                              borderRadius:
+                                                  BorderRadius.circular(25.7),
+                                            ),
+                                            enabledBorder: UnderlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: CompanionAppTheme
+                                                      .lightText),
+                                              borderRadius:
+                                                  BorderRadius.circular(25.7),
+                                            ),
+                                          ),
+                                          cursorColor:
+                                              CompanionAppTheme.darkerText,
+                                        ),
+                                      ),
+                                    if (_gamemode == Mode.threevsthree)
                                       SizedBox(
                                         height: 16,
                                       ),
@@ -676,8 +716,9 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                     cursorColor: CompanionAppTheme.darkerText,
                                   ),
                                 ),
-                                SizedBox(height: 32),
-                                if (_gamemode == Mode.twovstwo)
+                                SizedBox(height: 16),
+                                if (_gamemode == Mode.twovstwo ||
+                                    _gamemode == Mode.threevsthree) ...[
                                   DropdownButton<Character>(
                                     menuMaxHeight: 300,
                                     hint: Text(
@@ -714,9 +755,7 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                       );
                                     }).toList(),
                                   ),
-                                if (_gamemode == Mode.twovstwo)
                                   SizedBox(height: 16),
-                                if (_gamemode == Mode.twovstwo)
                                   SizedBox(
                                     width: 300,
                                     child: TextField(
@@ -745,7 +784,77 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                       cursorColor: CompanionAppTheme.darkerText,
                                     ),
                                   ),
-                                if (_gamemode == Mode.twovstwo)
+                                  SizedBox(height: 16),
+                                ],
+                                if (_gamemode == Mode.threevsthree)
+                                  DropdownButton<Character>(
+                                    menuMaxHeight: 300,
+                                    hint: Text(
+                                      'Select Character',
+                                      style: TextStyle(
+                                        fontFamily: CompanionAppTheme.fontName,
+                                        fontWeight: FontWeight.normal,
+                                        fontSize: 14,
+                                        letterSpacing: 0.2,
+                                        color: CompanionAppTheme.lightText,
+                                      ),
+                                    ),
+                                    value: _playerSix,
+                                    onChanged: (Character? newValue) {
+                                      setState(() {
+                                        _playerSix = newValue;
+                                      });
+                                    },
+                                    items: Character.values
+                                        .map((Character character) {
+                                      return DropdownMenuItem<Character>(
+                                        value: character,
+                                        child: Text(
+                                          character.displayName,
+                                          style: TextStyle(
+                                            fontFamily:
+                                                CompanionAppTheme.fontName,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 14,
+                                            letterSpacing: 0.2,
+                                            color: CompanionAppTheme.lightText,
+                                          ),
+                                        ),
+                                      );
+                                    }).toList(),
+                                  ),
+                                if (_gamemode == Mode.threevsthree)
+                                  SizedBox(height: 16),
+                                if (_gamemode == Mode.threevsthree)
+                                  SizedBox(
+                                    width: 300,
+                                    child: TextField(
+                                      controller: _player6Controller,
+                                      decoration: InputDecoration(
+                                        filled: true,
+                                        fillColor: CompanionAppTheme.lightText,
+                                        hintText: 'Player Four',
+                                        contentPadding: const EdgeInsets.only(
+                                            left: 14.0, bottom: 8.0, top: 8.0),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color:
+                                                  CompanionAppTheme.lightText),
+                                          borderRadius:
+                                              BorderRadius.circular(25.7),
+                                        ),
+                                        enabledBorder: UnderlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color:
+                                                  CompanionAppTheme.lightText),
+                                          borderRadius:
+                                              BorderRadius.circular(25.7),
+                                        ),
+                                      ),
+                                      cursorColor: CompanionAppTheme.darkerText,
+                                    ),
+                                  ),
+                                if (_gamemode == Mode.threevsthree)
                                   SizedBox(height: 16),
                               ],
                             )),

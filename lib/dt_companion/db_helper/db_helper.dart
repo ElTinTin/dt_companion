@@ -101,7 +101,7 @@ class GamesDBHelper {
 
     return await openDatabase(
       path,
-      version: 3,
+      version: 4,
       readOnly: false,
       onCreate: (db, version) async {
         await db.execute('''
@@ -128,6 +128,20 @@ class GamesDBHelper {
           );
         }
         // Handle other versions if necessary
+        if (oldVersion < 4) {
+          db.execute(
+            "ALTER TABLE games ADD COLUMN playerFive TEXT",
+          );
+          db.execute(
+            "ALTER TABLE games ADD COLUMN playerSix TEXT",
+          );
+          db.execute(
+            "ALTER TABLE games ADD COLUMN playerFiveImagePath TEXT",
+          );
+          db.execute(
+            "ALTER TABLE games ADD COLUMN playerSixImagePath TEXT",
+          );
+        }
       },
     );
   }

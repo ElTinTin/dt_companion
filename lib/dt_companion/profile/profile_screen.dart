@@ -128,6 +128,51 @@ class _ProfileScreenState extends State<ProfileScreen>
                 child: Container(
                     child: Padding(
                       padding: EdgeInsets.all(16),
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            foregroundColor: CompanionAppTheme.darkerText,
+                            backgroundColor: CompanionAppTheme.lightText,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            elevation: 15.0,
+                            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                            textStyle: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: CompanionAppTheme.darkerText)),
+                        child: const Text('Shelf'),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const FAQScreen()),
+                          );
+                        },
+                      ),
+                    )
+                ),
+              ),
+            );
+          },
+        )
+    );
+
+    listViews.add(
+        AnimatedBuilder(
+          animation: widget.animationController!,
+          builder: (BuildContext context, Widget? child) {
+            return FadeTransition(
+              opacity: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
+                  parent: widget.animationController!,
+                  curve: Interval((1 / count) * 1, 1.0, curve: Curves.fastOutSlowIn))),
+              child: new Transform(
+                transform: new Matrix4.translationValues(
+                    0.0, 30 * (1.0 - Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
+                    parent: widget.animationController!,
+                    curve: Interval((1 / count) * 1, 1.0, curve: Curves.fastOutSlowIn))).value), 0.0),
+                child: Container(
+                    child: Padding(
+                      padding: EdgeInsets.all(16),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [

@@ -134,7 +134,7 @@ class GameView extends StatelessWidget {
   Color getBorderColorTwo(String winner) {
     if (winner == 'Draw') {
       return CompanionAppTheme.drawOrange;
-    } else if (winner == 'Team 2' || winner == 'Player 2'){
+    } else if (winner == 'Team 2' || winner == 'Player 2') {
       return CompanionAppTheme.victoryGreen;
     } else {
       return CompanionAppTheme.defeatRed;
@@ -272,6 +272,46 @@ class GameView extends StatelessWidget {
                                     SizedBox(width: 16,),
                                   ],
                                 ),
+                              if (gamesListData?.gamemode == Mode.threevsthree)
+                                Row(
+                                  mainAxisSize: MainAxisSize.max,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      gamesListData?.playerOne ?? "",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontFamily: CompanionAppTheme.fontName,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14,
+                                        letterSpacing: 0.2,
+                                        color: CompanionAppTheme.lightText,
+                                      ),
+                                    ),
+                                    Text(
+                                      ' - ${gamesListData?.playerTwo ?? ""}',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontFamily: CompanionAppTheme.fontName,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14,
+                                        letterSpacing: 0.2,
+                                        color: CompanionAppTheme.lightText,
+                                      ),
+                                    ),
+                                    Text(
+                                      ' - ${gamesListData?.playerFive ?? ""}',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontFamily: CompanionAppTheme.fontName,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14,
+                                        letterSpacing: 0.2,
+                                        color: CompanionAppTheme.lightText,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               SizedBox(height: 8,),
                               Text(
                                 "vs.",
@@ -336,6 +376,46 @@ class GameView extends StatelessWidget {
                                   children: [
                                     Text(
                                       gamesListData?.playerThree ?? "",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontFamily: CompanionAppTheme.fontName,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14,
+                                        letterSpacing: 0.2,
+                                        color: CompanionAppTheme.lightText,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              if (gamesListData?.gamemode == Mode.threevsthree)
+                                Row(
+                                  mainAxisSize: MainAxisSize.max,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      gamesListData?.playerThree ?? "",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontFamily: CompanionAppTheme.fontName,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14,
+                                        letterSpacing: 0.2,
+                                        color: CompanionAppTheme.lightText,
+                                      ),
+                                    ),
+                                    Text(
+                                      ' - ${gamesListData?.playerFour ?? ""}',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontFamily: CompanionAppTheme.fontName,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14,
+                                        letterSpacing: 0.2,
+                                        color: CompanionAppTheme.lightText,
+                                      ),
+                                    ),
+                                    Text(
+                                      ' - ${gamesListData?.playerSix ?? ""}',
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                         fontFamily: CompanionAppTheme.fontName,
@@ -420,7 +500,7 @@ class GameView extends StatelessWidget {
                         ),
                       ),
                     ),
-                  if (gamesListData?.gamemode == Mode.twovstwo)
+                  if (gamesListData?.gamemode == Mode.twovstwo || gamesListData?.gamemode == Mode.threevsthree)
                     Positioned(
                        top: 8,
                       left: 60,
@@ -454,7 +534,7 @@ class GameView extends StatelessWidget {
                         ),
                       ),
                     ),
-                  if (gamesListData?.gamemode == Mode.twovstwo)
+                  if (gamesListData?.gamemode == Mode.twovstwo || gamesListData?.gamemode == Mode.threevsthree)
                     Positioned(
                       bottom: 0,
                       right: 60,
@@ -478,6 +558,74 @@ class GameView extends StatelessWidget {
                               child: ClipOval(
                                 child: Image.asset(
                                   gamesListData?.playerFourImagePath ?? '',
+                                  width: 42,
+                                  height: 42,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  if (gamesListData?.gamemode == Mode.threevsthree)
+                    Positioned(
+                      bottom: 0,
+                      right: 120,
+                      child: SizedBox(
+                        width: 54,
+                        height: 54,
+                        child: Stack(
+                          children: [
+                            ClipOval(
+                              child: Container(
+                                width: 54,
+                                height: 54,
+                                decoration: BoxDecoration(
+                                  color: getBorderColorTwo(gamesListData?.winner ?? ""),
+                                  borderRadius: BorderRadius.circular(27),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(6.0),
+                              child: ClipOval(
+                                child: Image.asset(
+                                  gamesListData?.playerSixImagePath ?? '',
+                                  width: 42,
+                                  height: 42,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  if (gamesListData?.gamemode == Mode.threevsthree)
+                    Positioned(
+                      top: 8,
+                      left: 120,
+                      child: SizedBox(
+                        width: 54,
+                        height: 54,
+                        child: Stack(
+                          children: [
+                            ClipOval(
+                              child: Container(
+                                width: 54,
+                                height: 54,
+                                decoration: BoxDecoration(
+                                  color: getBorderColorOne(gamesListData?.winner ?? ""),
+                                  borderRadius: BorderRadius.circular(27),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(6.0),
+                              child: ClipOval(
+                                child: Image.asset(
+                                  gamesListData?.playerFiveImagePath ?? '',
                                   width: 42,
                                   height: 42,
                                   fit: BoxFit.cover,

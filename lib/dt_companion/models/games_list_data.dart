@@ -10,6 +10,10 @@ class GamesListData {
       this.playerThree = '',
       this.playerFourImagePath = '',
       this.playerFour = '',
+      this.playerFiveImagePath = '',
+      this.playerFive = '',
+      this.playerSixImagePath = '',
+      this.playerSix = '',
       this.gamemode = Mode.onevsone,
       this.id = 0101,
       this.winner = '',
@@ -23,6 +27,10 @@ class GamesListData {
   String playerThree;
   String playerFourImagePath;
   String playerFour;
+  String playerFiveImagePath;
+  String playerFive;
+  String playerSixImagePath;
+  String playerSix;
   Mode gamemode;
   int id;
   String winner;
@@ -38,6 +46,10 @@ class GamesListData {
       'playerThree': playerThree,
       'playerFourImagePath': playerFourImagePath,
       'playerFour': playerFour,
+      'playerFiveImagePath': playerFiveImagePath,
+      'playerFive': playerFive,
+      'playerSixImagePath': playerSixImagePath,
+      'playerSix': playerSix,
       'gamemode': gamemode.toString().split('.').last,
       'id': id,
       'winner': winner,
@@ -47,19 +59,22 @@ class GamesListData {
 
   factory GamesListData.fromMap(Map<String, dynamic> map) {
     return GamesListData(
-      playerOneImagePath: map['playerOneImagePath'] ?? '',
-      playerOne: map['playerOne'] ?? '',
-      playerTwoImagePath: map['playerTwoImagePath'] ?? '',
-      playerTwo: map['playerTwo'] ?? '',
-      playerThreeImagePath: map['playerThreeImagePath'] ?? '',
-      playerThree: map['playerThree'] ?? '',
-      playerFourImagePath: map['playerFourImagePath'] ?? '',
-      playerFour: map['playerFour'] ?? '',
-      gamemode: Mode.values
-          .firstWhere((e) => e.toString().split('.').last == map['gamemode']),
-      id: map['id'] ?? 0101,
-      winner: map['winner'] ?? '',
-      date: map['date'] ?? 0
-    );
+        playerOneImagePath: map['playerOneImagePath'] ?? '',
+        playerOne: map['playerOne'] ?? '',
+        playerTwoImagePath: map['playerTwoImagePath'] ?? '',
+        playerTwo: map['playerTwo'] ?? '',
+        playerThreeImagePath: map['playerThreeImagePath'] ?? '',
+        playerThree: map['playerThree'] ?? '',
+        playerFourImagePath: map['playerFourImagePath'] ?? '',
+        playerFour: map['playerFour'] ?? '',
+        playerFiveImagePath: map['playerFiveImagePath'] ?? '',
+        playerFive: map['playerFive'] ?? '',
+        playerSixImagePath: map['playerSixImagePath'] ?? '',
+        playerSix: map['playerSix'] ?? '',
+        gamemode: Mode.values
+            .firstWhere((e) => e.toString().split('.').last == map['gamemode']),
+        id: map['id'] ?? 0101,
+        winner: map['winner'] ?? '',
+        date: map['date'] ?? 0);
   }
 }
