@@ -115,6 +115,10 @@ class GamesDBHelper {
             playerThree TEXT,
             playerFourImagePath TEXT,
             playerFour TEXT,
+            playerFiveImagePath TEXT,
+            playerFive TEXT,
+            playerSixImagePath TEXT,
+            playerSix TEXT,
             gamemode TEXT,
             winner TEXT,
             date INTEGER DEFAULT 0
