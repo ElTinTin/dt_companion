@@ -1,5 +1,4 @@
-import 'package:dt_companion/dt_companion/profile/faq_screen.dart';
-import 'package:dt_companion/dt_companion/ui_view/google_signin_view.dart';
+import 'package:best_flutter_ui_templates/dt_companion/profile/faq_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 

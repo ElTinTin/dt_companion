@@ -150,3 +150,52 @@ class GamesDBHelper {
     );
   }
 }
+
+class DTADBHelper {
+  DTADBHelper._();
+
+  static final DTADBHelper instance = DTADBHelper._();
+
+  static Database? _database;
+
+  Future<Database> get database async {
+    if (_database != null) return _database!;
+
+    _database = await initDB();
+    return _database!;
+  }
+
+  Future<Database> initDB() async {
+    Directory dir = await getApplicationDocumentsDirectory();
+    String path = dir.path + "/dta_database.db";
+
+    return await openDatabase(
+      path,
+      version: 1,
+      readOnly: false,
+      onCreate: (db, version) async {
+        await db.execute('''
+          CREATE TABLE dta (
+            id INTEGER PRIMARY KEY,
+            teamName TEXT, 
+            players TEXT,
+            legacyMode BOOLEAN, 
+            difficulty INTEGER, 
+            mythic BOOLEAN,
+            date INTEGER DEFAULT 0,
+            scoreboards TEXT,
+            inprogress BOOLEAN,
+            campaignScore INTEGER,
+            commonCards TEXT,
+            rareCards TEXT,
+            epicCards TEXT,
+            legendaryCards TEXT
+          )
+        ''');
+      },
+      onUpgrade: (db, oldVersion, newVersion) {
+        // Handle other versions if necessary
+      },
+    );
+  }
+}

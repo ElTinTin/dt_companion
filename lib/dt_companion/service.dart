@@ -1,21 +1,22 @@
-import 'package:dt_companion/dt_companion/db_helper/games_dao.dart';
-import 'package:dt_companion/dt_companion/db_helper/heroes_dao.dart';
-import 'package:dt_companion/dt_companion/db_helper/user_dao.dart';
-import 'package:dt_companion/dt_companion/models/games_list_data.dart';
-import 'package:dt_companion/dt_companion/models/heroes_list_data.dart';
-import 'package:dt_companion/dt_companion/models/user_data.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:best_flutter_ui_templates/dt_companion/db_helper/games_dao.dart';
+import 'package:best_flutter_ui_templates/dt_companion/db_helper/heroes_dao.dart';
+import 'package:best_flutter_ui_templates/dt_companion/db_helper/user_dao.dart';
+import 'package:best_flutter_ui_templates/dt_companion/models/games_list_data.dart';
+import 'package:best_flutter_ui_templates/dt_companion/models/heroes_list_data.dart';
+import 'package:best_flutter_ui_templates/dt_companion/models/user_data.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:path/path.dart' as p;
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-
 class UserService with ChangeNotifier {
   GamesDAO gamesDAO = GamesDAO();
   HeroesDAO heroesDAO = HeroesDAO();
+  DTAdventureDAO dtaDAO = DTAdventureDAO();
 
   List<GamesListData> gamesListData = [];
   List<HeroesListData> heroesListData = [];
+  List<DTAListData> dtaListData = [];
+
   int victories = 0;
   int defeats = 0;
 
@@ -24,6 +25,7 @@ class UserService with ChangeNotifier {
 
     fetchHeroesData();
     fetchGamesData();
+    fetchDTAData();
 
     notifyListeners();
   }
@@ -36,6 +38,12 @@ class UserService with ChangeNotifier {
     heroesListData = await heroesDAO.getHeroesListData();
     getUserVictories();
     getUserDefeats();
+  }
+
+  Future<void> insertUserData(UserData userData) async {
+    userDAO.insertUserData(userData);
+    this.userData.add(userData);
+    notifyListeners();
   }
 
   Future<void> insertHeroesData(HeroesListData heroesListData) async {
@@ -52,12 +60,85 @@ class UserService with ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> insertDtaData(DTAListData game) async {
+    dtaDAO.insertDTAListData(game);
+    this.dtaListData.insert(0, game);
+    notifyListeners();
+  }
+
   Future<void> updateHeroesData(HeroesListData heroesListData) async {
     heroesDAO.updateHeroesListData(heroesListData);
     this.heroesListData.removeWhere((item)=> item.name == heroesListData.name);
     this.heroesListData.insert(0, heroesListData);
     getUserVictories();
     getUserDefeats();
+    notifyListeners();
+  }
+
+  Future<void> updateDtaData(DTAListData game) async {
+    dtaDAO.updateDTAListData(game);
+    this.dtaListData.removeWhere((item)=> item.id == game.id);
+    this.dtaListData.insert(0, game);
+    notifyListeners();
+  }
+
+  void expandScoreboard(DTAListData game, int index) async {
+    game.scoreboards[index].isExpanded = !game.scoreboards[index].isExpanded;
+    notifyListeners();
+  }
+
+  void addCardToPlayer(Player player, String card, DTAListData game, cardType type) {
+    switch (type) {
+      case cardType.common:
+        player.commonCards.insert(0, card);
+        game.commonCards.removeWhere((e) => e == card);
+      case cardType.rare:
+        player.rareCards.insert(0, card);
+        game.rareCards.removeWhere((e) => e == card);
+      case cardType.epic:
+        player.epicCards.insert(0, card);
+        game.epicCards.removeWhere((e) => e == card);
+      case cardType.legendary:
+        player.legendaryCards.insert(0, card);
+        game.legendaryCards.removeWhere((e) => e == card);
+    }
+    notifyListeners();
+  }
+
+  void removeCardFromPlayer(Player player, String card, DTAListData game) {
+    var type = cardType.common;
+    if (rareDTACardsList.contains(card)) {
+      type = cardType.rare;
+    } else if (epicDTACardsList.contains(card)) {
+      type = cardType.epic;
+    } else if (legendaryDTACardsList.contains(card)) {
+      type = cardType.legendary;
+    }
+
+    switch (type) {
+      case cardType.common:
+        player.commonCards.removeWhere((item) => item == card);
+        game.commonCards.add(card);
+        game.commonCards.sort((a, b) => a.compareTo(b));
+      case cardType.rare:
+        player.rareCards.removeWhere((item) => item == card);
+        game.rareCards.add(card);
+        game.rareCards.sort((a, b) => a.compareTo(b));
+      case cardType.epic:
+        player.epicCards.removeWhere((item) => item == card);
+        game.epicCards.add(card);
+        game.epicCards.sort((a, b) => a.compareTo(b));
+      case cardType.legendary:
+        player.legendaryCards.removeWhere((item) => item == card);
+        game.legendaryCards.add(card);
+        game.legendaryCards.sort((a, b) => a.compareTo(b));
+    }
+
+    notifyListeners();
+  }
+
+  void expandPlayer(DTAListData game, int index) async {
+    game.players[index].isExpanded = !game.players[index].isExpanded;
     notifyListeners();
   }
 
@@ -74,6 +155,12 @@ class UserService with ChangeNotifier {
     this.gamesListData.isNotEmpty
         ? this.gamesListData.removeWhere((item)=> item.id == game.id)
         : null;
+    notifyListeners();
+  }
+
+  Future<void> deleteDTAData(DTAListData dta) async {
+    dtaDAO.deleteDTAListData(dta.id);
+    this.dtaListData.removeWhere((item)=> item.id == dta.id);
     notifyListeners();
   }
 

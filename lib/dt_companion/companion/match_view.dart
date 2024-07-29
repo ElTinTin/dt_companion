@@ -164,27 +164,27 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
             playerOneImagePath: "assets/dt_companion/${_playerOne!.name}.png",
             playerOne: 'You',
             playerTwoImagePath: "assets/dt_companion/${_playerTwo!.name}.png",
-            playerTwo: _player2Controller.text,
+            playerTwo: _player2Controller.text != "" ? _player2Controller.text : "Player 2",
             playerThreeImagePath: _playerThree != null
                 ? "assets/dt_companion/${_playerThree!.name}.png"
                 : "",
             playerThree:
-                _player3Controller.text != "" ? _player3Controller.text : "",
+                _player3Controller.text != "" ? _player3Controller.text : "Player 3",
             playerFourImagePath: _playerFour != null
                 ? "assets/dt_companion/${_playerFour!.name}.png"
                 : "",
             playerFour:
-                _player4Controller.text != "" ? _player4Controller.text : "",
+                _player4Controller.text != "" ? _player4Controller.text : "Player 4",
             playerFiveImagePath: _playerFive != null
                 ? "assets/dt_companion/${_playerFive!.name}.png"
                 : "",
             playerFive:
-                _player5Controller.text != "" ? _player5Controller.text : "",
+                _player5Controller.text != "" ? _player5Controller.text : "Player 5",
             playerSixImagePath: _playerSix != null
                 ? "assets/dt_companion/${_playerSix!.name}.png"
                 : "",
             playerSix:
-                _player6Controller.text != "" ? _player6Controller.text : "",
+                _player6Controller.text != "" ? _player6Controller.text : "Player 6",
             gamemode: _gamemode,
             id: generateRandomId(),
             winner: _winningTeam ?? "",
@@ -201,7 +201,7 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
       );
 
       Navigator.push(context,
-          MaterialPageRoute(builder: (context) => CompanionAppHomeScreen()));
+          MaterialPageRoute(builder: (context) => CompanionAppHomeScreen(index: 0)));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Missing informations')),
@@ -495,7 +495,7 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                             filled: true,
                                             fillColor:
                                                 CompanionAppTheme.lightText,
-                                            hintText: 'Player Three',
+                                            hintText: 'Player 3',
                                             contentPadding:
                                                 const EdgeInsets.only(
                                                     left: 14.0,
@@ -576,7 +576,7 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                             filled: true,
                                             fillColor:
                                                 CompanionAppTheme.lightText,
-                                            hintText: 'Player Three',
+                                            hintText: 'Player 5',
                                             contentPadding:
                                                 const EdgeInsets.only(
                                                     left: 14.0,
@@ -639,7 +639,7 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                 Text(
                                   _gamemode == Mode.twovstwo
                                       ? 'Team 2'
-                                      : 'Player Two',
+                                      : 'Player 2',
                                   style: TextStyle(
                                     fontFamily: CompanionAppTheme.fontName,
                                     fontWeight: FontWeight.bold,
@@ -696,8 +696,8 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                       filled: true,
                                       fillColor: CompanionAppTheme.lightText,
                                       hintText: _gamemode == Mode.twovstwo
-                                          ? 'Player Two'
-                                          : 'Name',
+                                          ? 'Player 2'
+                                          : 'Player 2',
                                       contentPadding: const EdgeInsets.only(
                                           left: 14.0, bottom: 8.0, top: 8.0),
                                       focusedBorder: OutlineInputBorder(
@@ -763,7 +763,7 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                       decoration: InputDecoration(
                                         filled: true,
                                         fillColor: CompanionAppTheme.lightText,
-                                        hintText: 'Player Four',
+                                        hintText: 'Player 4',
                                         contentPadding: const EdgeInsets.only(
                                             left: 14.0, bottom: 8.0, top: 8.0),
                                         focusedBorder: OutlineInputBorder(
@@ -833,7 +833,7 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                       decoration: InputDecoration(
                                         filled: true,
                                         fillColor: CompanionAppTheme.lightText,
-                                        hintText: 'Player Four',
+                                        hintText: 'Player 6',
                                         contentPadding: const EdgeInsets.only(
                                             left: 14.0, bottom: 8.0, top: 8.0),
                                         focusedBorder: OutlineInputBorder(
@@ -893,7 +893,7 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                               child: Column(
                                 children: [
                                   Text(
-                                    'Player Three',
+                                    'Player 3',
                                     style: TextStyle(
                                       fontFamily: CompanionAppTheme.fontName,
                                       fontWeight: FontWeight.bold,
@@ -949,7 +949,7 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                       decoration: InputDecoration(
                                         filled: true,
                                         fillColor: CompanionAppTheme.lightText,
-                                        hintText: 'Name',
+                                        hintText: 'Player 3',
                                         contentPadding: const EdgeInsets.only(
                                             left: 14.0, bottom: 8.0, top: 8.0),
                                         focusedBorder: OutlineInputBorder(
@@ -1048,7 +1048,7 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          CompanionAppHomeScreen()));
+                                          CompanionAppHomeScreen(index: 0)));
                             },
                             child: const Text(
                               'Quit',
