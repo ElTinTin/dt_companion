@@ -26,10 +26,6 @@ class GamesStatisticsView extends StatefulWidget {
 class _GamesStatisticsViewState extends State<GamesStatisticsView>
     with TickerProviderStateMixin {
 
-  double getWinPercentage(int victories, int defeats) {
-    return (victories / (victories + defeats) * 100);
-  }
-
   @override
   void initState() {
     super.initState();

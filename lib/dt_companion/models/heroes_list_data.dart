@@ -112,6 +112,53 @@ extension CharacterExtension on Character {
         return "Wolverine";
     }
   }
+  static Character? fromDisplayName(String displayName) {
+    return _displayNameMap[displayName];
+  }
+
+  static final Map<String, Character> _displayNameMap = {
+    "Artificer": Character.artificer,
+    "Barbarian": Character.barbarian,
+    "Black Panther": Character.blackpanther,
+    "Black Widow": Character.blackwidow,
+    "Captain Marvel": Character.captainmarvel,
+    "Cursed Pirate": Character.cursedpirate,
+    "Cyclops": Character.cyclops,
+    "Deadpool": Character.deadpool,
+    "Dr. Strange": Character.drstrange,
+    "Gambit": Character.gambit,
+    "Gunslinger": Character.gunslinger,
+    "Huntress": Character.huntress,
+    "Iceman": Character.iceman,
+    "Jean Grey": Character.jeangrey,
+    "Krampus": Character.krampus,
+    "Loki": Character.loki,
+    "Monk": Character.monk,
+    "Moon Elf": Character.moonelf,
+    "Ninja": Character.ninja,
+    "Paladin": Character.paladin,
+    "Psylocke": Character.psylocke,
+    "Pyromancer": Character.pyromancer,
+    "Rogue": Character.rogue,
+    "Samurai": Character.samurai,
+    "Santa": Character.santa,
+    "Scarlet Witch": Character.scarletwitch,
+    "Seraph": Character.seraph,
+    "Shadow Thief": Character.shadowthief,
+    "Spider-Man": Character.spiderman,
+    "Storm": Character.storm,
+    "Tactician": Character.tactician,
+    "Thor": Character.thor,
+    "Treant": Character.treant,
+    "Vampire": Character.vampire,
+    "Wolverine": Character.wolverine,
+  };
+}
+
+extension CharacterStringExtension on Character {
+  String get nameWithoutEnum {
+    return toString().split('.').last;
+  }
 }
 
 class HeroesListData {

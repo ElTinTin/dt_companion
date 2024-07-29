@@ -14,7 +14,7 @@ class OnBoarding extends StatelessWidget {
         Navigator.push(
           context,
           CupertinoPageRoute(
-            builder: (context) => CompanionAppHomeScreen(),
+            builder: (context) => CompanionAppHomeScreen(index: 0,),
           ),
         );
       },
