@@ -63,7 +63,7 @@ class MyApp extends StatelessWidget {
         initialRoute: initScreen == 0 ? "first" : "/",
         routes: {
           '/': (context) => InitializationWidget(
-            child: CompanionAppHomeScreen(),
+            child: CompanionAppHomeScreen(index: 0,),
           ),
           "first": (context) => InitializationWidget(
             child: OnBoarding(),

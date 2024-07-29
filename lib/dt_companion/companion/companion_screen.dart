@@ -1,15 +1,16 @@
+import 'dart:io';
+
 import 'package:best_flutter_ui_templates/dt_companion/companion/all_games_list_view.dart';
 import 'package:best_flutter_ui_templates/dt_companion/companion/all_heroes_list_view.dart';
 import 'package:best_flutter_ui_templates/dt_companion/companion/games_list_view.dart';
-import 'package:best_flutter_ui_templates/dt_companion/service.dart';
 import 'package:best_flutter_ui_templates/dt_companion/ui_view/overall_statistics_view.dart';
 import 'package:best_flutter_ui_templates/dt_companion/ui_view/title_view.dart';
 import 'package:best_flutter_ui_templates/dt_companion/companion_app_theme.dart';
 import 'package:best_flutter_ui_templates/dt_companion/companion/heroes_list_view.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:in_app_review/in_app_review.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CompanionScreen extends StatefulWidget {
@@ -33,8 +34,17 @@ class _CompanionScreenState extends State<CompanionScreen>
   int inAppReviewStatus = 0;
   int inAppReviewDate = 0;
 
+  final AdSize adSize = AdSize.banner;
+  BannerAd? _bannerAdOne;
+  final String adOneUnitId = Platform.isAndroid
+  // Use this ad unit on Android...
+      ? 'ca-app-pub-9004659002329377/1360544789'
+  // ... or this one on iOS.
+      : 'ca-app-pub-9004659002329377/4587960461';
+
   @override
   void dispose() {
+    _bannerAdOne?.dispose();
     super.dispose();
   }
 
@@ -48,6 +58,7 @@ class _CompanionScreenState extends State<CompanionScreen>
     _getInAppReviewStatus();
     _analytics();
     _inAppReview();
+    _loadAd();
 
     scrollController.addListener(() {
       if (scrollController.offset >= 24) {
@@ -101,6 +112,34 @@ class _CompanionScreenState extends State<CompanionScreen>
   Future<void> _setInAppReviewDate() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setInt("inAppReviewDate", DateTime.now().millisecondsSinceEpoch);
+  }
+
+  void _loadAd() {
+    final bannerAdOne = BannerAd(
+      size: adSize,
+      adUnitId: adOneUnitId,
+      request: const AdRequest(),
+      listener: BannerAdListener(
+        // Called when an ad is successfully received.
+        onAdLoaded: (ad) {
+          if (!mounted) {
+            ad.dispose();
+            return;
+          }
+          setState(() {
+            _bannerAdOne = ad as BannerAd;
+          });
+        },
+        // Called when an ad request failed.
+        onAdFailedToLoad: (ad, error) {
+          debugPrint('BannerAd failed to load: $error');
+          ad.dispose();
+        },
+      ),
+    );
+
+    // Start loading.
+    bannerAdOne.load();
   }
 
   @override
@@ -158,7 +197,34 @@ class _CompanionScreenState extends State<CompanionScreen>
                             Interval((1 / 8) * 2, 1.0, curve: Curves.fastOutSlowIn))),
                         animationController: widget.animationController!
                     ),
-                    SizedBox(height: 32,),
+                    AnimatedBuilder(
+                      animation: widget.animationController!,
+                      builder: (BuildContext context, Widget? child) {
+                        return FadeTransition(
+                          opacity: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
+                              parent: widget.animationController!,
+                              curve: Interval((1 / 8) * 3, 1.0, curve: Curves.fastOutSlowIn))),
+                          child: new Transform(
+                            transform: new Matrix4.translationValues(
+                                0.0, 30 * (1.0 - Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
+                                parent: widget.animationController!,
+                                curve: Interval((1 / 8) * 3, 1.0, curve: Curves.fastOutSlowIn))).value), 0.0),
+                            child: SafeArea(
+                              child: SizedBox(
+                                width: adSize.width.toDouble(),
+                                height: adSize.height.toDouble(),
+                                child: _bannerAdOne == null
+                                // Nothing to render yet.
+                                    ? SizedBox()
+                                // The actual ad.
+                                    : AdWidget(ad: _bannerAdOne!),
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                    SizedBox(height: 8,),
                     TitleView(
                       titleTxt: 'Heroes statistics',
                       subTxt: 'More',

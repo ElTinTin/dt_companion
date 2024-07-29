@@ -16,7 +16,7 @@ publish_to: "none"
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 2.3.1+6
+version: 2.4.0+1
 
 environment:
     sdk: ">=3.2.2 <4.0.0"
@@ -48,6 +48,10 @@ dependencies:
     firebase_analytics: ^11.2.0
     firebase_core: ^3.2.0
     in_app_review: ^2.0.9
+    lottie: ^3.1.2
+    numberpicker: ^2.1.2
+    flutter_switch: ^0.3.2
+    modal_bottom_sheet: ^3.0.0
 
 flutter_launcher_icons:
     android: "launcher_icon"
