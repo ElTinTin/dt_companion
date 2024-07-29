@@ -1,4 +1,7 @@
+import 'package:best_flutter_ui_templates/dt_companion/companion/dta_add_view.dart';
+import 'package:best_flutter_ui_templates/dt_companion/companion/dta_list_view.dart';
 import 'package:best_flutter_ui_templates/dt_companion/companion/match_view.dart';
+import 'package:best_flutter_ui_templates/dt_companion/companion/tournament_view.dart';
 import 'package:best_flutter_ui_templates/dt_companion/profile/profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'bottom_navigation_view/bottom_bar_view.dart';
@@ -7,6 +10,10 @@ import 'companion/companion_screen.dart';
 import 'models/tabIcon_data.dart';
 
 class CompanionAppHomeScreen extends StatefulWidget {
+  const CompanionAppHomeScreen({Key? key, this.index}) : super(key: key);
+
+  final int? index;
+
   @override
   _CompanionAppHomeScreenState createState() => _CompanionAppHomeScreenState();
 }
@@ -30,6 +37,20 @@ class _CompanionAppHomeScreenState extends State<CompanionAppHomeScreen>
       isSelected: false,
       animationController: null,
     ),
+    TabIconData(
+      imagePath: 'assets/dt_companion/tab_3.png',
+      selectedImagePath: 'assets/dt_companion/tab_3s.png',
+      index: 2,
+      isSelected: false,
+      animationController: null,
+    ),
+    TabIconData(
+      imagePath: 'assets/dt_companion/tab_4.png',
+      selectedImagePath: 'assets/dt_companion/tab_4s.png',
+      index: 3,
+      isSelected: false,
+      animationController: null,
+    ),
   ];
 
   Widget tabBody = Container(
@@ -41,11 +62,32 @@ class _CompanionAppHomeScreenState extends State<CompanionAppHomeScreen>
     tabIconsList.forEach((TabIconData tab) {
       tab.isSelected = false;
     });
-    tabIconsList[0].isSelected = true;
+    tabIconsList[widget.index ?? 0].isSelected = true;
 
     animationController = AnimationController(
         duration: const Duration(milliseconds: 600), vsync: this);
-    tabBody = CompanionScreen(animationController: animationController);
+
+    if (widget.index == 0) {
+      animationController?.reverse().then<dynamic>((data) {
+        if (!mounted) {
+          return;
+        }
+        setState(() {
+          tabBody =
+              CompanionScreen(animationController: animationController);
+        });
+      });
+    } else if (widget.index == 1) {
+      animationController?.reverse().then<dynamic>((data) {
+        if (!mounted) {
+          return;
+        }
+        setState(() {
+          tabBody =
+              DTAListView(animationController: animationController);
+        });
+      });
+    }
     super.initState();
   }
 
@@ -99,6 +141,26 @@ class _CompanionAppHomeScreenState extends State<CompanionAppHomeScreen>
                 });
               });
             } else if (index == 1) {
+              animationController?.reverse().then<dynamic>((data) {
+                if (!mounted) {
+                  return;
+                }
+                setState(() {
+                  tabBody =
+                      DTAListView(animationController: animationController);
+                });
+              });
+            } else if (index == 2) {
+              animationController?.reverse().then<dynamic>((data) {
+                if (!mounted) {
+                  return;
+                }
+                setState(() {
+                  tabBody =
+                      TournamentScreen(animationController: animationController);
+                });
+              });
+            } else if (index == 3) {
               animationController?.reverse().then<dynamic>((data) {
                 if (!mounted) {
                   return;

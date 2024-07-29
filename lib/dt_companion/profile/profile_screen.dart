@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:best_flutter_ui_templates/dt_companion/profile/faq_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -112,7 +114,7 @@ class _ProfileScreenState extends State<ProfileScreen>
         )
     );
 
-    listViews.add(
+    /*listViews.add(
         AnimatedBuilder(
           animation: widget.animationController!,
           builder: (BuildContext context, Widget? child) {
@@ -155,7 +157,7 @@ class _ProfileScreenState extends State<ProfileScreen>
             );
           },
         )
-    );
+    );*/
 
     listViews.add(
         AnimatedBuilder(
