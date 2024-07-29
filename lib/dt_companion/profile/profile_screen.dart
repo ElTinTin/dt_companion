@@ -1,9 +1,11 @@
 import 'package:dt_companion/dt_companion/profile/faq_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../companion_app_theme.dart';
 import '../ui_view/google_signin_view.dart';
+
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key, this.animationController}) : super(key: key);

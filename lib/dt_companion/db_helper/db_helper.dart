@@ -101,27 +101,34 @@ class GamesDBHelper {
 
     return await openDatabase(
       path,
-      version: 4,
+      version: 5,
       readOnly: false,
       onCreate: (db, version) async {
         await db.execute('''
           CREATE TABLE games (
             id INTEGER PRIMARY KEY, 
             playerOneImagePath TEXT,
-            playerOne TEXT,  
+            playerOne TEXT,
+            playerOneUltimates TEXT,  
             playerTwoImagePath TEXT,
             playerTwo TEXT,
+            playerTwoUltimates TEXT,
             playerThreeImagePath TEXT,
             playerThree TEXT,
+            playerThreeUltimates TEXT,
             playerFourImagePath TEXT,
             playerFour TEXT,
+            playerFourUltimates TEXT,
             playerFiveImagePath TEXT,
             playerFive TEXT,
+            playerFiveUltimates TEXT,
             playerSixImagePath TEXT,
             playerSix TEXT,
+            playerSixUltimates TEXT,
             gamemode TEXT,
             winner TEXT,
-            date INTEGER DEFAULT 0
+            date INTEGER DEFAULT 0,
+            winnerHealth INTEGER
           )
         ''');
       },
@@ -144,6 +151,29 @@ class GamesDBHelper {
           );
           db.execute(
             "ALTER TABLE games ADD COLUMN playerSixImagePath TEXT",
+          );
+        }
+        if (oldVersion < 5) {
+          db.execute(
+            "ALTER TABLE games ADD COLUMN playerOneUltimates TEXT",
+          );
+          db.execute(
+            "ALTER TABLE games ADD COLUMN playerTwoUltimates TEXT",
+          );
+          db.execute(
+            "ALTER TABLE games ADD COLUMN playerThreeUltimates TEXT",
+          );
+          db.execute(
+            "ALTER TABLE games ADD COLUMN playerFourUltimates TEXT",
+          );
+          db.execute(
+            "ALTER TABLE games ADD COLUMN playerFiveUltimates TEXT",
+          );
+          db.execute(
+            "ALTER TABLE games ADD COLUMN playerSixUltimates TEXT",
+          );
+          db.execute(
+            "ALTER TABLE games ADD COLUMN winnerHealth INTEGER",
           );
         }
       },
