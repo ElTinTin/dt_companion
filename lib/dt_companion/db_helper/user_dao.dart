@@ -1,5 +1,5 @@
-import 'package:best_flutter_ui_templates/dt_companion/db_helper/db_helper.dart';
-import 'package:best_flutter_ui_templates/dt_companion/models/user_data.dart';
+import 'package:dt_companion/dt_companion/db_helper/db_helper.dart';
+import 'package:dt_companion/dt_companion/models/user_data.dart';
 
 class UserDAO {
   final dbHelper = UserDBHelper.instance;

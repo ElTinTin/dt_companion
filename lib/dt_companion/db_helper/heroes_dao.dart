@@ -1,4 +1,4 @@
-import 'package:best_flutter_ui_templates/dt_companion/models/heroes_list_data.dart';
+import 'package:dt_companion/dt_companion/models/heroes_list_data.dart';
 
 import 'db_helper.dart';
 

@@ -1,5 +1,4 @@
-import 'package:best_flutter_ui_templates/dt_companion/companion/all_games_list_view.dart';
-import 'package:best_flutter_ui_templates/dt_companion/companion_app_theme.dart';
+import 'package:dt_companion/dt_companion/companion_app_theme.dart';
 import 'package:flutter/material.dart';
 
 class TitleView extends StatelessWidget {

@@ -1,5 +1,5 @@
 import 'dart:math' as math;
-import 'package:best_flutter_ui_templates/dt_companion/companion_app_theme.dart';
+import 'package:dt_companion/dt_companion/companion_app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:vector_math/vector_math.dart' as vector;
 

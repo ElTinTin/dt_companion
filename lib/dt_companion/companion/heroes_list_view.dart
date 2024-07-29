@@ -1,7 +1,7 @@
-import 'package:best_flutter_ui_templates/dt_companion/companion_app_theme.dart';
-import 'package:best_flutter_ui_templates/dt_companion/models/heroes_list_data.dart';
-import 'package:best_flutter_ui_templates/dt_companion/service.dart';
-import 'package:best_flutter_ui_templates/main.dart';
+import 'package:dt_companion/dt_companion/companion_app_theme.dart';
+import 'package:dt_companion/dt_companion/models/heroes_list_data.dart';
+import 'package:dt_companion/dt_companion/service.dart';
+import 'package:dt_companion/main.dart';
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
