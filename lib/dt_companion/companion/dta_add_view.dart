@@ -1,9 +1,9 @@
 import 'dart:math';
 
-import 'package:best_flutter_ui_templates/dt_companion/models/dta_cards.dart';
-import 'package:best_flutter_ui_templates/dt_companion/models/dta_list_data.dart';
-import 'package:best_flutter_ui_templates/dt_companion/profile/faq_screen.dart';
-import 'package:best_flutter_ui_templates/dt_companion/service.dart';
+import 'package:dt_companion/dt_companion/models/dta_cards.dart';
+import 'package:dt_companion/dt_companion/models/dta_list_data.dart';
+import 'package:dt_companion/dt_companion/profile/faq_screen.dart';
+import 'package:dt_companion/dt_companion/service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:numberpicker/numberpicker.dart';

@@ -1,13 +1,11 @@
-import 'package:best_flutter_ui_templates/dt_companion/companion_app_theme.dart';
-import 'package:best_flutter_ui_templates/dt_companion/models/heroes_list_data.dart';
-import 'package:best_flutter_ui_templates/dt_companion/service.dart';
-import 'package:best_flutter_ui_templates/dt_companion/ui_view/games_statistics_view.dart';
+import 'package:dt_companion/dt_companion/companion_app_theme.dart';
+import 'package:dt_companion/dt_companion/models/heroes_list_data.dart';
+import 'package:dt_companion/dt_companion/service.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../main.dart';
-import '../models/games_list_data.dart';
 import '../ui_view/heroes_statistics_view.dart';
 
 

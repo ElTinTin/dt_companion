@@ -1,5 +1,5 @@
-import 'package:best_flutter_ui_templates/dt_companion/companion_app_home_screen.dart';
-import 'package:best_flutter_ui_templates/dt_companion/companion_app_theme.dart';
+import 'package:dt_companion/dt_companion/companion_app_home_screen.dart';
+import 'package:dt_companion/dt_companion/companion_app_theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_onboarding_slider/flutter_onboarding_slider.dart';
 

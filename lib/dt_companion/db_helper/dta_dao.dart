@@ -1,6 +1,5 @@
-import 'package:best_flutter_ui_templates/dt_companion/db_helper/db_helper.dart';
-import 'package:best_flutter_ui_templates/dt_companion/models/dta_list_data.dart';
-import 'package:best_flutter_ui_templates/dt_companion/models/games_list_data.dart';
+import 'package:dt_companion/dt_companion/db_helper/db_helper.dart';
+import 'package:dt_companion/dt_companion/models/dta_list_data.dart';
 
 class DTAdventureDAO {
   final dbHelper = DTADBHelper.instance;

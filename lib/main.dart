@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:best_flutter_ui_templates/dt_companion/companion_app_home_screen.dart';
-import 'package:best_flutter_ui_templates/dt_companion/companion_app_theme.dart';
-import 'package:best_flutter_ui_templates/dt_companion/init/initialization_view.dart';
-import 'package:best_flutter_ui_templates/dt_companion/init/introduction_view.dart';
-import 'package:best_flutter_ui_templates/dt_companion/service.dart';
+import 'package:dt_companion/dt_companion/companion_app_home_screen.dart';
+import 'package:dt_companion/dt_companion/companion_app_theme.dart';
+import 'package:dt_companion/dt_companion/init/initialization_view.dart';
+import 'package:dt_companion/dt_companion/init/introduction_view.dart';
+import 'package:dt_companion/dt_companion/service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
