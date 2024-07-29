@@ -1,7 +1,9 @@
-import 'package:best_flutter_ui_templates/dt_companion/companion/match_view.dart';
-import 'package:best_flutter_ui_templates/dt_companion/profile/profile_screen.dart';
+import 'package:dt_companion/dt_companion/companion/match_view.dart';
+import 'package:dt_companion/dt_companion/profile/profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'bottom_navigation_view/bottom_bar_view.dart';
+import 'companion/dta_list_view.dart';
+import 'companion/tournament_view.dart';
 import 'companion_app_theme.dart';
 import 'companion/companion_screen.dart';
 import 'models/tabIcon_data.dart';

@@ -1,16 +1,16 @@
-import 'package:best_flutter_ui_templates/dt_companion/companion/all_games_list_view.dart';
-import 'package:best_flutter_ui_templates/dt_companion/companion/all_heroes_list_view.dart';
-import 'package:best_flutter_ui_templates/dt_companion/companion/games_list_view.dart';
-import 'package:best_flutter_ui_templates/dt_companion/service.dart';
-import 'package:best_flutter_ui_templates/dt_companion/ui_view/overall_statistics_view.dart';
-import 'package:best_flutter_ui_templates/dt_companion/ui_view/title_view.dart';
-import 'package:best_flutter_ui_templates/dt_companion/companion_app_theme.dart';
-import 'package:best_flutter_ui_templates/dt_companion/companion/heroes_list_view.dart';
+import 'package:dt_companion/dt_companion/companion/all_games_list_view.dart';
+import 'package:dt_companion/dt_companion/companion/all_heroes_list_view.dart';
+import 'package:dt_companion/dt_companion/companion/games_list_view.dart';
+import 'package:dt_companion/dt_companion/ui_view/overall_statistics_view.dart';
+import 'package:dt_companion/dt_companion/ui_view/title_view.dart';
+import 'package:dt_companion/dt_companion/companion_app_theme.dart';
+import 'package:dt_companion/dt_companion/companion/heroes_list_view.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:io';
 
 class CompanionScreen extends StatefulWidget {
   const CompanionScreen({Key? key, this.animationController}) : super(key: key);

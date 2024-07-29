@@ -1,4 +1,4 @@
-import 'package:best_flutter_ui_templates/dt_companion/profile/faq_screen.dart';
+import 'package:dt_companion/dt_companion/profile/faq_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 

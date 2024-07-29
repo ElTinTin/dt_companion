@@ -1,9 +1,8 @@
-import 'package:best_flutter_ui_templates/dt_companion/companion/dta_add_view.dart';
-import 'package:best_flutter_ui_templates/dt_companion/companion_app_theme.dart';
-import 'package:best_flutter_ui_templates/dt_companion/extension/string_extension.dart';
-import 'package:best_flutter_ui_templates/dt_companion/models/dta_cards.dart';
-import 'package:best_flutter_ui_templates/dt_companion/models/heroes_list_data.dart';
-import 'package:best_flutter_ui_templates/dt_companion/service.dart';
+import 'package:dt_companion/dt_companion/companion_app_theme.dart';
+import 'package:dt_companion/dt_companion/extension/string_extension.dart';
+import 'package:dt_companion/dt_companion/models/dta_cards.dart';
+import 'package:dt_companion/dt_companion/models/heroes_list_data.dart';
+import 'package:dt_companion/dt_companion/service.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

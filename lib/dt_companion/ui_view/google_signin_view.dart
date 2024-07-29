@@ -153,6 +153,9 @@ class _GoogleSignInViewState extends State<GoogleSignInView> {
                                     child: const Text('Import'),
                                     onPressed: () async {
                                       await userService.restoreDataFromFirestore();
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(content: Text('Data backed up.')),
+                                      );
                                     },
                                   ),
                                   SizedBox(width: 32,),
@@ -172,6 +175,9 @@ class _GoogleSignInViewState extends State<GoogleSignInView> {
                                     child: const Text('Export'),
                                     onPressed: () async {
                                       await userService.backupDataToFirestore();
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(content: Text('Data saved.')),
+                                      );
                                     },
                                   ),
                                 ],

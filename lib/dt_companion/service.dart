@@ -1,12 +1,15 @@
-import 'package:best_flutter_ui_templates/dt_companion/db_helper/games_dao.dart';
-import 'package:best_flutter_ui_templates/dt_companion/db_helper/heroes_dao.dart';
-import 'package:best_flutter_ui_templates/dt_companion/db_helper/user_dao.dart';
-import 'package:best_flutter_ui_templates/dt_companion/models/games_list_data.dart';
-import 'package:best_flutter_ui_templates/dt_companion/models/heroes_list_data.dart';
-import 'package:best_flutter_ui_templates/dt_companion/models/user_data.dart';
+import 'package:dt_companion/dt_companion/db_helper/games_dao.dart';
+import 'package:dt_companion/dt_companion/db_helper/heroes_dao.dart';
+import 'package:dt_companion/dt_companion/models/games_list_data.dart';
+import 'package:dt_companion/dt_companion/models/heroes_list_data.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:path/path.dart' as p;
 import 'package:cloud_firestore/cloud_firestore.dart';
+
+import 'db_helper/dta_dao.dart';
+import 'models/dta_cards.dart';
+import 'models/dta_list_data.dart';
 
 class UserService with ChangeNotifier {
   GamesDAO gamesDAO = GamesDAO();
@@ -40,10 +43,8 @@ class UserService with ChangeNotifier {
     getUserDefeats();
   }
 
-  Future<void> insertUserData(UserData userData) async {
-    userDAO.insertUserData(userData);
-    this.userData.add(userData);
-    notifyListeners();
+  Future<void> fetchDTAData() async {
+    dtaListData = await dtaDAO.getDTAListData();
   }
 
   Future<void> insertHeroesData(HeroesListData heroesListData) async {
@@ -200,11 +201,12 @@ class UserService with ChangeNotifier {
 
       List<Map<String, dynamic>> gamesData = gamesListData.map((game) => game.toMap()).toList();
       List<Map<String, dynamic>> heroesData = heroesListData.map((hero) => hero.toMap()).toList();
-      //List<Map<String, dynamic>> dtaData = dtaListData.map((dta) => dta.toMap()).toList();
+      List<Map<String, dynamic>> dtaData = dtaListData.map((dta) => dta.toMap()).toList();
 
       await userDoc.set({
         'gamesListData': gamesData,
         'heroesListData': heroesData,
+        'dtaListData': dtaData,
         'timestamp': FieldValue.serverTimestamp(),
       });
 
@@ -239,8 +241,11 @@ class UserService with ChangeNotifier {
         List<HeroesListData> heroesData = (data['heroesListData'] as List)
             .map((item) => HeroesListData.fromMap(item))
             .toList();
+        List<DTAListData> dtaData = (data['dtaListData'] as List)
+            .map((item) => DTAListData.fromMap(item))
+            .toList();
 
-        await insertFetchedData(gamesData, heroesData);
+        await insertFetchedData(gamesData, heroesData, dtaData);
 
         notifyListeners();
       } else {
@@ -251,7 +256,11 @@ class UserService with ChangeNotifier {
     }
   }
 
-  Future<void> insertFetchedData(List<GamesListData> gamesData, List<HeroesListData> heroesData) async {
+  Future<void> insertFetchedData(List<GamesListData> gamesData, List<HeroesListData> heroesData, List<DTAListData> dtaData) async {
+    gamesDAO.clearData();
+    heroesDAO.clearData();
+    dtaDAO.clearData();
+
     for (var game in gamesData) {
       await gamesDAO.insertGamesListData(game);
     }
@@ -262,9 +271,13 @@ class UserService with ChangeNotifier {
     }
     heroesListData = await heroesDAO.getHeroesListData();
 
+    for (var dta in dtaData) {
+      await dtaDAO.insertDTAListData(dta);
+    }
+    dtaListData = await dtaDAO.getDTAListData();
+
     getUserVictories();
     getUserDefeats();
     notifyListeners();
   }
-
 }
