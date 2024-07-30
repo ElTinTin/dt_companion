@@ -874,506 +874,508 @@ class _DTAGameDetailViewState extends State<DTAGameDetailView>
     return StatefulBuilder(builder:
         (BuildContext context, StateSetter setState /*You can rename this!*/) {
       return Container(
-        color: CompanionAppTheme.background,
-        child: SizedBox(
-          child: Center(
-              child: Padding(
-            padding: EdgeInsets.all(8),
-            child: Column(
-              children: [
-                Padding(
-                  padding: EdgeInsets.all(16),
-                  child: Row(
-                    children: [
-                      Text(
-                        'New Scenario',
-                        style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            color: CompanionAppTheme.lightText),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(
-                  height: 16,
-                ),
-                Row(
-                  children: [
-                    SizedBox(
-                      width: 16,
-                    ),
-                    Text(
-                      'Scenario number',
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: CompanionAppTheme.lightText),
-                    ),
-                    Spacer(),
-                    SizedBox(
-                      width: 44,
-                      height: 44,
-                      child: TextFormField(
-                        onTapOutside: (event) {
-                          FocusManager.instance.primaryFocus?.unfocus();
-                        },
-                        controller: _scenarioNumber,
-                        keyboardType: TextInputType.number,
-                        inputFormatters: <TextInputFormatter>[
-                          // for below version 2 use this
-                          FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
-                          // for version 2 and greater youcan also use this
-                          FilteringTextInputFormatter.digitsOnly
-                        ],
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: CompanionAppTheme.lightText,
-                          hintText: '',
-                          contentPadding: const EdgeInsets.only(
-                              left: 8.0, bottom: 4.0, top: 4.0),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(color: CompanionAppTheme.lightText),
-                            borderRadius: BorderRadius.circular(12.5),
-                          ),
-                          enabledBorder: UnderlineInputBorder(
-                            borderSide:
-                                BorderSide(color: CompanionAppTheme.lightText),
-                            borderRadius: BorderRadius.circular(12.5),
-                          ),
-                        ),
-                        cursorColor: CompanionAppTheme.darkerText,
-                      ),
-                    ),
-                    SizedBox(
-                      width: 16,
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 4,
-                ),
-                Divider(
-                  color: CompanionAppTheme.lightText,
-                ),
-                SizedBox(
-                  height: 4,
-                ),
-                Row(
-                  children: [
-                    SizedBox(
-                      width: 16,
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+          color: CompanionAppTheme.background,
+          child: SingleChildScrollView(
+            child: SizedBox(
+              child: Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(8),
+                    child: Column(
                       children: [
-                        Text(
-                          'Remaining salves',
-                          style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: CompanionAppTheme.lightText),
+                        Padding(
+                          padding: EdgeInsets.all(16),
+                          child: Row(
+                            children: [
+                              Text(
+                                'New Scenario',
+                                style: TextStyle(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.bold,
+                                    color: CompanionAppTheme.lightText),
+                              ),
+                            ],
+                          ),
                         ),
-                        Text('+1 for every unspent salve',
-                            style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w100,
-                                color: CompanionAppTheme.lightText)),
+                        SizedBox(
+                          height: 16,
+                        ),
+                        Row(
+                          children: [
+                            SizedBox(
+                              width: 16,
+                            ),
+                            Text(
+                              'Scenario number',
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: CompanionAppTheme.lightText),
+                            ),
+                            Spacer(),
+                            SizedBox(
+                              width: 44,
+                              height: 44,
+                              child: TextFormField(
+                                onTapOutside: (event) {
+                                  FocusManager.instance.primaryFocus?.unfocus();
+                                },
+                                controller: _scenarioNumber,
+                                keyboardType: TextInputType.number,
+                                inputFormatters: <TextInputFormatter>[
+                                  // for below version 2 use this
+                                  FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                                  // for version 2 and greater youcan also use this
+                                  FilteringTextInputFormatter.digitsOnly
+                                ],
+                                decoration: InputDecoration(
+                                  filled: true,
+                                  fillColor: CompanionAppTheme.lightText,
+                                  hintText: '',
+                                  contentPadding: const EdgeInsets.only(
+                                      left: 8.0, bottom: 4.0, top: 4.0),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide:
+                                    BorderSide(color: CompanionAppTheme.lightText),
+                                    borderRadius: BorderRadius.circular(12.5),
+                                  ),
+                                  enabledBorder: UnderlineInputBorder(
+                                    borderSide:
+                                    BorderSide(color: CompanionAppTheme.lightText),
+                                    borderRadius: BorderRadius.circular(12.5),
+                                  ),
+                                ),
+                                cursorColor: CompanionAppTheme.darkerText,
+                              ),
+                            ),
+                            SizedBox(
+                              width: 16,
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 4,
+                        ),
+                        Divider(
+                          color: CompanionAppTheme.lightText,
+                        ),
+                        SizedBox(
+                          height: 4,
+                        ),
+                        Row(
+                          children: [
+                            SizedBox(
+                              width: 16,
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Remaining salves',
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: CompanionAppTheme.lightText),
+                                ),
+                                Text('+1 for every unspent salve',
+                                    style: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w100,
+                                        color: CompanionAppTheme.lightText)),
+                              ],
+                            ),
+                            Spacer(),
+                            SizedBox(
+                              width: 44,
+                              height: 44,
+                              child: TextFormField(
+                                onTapOutside: (event) {
+                                  FocusManager.instance.primaryFocus?.unfocus();
+                                },
+                                controller: _remainingSalve,
+                                keyboardType: TextInputType.number,
+                                inputFormatters: <TextInputFormatter>[
+                                  // for below version 2 use this
+                                  FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                                  // for version 2 and greater youcan also use this
+                                  FilteringTextInputFormatter.digitsOnly
+                                ],
+                                decoration: InputDecoration(
+                                  filled: true,
+                                  fillColor: CompanionAppTheme.lightText,
+                                  hintText: '',
+                                  contentPadding: const EdgeInsets.only(
+                                      left: 8.0, bottom: 4.0, top: 4.0),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide:
+                                    BorderSide(color: CompanionAppTheme.lightText),
+                                    borderRadius: BorderRadius.circular(12.5),
+                                  ),
+                                  enabledBorder: UnderlineInputBorder(
+                                    borderSide:
+                                    BorderSide(color: CompanionAppTheme.lightText),
+                                    borderRadius: BorderRadius.circular(12.5),
+                                  ),
+                                ),
+                                cursorColor: CompanionAppTheme.darkerText,
+                              ),
+                            ),
+                            SizedBox(
+                              width: 16,
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 4,
+                        ),
+                        Divider(
+                          color: CompanionAppTheme.lightText,
+                        ),
+                        SizedBox(
+                          height: 4,
+                        ),
+                        Row(
+                          children: [
+                            SizedBox(
+                              width: 16,
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Unspent gold',
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: CompanionAppTheme.lightText),
+                                ),
+                                Text('+1 for every 5 gold your team did not spend',
+                                    style: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w100,
+                                        color: CompanionAppTheme.lightText)),
+                              ],
+                            ),
+                            Spacer(),
+                            SizedBox(
+                              width: 44,
+                              height: 44,
+                              child: TextFormField(
+                                onTapOutside: (event) {
+                                  FocusManager.instance.primaryFocus?.unfocus();
+                                },
+                                controller: _unspentGold,
+                                keyboardType: TextInputType.number,
+                                inputFormatters: <TextInputFormatter>[
+                                  // for below version 2 use this
+                                  FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                                  // for version 2 and greater youcan also use this
+                                  FilteringTextInputFormatter.digitsOnly
+                                ],
+                                decoration: InputDecoration(
+                                  filled: true,
+                                  fillColor: CompanionAppTheme.lightText,
+                                  hintText: '',
+                                  contentPadding: const EdgeInsets.only(
+                                      left: 8.0, bottom: 4.0, top: 4.0),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide:
+                                    BorderSide(color: CompanionAppTheme.lightText),
+                                    borderRadius: BorderRadius.circular(12.5),
+                                  ),
+                                  enabledBorder: UnderlineInputBorder(
+                                    borderSide:
+                                    BorderSide(color: CompanionAppTheme.lightText),
+                                    borderRadius: BorderRadius.circular(12.5),
+                                  ),
+                                ),
+                                cursorColor: CompanionAppTheme.darkerText,
+                              ),
+                            ),
+                            SizedBox(
+                              width: 16,
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 4,
+                        ),
+                        Divider(
+                          color: CompanionAppTheme.lightText,
+                        ),
+                        SizedBox(
+                          height: 4,
+                        ),
+                        Row(
+                          children: [
+                            SizedBox(
+                              width: 16,
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Unclaimed boss loot',
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: CompanionAppTheme.lightText),
+                                ),
+                                Text('+1 for every unclaimed boss loot',
+                                    style: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w100,
+                                        color: CompanionAppTheme.lightText)),
+                              ],
+                            ),
+                            Spacer(),
+                            SizedBox(
+                              width: 44,
+                              height: 44,
+                              child: TextFormField(
+                                onTapOutside: (event) {
+                                  FocusManager.instance.primaryFocus?.unfocus();
+                                },
+                                controller: _unclaimedBossLoot,
+                                keyboardType: TextInputType.number,
+                                inputFormatters: <TextInputFormatter>[
+                                  // for below version 2 use this
+                                  FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                                  // for version 2 and greater youcan also use this
+                                  FilteringTextInputFormatter.digitsOnly
+                                ],
+                                decoration: InputDecoration(
+                                  filled: true,
+                                  fillColor: CompanionAppTheme.lightText,
+                                  hintText: '',
+                                  contentPadding: const EdgeInsets.only(
+                                      left: 8.0, bottom: 4.0, top: 4.0),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide:
+                                    BorderSide(color: CompanionAppTheme.lightText),
+                                    borderRadius: BorderRadius.circular(12.5),
+                                  ),
+                                  enabledBorder: UnderlineInputBorder(
+                                    borderSide:
+                                    BorderSide(color: CompanionAppTheme.lightText),
+                                    borderRadius: BorderRadius.circular(12.5),
+                                  ),
+                                ),
+                                cursorColor: CompanionAppTheme.darkerText,
+                              ),
+                            ),
+                            SizedBox(
+                              width: 16,
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 4,
+                        ),
+                        Divider(
+                          color: CompanionAppTheme.lightText,
+                        ),
+                        SizedBox(
+                          height: 4,
+                        ),
+                        Row(
+                          children: [
+                            SizedBox(
+                              width: 16,
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Explored all tiles',
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: CompanionAppTheme.lightText),
+                                ),
+                                Text('+5 if you explored all environment tiles',
+                                    style: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w100,
+                                        color: CompanionAppTheme.lightText)),
+                              ],
+                            ),
+                            Spacer(),
+                            FlutterSwitch(
+                              value: _exploredAllTiles,
+                              activeColor: CompanionAppTheme.lightText,
+                              toggleColor: CompanionAppTheme.dark_grey,
+                              onToggle: (val) {
+                                setState(() {
+                                  _exploredAllTiles = val;
+                                });
+                              },
+                            ),
+                            SizedBox(
+                              width: 16,
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 4,
+                        ),
+                        Divider(
+                          color: CompanionAppTheme.lightText,
+                        ),
+                        SizedBox(
+                          height: 4,
+                        ),
+                        Row(
+                          children: [
+                            SizedBox(
+                              width: 16,
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Scenario score',
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: CompanionAppTheme.lightText),
+                                ),
+                                Text('Difficulty of the campaign',
+                                    style: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w100,
+                                        color: CompanionAppTheme.lightText)),
+                              ],
+                            ),
+                            Spacer(),
+                            Text(
+                              '${widget.dtaListData.difficulty == 0 ? 20 : 30}',
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: CompanionAppTheme.lightText),
+                            ),
+                            SizedBox(
+                              width: 16,
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 4,
+                        ),
+                        Divider(
+                          color: CompanionAppTheme.lightText,
+                        ),
+                        SizedBox(
+                          height: 4,
+                        ),
+                        Row(
+                          children: [
+                            SizedBox(
+                              width: 16,
+                            ),
+                            Text(
+                              'Won Scenario',
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: CompanionAppTheme.lightText),
+                            ),
+                            Spacer(),
+                            FlutterSwitch(
+                              value: _won,
+                              activeColor: CompanionAppTheme.lightText,
+                              toggleColor: CompanionAppTheme.dark_grey,
+                              onToggle: (val) {
+                                setState(() {
+                                  _won = val;
+                                });
+                              },
+                            ),
+                            SizedBox(
+                              width: 16,
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 4,
+                        ),
+                        Divider(
+                          color: CompanionAppTheme.lightText,
+                        ),
+                        SizedBox(
+                          height: 4,
+                        ),
+                        Row(
+                          children: [
+                            SizedBox(
+                              width: 16,
+                            ),
+                            Text('Total score',
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: CompanionAppTheme.lightText)),
+                            Spacer(),
+                            Text('${getTotalScore()}',
+                                style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: CompanionAppTheme.lightText)),
+                            SizedBox(
+                              width: 16,
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 8,
+                        ),
+                        Padding(
+                          padding: EdgeInsets.all(16),
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                foregroundColor: CompanionAppTheme.darkerText,
+                                backgroundColor: CompanionAppTheme.lightText,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                elevation: 15.0,
+                                padding:
+                                EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                                textStyle: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: CompanionAppTheme.darkerText)),
+                            child: const Text('Save'),
+                            onPressed: () {
+                              widget.dtaListData.scoreboards.add(Scoreboard(
+                                totalScore: getTotalScore(),
+                                remainingSalve: int.parse(_remainingSalve.text),
+                                scenarioNumber: int.parse(_scenarioNumber.text),
+                                unspentGold: int.parse(_unspentGold.text),
+                                unclaimedBossLoot: int.parse(_unclaimedBossLoot.text),
+                                exploredAll: _exploredAllTiles,
+                                won: _won,
+                              ));
+                              widget.dtaListData.campaignScore += getTotalScore();
+                              userService.updateDtaData(widget.dtaListData);
+                              _remainingSalve.text = "0";
+                              _scenarioNumber.text = "0";
+                              _unspentGold.text = "0";
+                              _unclaimedBossLoot.text = "0";
+                              _exploredAllTiles = false;
+                              _won = false;
+                              Navigator.pop(context);
+                            },
+                          ),
+                        ),
+                        SizedBox(
+                          height: 8,
+                        ),
                       ],
                     ),
-                    Spacer(),
-                    SizedBox(
-                      width: 44,
-                      height: 44,
-                      child: TextFormField(
-                        onTapOutside: (event) {
-                          FocusManager.instance.primaryFocus?.unfocus();
-                        },
-                        controller: _remainingSalve,
-                        keyboardType: TextInputType.number,
-                        inputFormatters: <TextInputFormatter>[
-                          // for below version 2 use this
-                          FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
-                          // for version 2 and greater youcan also use this
-                          FilteringTextInputFormatter.digitsOnly
-                        ],
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: CompanionAppTheme.lightText,
-                          hintText: '',
-                          contentPadding: const EdgeInsets.only(
-                              left: 8.0, bottom: 4.0, top: 4.0),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(color: CompanionAppTheme.lightText),
-                            borderRadius: BorderRadius.circular(12.5),
-                          ),
-                          enabledBorder: UnderlineInputBorder(
-                            borderSide:
-                                BorderSide(color: CompanionAppTheme.lightText),
-                            borderRadius: BorderRadius.circular(12.5),
-                          ),
-                        ),
-                        cursorColor: CompanionAppTheme.darkerText,
-                      ),
-                    ),
-                    SizedBox(
-                      width: 16,
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 4,
-                ),
-                Divider(
-                  color: CompanionAppTheme.lightText,
-                ),
-                SizedBox(
-                  height: 4,
-                ),
-                Row(
-                  children: [
-                    SizedBox(
-                      width: 16,
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Unspent gold',
-                          style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: CompanionAppTheme.lightText),
-                        ),
-                        Text('+1 for every 5 gold your team did not spend',
-                            style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w100,
-                                color: CompanionAppTheme.lightText)),
-                      ],
-                    ),
-                    Spacer(),
-                    SizedBox(
-                      width: 44,
-                      height: 44,
-                      child: TextFormField(
-                        onTapOutside: (event) {
-                          FocusManager.instance.primaryFocus?.unfocus();
-                        },
-                        controller: _unspentGold,
-                        keyboardType: TextInputType.number,
-                        inputFormatters: <TextInputFormatter>[
-                          // for below version 2 use this
-                          FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
-                          // for version 2 and greater youcan also use this
-                          FilteringTextInputFormatter.digitsOnly
-                        ],
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: CompanionAppTheme.lightText,
-                          hintText: '',
-                          contentPadding: const EdgeInsets.only(
-                              left: 8.0, bottom: 4.0, top: 4.0),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(color: CompanionAppTheme.lightText),
-                            borderRadius: BorderRadius.circular(12.5),
-                          ),
-                          enabledBorder: UnderlineInputBorder(
-                            borderSide:
-                                BorderSide(color: CompanionAppTheme.lightText),
-                            borderRadius: BorderRadius.circular(12.5),
-                          ),
-                        ),
-                        cursorColor: CompanionAppTheme.darkerText,
-                      ),
-                    ),
-                    SizedBox(
-                      width: 16,
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 4,
-                ),
-                Divider(
-                  color: CompanionAppTheme.lightText,
-                ),
-                SizedBox(
-                  height: 4,
-                ),
-                Row(
-                  children: [
-                    SizedBox(
-                      width: 16,
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Unclaimed boss loot',
-                          style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: CompanionAppTheme.lightText),
-                        ),
-                        Text('+1 for every unclaimed boss loot',
-                            style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w100,
-                                color: CompanionAppTheme.lightText)),
-                      ],
-                    ),
-                    Spacer(),
-                    SizedBox(
-                      width: 44,
-                      height: 44,
-                      child: TextFormField(
-                        onTapOutside: (event) {
-                          FocusManager.instance.primaryFocus?.unfocus();
-                        },
-                        controller: _unclaimedBossLoot,
-                        keyboardType: TextInputType.number,
-                        inputFormatters: <TextInputFormatter>[
-                          // for below version 2 use this
-                          FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
-                          // for version 2 and greater youcan also use this
-                          FilteringTextInputFormatter.digitsOnly
-                        ],
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: CompanionAppTheme.lightText,
-                          hintText: '',
-                          contentPadding: const EdgeInsets.only(
-                              left: 8.0, bottom: 4.0, top: 4.0),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(color: CompanionAppTheme.lightText),
-                            borderRadius: BorderRadius.circular(12.5),
-                          ),
-                          enabledBorder: UnderlineInputBorder(
-                            borderSide:
-                                BorderSide(color: CompanionAppTheme.lightText),
-                            borderRadius: BorderRadius.circular(12.5),
-                          ),
-                        ),
-                        cursorColor: CompanionAppTheme.darkerText,
-                      ),
-                    ),
-                    SizedBox(
-                      width: 16,
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 4,
-                ),
-                Divider(
-                  color: CompanionAppTheme.lightText,
-                ),
-                SizedBox(
-                  height: 4,
-                ),
-                Row(
-                  children: [
-                    SizedBox(
-                      width: 16,
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Explored all tiles',
-                          style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: CompanionAppTheme.lightText),
-                        ),
-                        Text('+5 if you explored all environment tiles',
-                            style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w100,
-                                color: CompanionAppTheme.lightText)),
-                      ],
-                    ),
-                    Spacer(),
-                    FlutterSwitch(
-                      value: _exploredAllTiles,
-                      activeColor: CompanionAppTheme.lightText,
-                      toggleColor: CompanionAppTheme.dark_grey,
-                      onToggle: (val) {
-                        setState(() {
-                          _exploredAllTiles = val;
-                        });
-                      },
-                    ),
-                    SizedBox(
-                      width: 16,
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 4,
-                ),
-                Divider(
-                  color: CompanionAppTheme.lightText,
-                ),
-                SizedBox(
-                  height: 4,
-                ),
-                Row(
-                  children: [
-                    SizedBox(
-                      width: 16,
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Scenario score',
-                          style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: CompanionAppTheme.lightText),
-                        ),
-                        Text('Difficulty of the campaign',
-                            style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w100,
-                                color: CompanionAppTheme.lightText)),
-                      ],
-                    ),
-                    Spacer(),
-                    Text(
-                      '${widget.dtaListData.difficulty == 0 ? 20 : 30}',
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: CompanionAppTheme.lightText),
-                    ),
-                    SizedBox(
-                      width: 16,
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 4,
-                ),
-                Divider(
-                  color: CompanionAppTheme.lightText,
-                ),
-                SizedBox(
-                  height: 4,
-                ),
-                Row(
-                  children: [
-                    SizedBox(
-                      width: 16,
-                    ),
-                    Text(
-                      'Won Scenario',
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: CompanionAppTheme.lightText),
-                    ),
-                    Spacer(),
-                    FlutterSwitch(
-                      value: _won,
-                      activeColor: CompanionAppTheme.lightText,
-                      toggleColor: CompanionAppTheme.dark_grey,
-                      onToggle: (val) {
-                        setState(() {
-                          _won = val;
-                        });
-                      },
-                    ),
-                    SizedBox(
-                      width: 16,
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 4,
-                ),
-                Divider(
-                  color: CompanionAppTheme.lightText,
-                ),
-                SizedBox(
-                  height: 4,
-                ),
-                Row(
-                  children: [
-                    SizedBox(
-                      width: 16,
-                    ),
-                    Text('Total score',
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: CompanionAppTheme.lightText)),
-                    Spacer(),
-                    Text('${getTotalScore()}',
-                        style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: CompanionAppTheme.lightText)),
-                    SizedBox(
-                      width: 16,
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 8,
-                ),
-                Padding(
-                  padding: EdgeInsets.all(16),
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        foregroundColor: CompanionAppTheme.darkerText,
-                        backgroundColor: CompanionAppTheme.lightText,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        elevation: 15.0,
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                        textStyle: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: CompanionAppTheme.darkerText)),
-                    child: const Text('Save'),
-                    onPressed: () {
-                      widget.dtaListData.scoreboards.add(Scoreboard(
-                        totalScore: getTotalScore(),
-                        remainingSalve: int.parse(_remainingSalve.text),
-                        scenarioNumber: int.parse(_scenarioNumber.text),
-                        unspentGold: int.parse(_unspentGold.text),
-                        unclaimedBossLoot: int.parse(_unclaimedBossLoot.text),
-                        exploredAll: _exploredAllTiles,
-                        won: _won,
-                      ));
-                      widget.dtaListData.campaignScore += getTotalScore();
-                      userService.updateDtaData(widget.dtaListData);
-                      _remainingSalve.text = "0";
-                      _scenarioNumber.text = "0";
-                      _unspentGold.text = "0";
-                      _unclaimedBossLoot.text = "0";
-                      _exploredAllTiles = false;
-                      _won = false;
-                      Navigator.pop(context);
-                    },
-                  ),
-                ),
-                SizedBox(
-                  height: 8,
-                ),
-              ],
+                  )),
             ),
-          )),
-        ),
+          )
       );
     });
   }
@@ -1417,199 +1419,201 @@ class _DTAGameDetailViewState extends State<DTAGameDetailView>
       builder: (BuildContext context, StateSetter setState) {
         return Container(
           color: CompanionAppTheme.background,
-          child: SizedBox(
-            child: Center(
-              child: Padding(
-                padding: EdgeInsets.all(8),
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.all(16),
-                      child: Row(
-                        children: [
-                          Text(
-                            player.name,
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              color: CompanionAppTheme.lightText,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.all(16),
-                      child: TextField(
-                        controller: _searchController,
-                        decoration: InputDecoration(
-                          labelText: 'Search',
-                          border: OutlineInputBorder(),
-                          suffixIcon: IconButton(
-                            icon: Icon(Icons.clear),
-                            onPressed: () {
-                              _searchController.clear();
-                              setState(() {
-                                _searchQuery = "";
-                              });
-                            },
-                          ),
-                        ),
-                        onChanged: (value) {
-                          setState(() {
-                            _searchQuery = value;
-                          });
-                        },
-                        onSubmitted: (value) {
-                          setState(() {
-                            _searchQuery = value;
-                          });
-                          FocusScope.of(context)
-                              .unfocus(); // This will hide the keyboard
-                        },
-                      ),
-                    ),
-                    SizedBox(height: 16),
-                    Padding(
-                      padding: EdgeInsets.all(16),
-                      child: Row(
-                        children: [
-                          Text(
-                            'Your deck',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: CompanionAppTheme.lightText,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.all(8),
-                      child: SizedBox(
-                        height: 110,
-                        child: ListView(
-                          scrollDirection: Axis.horizontal,
-                          children: getPlayerCards().map((card) {
-                            return GestureDetector(
-                              onTap: () {
-                                if (widget.dtaListData.inprogress) {
-                                  setState(() {
-                                    userService.removeCardFromPlayer(
-                                        player, card, widget.dtaListData);
-                                  });
-                                }
-                              },
-                              child: Container(
-                                width: 120,
-                                margin: EdgeInsets.symmetric(horizontal: 8),
-                                padding: EdgeInsets.all(8),
-                                decoration: BoxDecoration(
-                                  color: CompanionAppTheme.lightText,
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      card,
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                        color: CompanionAppTheme.darkerText,
-                                      ),
-                                    ),
-                                  ],
-                                ),
+          child: SingleChildScrollView(
+            child: SizedBox(
+              child: Center(
+                child: Padding(
+                  padding: EdgeInsets.all(8),
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.all(16),
+                        child: Row(
+                          children: [
+                            Text(
+                              player.name,
+                              style: TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                                color: CompanionAppTheme.lightText,
                               ),
-                            );
-                          }).toList(),
+                            ),
+                          ],
                         ),
                       ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.all(16),
-                      child: Row(
-                        children: [
-                          Text(
-                            'Loot cards',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: CompanionAppTheme.lightText,
+                      Padding(
+                        padding: EdgeInsets.all(16),
+                        child: TextField(
+                          controller: _searchController,
+                          decoration: InputDecoration(
+                            labelText: 'Search',
+                            border: OutlineInputBorder(),
+                            suffixIcon: IconButton(
+                              icon: Icon(Icons.clear),
+                              onPressed: () {
+                                _searchController.clear();
+                                setState(() {
+                                  _searchQuery = "";
+                                });
+                              },
                             ),
                           ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 8),
-                    Wrap(
-                      spacing: 8.0,
-                      children: cardType.values.map((type) {
-                        return ChoiceChip(
-                          label: Text(
-                              type.toString().split('.').last.capitalize()),
-                          selected: _type == type,
-                          onSelected: (selected) {
+                          onChanged: (value) {
                             setState(() {
-                              _type = type;
+                              _searchQuery = value;
                             });
                           },
-                          selectedColor: CompanionAppTheme.lightText,
-                          backgroundColor: CompanionAppTheme.dark_grey,
-                          labelStyle: TextStyle(
-                            color: _type == type
-                                ? CompanionAppTheme.darkerText
-                                : CompanionAppTheme.lightText,
-                          ),
-                        );
-                      }).toList(),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.all(8),
-                      child: SizedBox(
-                        height: 110,
-                        child: ListView(
-                          scrollDirection: Axis.horizontal,
-                          children: getRarityCards().map((card) {
-                            return GestureDetector(
-                              onTap: () {
-                                if (widget.dtaListData.inprogress) {
-                                  setState(() {
-                                    userService.addCardToPlayer(player, card,
-                                        widget.dtaListData, _type);
-                                  });
-                                }
-                              },
-                              child: Container(
-                                width: 120,
-                                margin: EdgeInsets.symmetric(horizontal: 8),
-                                padding: EdgeInsets.all(16),
-                                decoration: BoxDecoration(
-                                  color: CompanionAppTheme.dark_grey,
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      card,
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                        color: CompanionAppTheme.lightText,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          }).toList(),
+                          onSubmitted: (value) {
+                            setState(() {
+                              _searchQuery = value;
+                            });
+                            FocusScope.of(context)
+                                .unfocus(); // This will hide the keyboard
+                          },
                         ),
                       ),
-                    ),
-                  ],
+                      SizedBox(height: 16),
+                      Padding(
+                        padding: EdgeInsets.all(16),
+                        child: Row(
+                          children: [
+                            Text(
+                              'Your deck',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: CompanionAppTheme.lightText,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.all(8),
+                        child: SizedBox(
+                          height: 110,
+                          child: ListView(
+                            scrollDirection: Axis.horizontal,
+                            children: getPlayerCards().map((card) {
+                              return GestureDetector(
+                                onTap: () {
+                                  if (widget.dtaListData.inprogress) {
+                                    setState(() {
+                                      userService.removeCardFromPlayer(
+                                          player, card, widget.dtaListData);
+                                    });
+                                  }
+                                },
+                                child: Container(
+                                  width: 120,
+                                  margin: EdgeInsets.symmetric(horizontal: 8),
+                                  padding: EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                    color: CompanionAppTheme.lightText,
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        card,
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: CompanionAppTheme.darkerText,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            }).toList(),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.all(16),
+                        child: Row(
+                          children: [
+                            Text(
+                              'Loot cards',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: CompanionAppTheme.lightText,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 8),
+                      Wrap(
+                        spacing: 8.0,
+                        children: cardType.values.map((type) {
+                          return ChoiceChip(
+                            label: Text(
+                                type.toString().split('.').last.capitalize()),
+                            selected: _type == type,
+                            onSelected: (selected) {
+                              setState(() {
+                                _type = type;
+                              });
+                            },
+                            selectedColor: CompanionAppTheme.lightText,
+                            backgroundColor: CompanionAppTheme.dark_grey,
+                            labelStyle: TextStyle(
+                              color: _type == type
+                                  ? CompanionAppTheme.darkerText
+                                  : CompanionAppTheme.lightText,
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.all(8),
+                        child: SizedBox(
+                          height: 110,
+                          child: ListView(
+                            scrollDirection: Axis.horizontal,
+                            children: getRarityCards().map((card) {
+                              return GestureDetector(
+                                onTap: () {
+                                  if (widget.dtaListData.inprogress) {
+                                    setState(() {
+                                      userService.addCardToPlayer(player, card,
+                                          widget.dtaListData, _type);
+                                    });
+                                  }
+                                },
+                                child: Container(
+                                  width: 120,
+                                  margin: EdgeInsets.symmetric(horizontal: 8),
+                                  padding: EdgeInsets.all(16),
+                                  decoration: BoxDecoration(
+                                    color: CompanionAppTheme.dark_grey,
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        card,
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: CompanionAppTheme.lightText,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            }).toList(),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

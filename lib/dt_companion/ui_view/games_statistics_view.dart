@@ -25,7 +25,6 @@ class GamesStatisticsView extends StatefulWidget {
 
 class _GamesStatisticsViewState extends State<GamesStatisticsView>
     with TickerProviderStateMixin {
-
   @override
   void initState() {
     super.initState();
@@ -42,7 +41,8 @@ class _GamesStatisticsViewState extends State<GamesStatisticsView>
         Navigator.of(context).pop();
       },
       style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.all<Color>(CompanionAppTheme.dark_grey),
+        backgroundColor:
+            MaterialStateProperty.all<Color>(CompanionAppTheme.dark_grey),
       ),
     );
     Widget continueButton = TextButton(
@@ -55,7 +55,8 @@ class _GamesStatisticsViewState extends State<GamesStatisticsView>
         deleteGame(service);
       },
       style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.all<Color>(CompanionAppTheme.darkerText),
+        backgroundColor:
+            MaterialStateProperty.all<Color>(CompanionAppTheme.darkerText),
       ),
     );
 
@@ -87,7 +88,7 @@ class _GamesStatisticsViewState extends State<GamesStatisticsView>
   Color getBorderColorOne(String winner) {
     if (winner == 'Draw') {
       return CompanionAppTheme.drawOrange;
-    } else if (winner == 'Team 1' || winner == 'You'){
+    } else if (winner == 'Team 1' || winner == 'You') {
       return CompanionAppTheme.victoryGreen;
     } else {
       return CompanionAppTheme.defeatRed;
@@ -97,7 +98,7 @@ class _GamesStatisticsViewState extends State<GamesStatisticsView>
   Color getBorderColorTwo(String winner) {
     if (winner == 'Draw') {
       return CompanionAppTheme.drawOrange;
-    } else if (winner == 'Team 2' || winner == 'Player 2'){
+    } else if (winner == 'Team 2' || winner == 'Player 2') {
       return CompanionAppTheme.victoryGreen;
     } else {
       return CompanionAppTheme.defeatRed;
@@ -118,12 +119,14 @@ class _GamesStatisticsViewState extends State<GamesStatisticsView>
     service.deleteGamesData(widget.gamesListData ?? GamesListData());
     String path = widget.gamesListData?.playerOneImagePath ?? '';
     String fileName = p.basenameWithoutExtension(path);
-    HeroesListData hero = service.heroesListData.firstWhere((hero) => p.basenameWithoutExtension(hero.imagePath) == fileName);
+    HeroesListData hero = service.heroesListData.firstWhere(
+        (hero) => p.basenameWithoutExtension(hero.imagePath) == fileName);
 
     if (hero.totalGamesPlayed == 1) {
       service.deleteHeroesData(fileName);
     } else {
-      if (widget.gamesListData?.winner == 'You' || widget.gamesListData?.playerOne == 'Team 1') {
+      if (widget.gamesListData?.winner == 'You' ||
+          widget.gamesListData?.playerOne == 'Team 1') {
         hero.victories -= 1;
       } else if (widget.gamesListData?.winner == 'Draw') {
         hero.draws -= 1;
@@ -152,7 +155,7 @@ class _GamesStatisticsViewState extends State<GamesStatisticsView>
     } else if (widget.gamesListData?.gamemode == Mode.koth) {
       if (winner == 'You') {
         return '${widget.gamesListData?.playerOne}';
-      } else if (winner == 'Player 2'){
+      } else if (winner == 'Player 2') {
         return '${widget.gamesListData?.playerTwo}';
       } else {
         return '${widget.gamesListData?.playerThree}';
@@ -184,7 +187,7 @@ class _GamesStatisticsViewState extends State<GamesStatisticsView>
     } else if (widget.gamesListData?.gamemode == Mode.koth) {
       if (winner == 'You') {
         return '${widget.gamesListData?.playerTwo} \n${widget.gamesListData?.playerThree}';
-      } else if (winner == 'Player 2'){
+      } else if (winner == 'Player 2') {
         return '${widget.gamesListData?.playerOne} \n${widget.gamesListData?.playerThree}';
       } else {
         return '${widget.gamesListData?.playerOne} \n${widget.gamesListData?.playerTwo}';
@@ -253,162 +256,210 @@ class _GamesStatisticsViewState extends State<GamesStatisticsView>
                       child: Row(
                         children: <Widget>[
                           Expanded(
-                            child: Column(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 8, right: 8, top: 4),
-                                  child: Column(
-                                    children: <Widget>[
-                                      Row(
-                                        children: <Widget>[
-                                          Container(
-                                            height: getBorderHeight(),
-                                            width: 2,
-                                            decoration: BoxDecoration(
-                                              color: HexColor('#A6BC04')
-                                                  .withOpacity(0.75),
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(4.0)),
-                                            ),
+                              child: Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 8, right: 8, top: 4),
+                                child: Column(
+                                  children: <Widget>[
+                                    Row(
+                                      children: <Widget>[
+                                        Container(
+                                          height: getBorderHeight(),
+                                          width: 2,
+                                          decoration: BoxDecoration(
+                                            color: HexColor('#A6BC04')
+                                                .withOpacity(0.75),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(4.0)),
                                           ),
-                                          Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Column(
-                                              mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                              crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                              children: <Widget>[
-                                                Padding(
-                                                  padding: const EdgeInsets.only(
-                                                      left: 4, bottom: 2),
-                                                  child: Text(
-                                                    'Victory',
-                                                    textAlign: TextAlign.center,
-                                                    style: TextStyle(
-                                                      fontFamily: CompanionAppTheme
-                                                          .fontName,
-                                                      fontWeight: FontWeight.w500,
-                                                      fontSize: 16,
-                                                      letterSpacing: -0.1,
-                                                      color: CompanionAppTheme
-                                                          .victoryGreen
-                                                          .withOpacity(0.5),
-                                                    ),
-                                                  ),
-                                                ),
-                                                Row(
-                                                  mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                                  crossAxisAlignment:
-                                                  CrossAxisAlignment.end,
-                                                  children: <Widget>[
-                                                    Padding(
-                                                      padding:
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: <Widget>[
+                                              Padding(
+                                                  padding:
                                                       const EdgeInsets.only(
-                                                          left: 4, bottom: 3),
-                                                      child: Text(
-                                                        getVictory(),
-                                                        textAlign: TextAlign.center,
+                                                          left: 4, bottom: 2),
+                                                  child: Row(
+                                                    children: [
+                                                      Text(
+                                                        'Victory',
+                                                        textAlign:
+                                                            TextAlign.center,
                                                         style: TextStyle(
                                                           fontFamily:
-                                                          CompanionAppTheme
-                                                              .fontName,
+                                                              CompanionAppTheme
+                                                                  .fontName,
                                                           fontWeight:
-                                                          FontWeight.w600,
-                                                          fontSize: 20,
-                                                          color: CompanionAppTheme
-                                                              .lightText,
+                                                              FontWeight.w500,
+                                                          fontSize: 16,
+                                                          letterSpacing: -0.1,
+                                                          color:
+                                                              CompanionAppTheme
+                                                                  .victoryGreen
+                                                                  .withOpacity(
+                                                                      0.5),
                                                         ),
                                                       ),
-                                                    ),
-                                                  ],
-                                                )
-                                              ],
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                      SizedBox(
-                                        height: 8,
-                                      ),
-                                      Row(
-                                        children: <Widget>[
-                                          Container(
-                                            height: getBorderHeight(),
-                                            width: 2,
-                                            decoration: BoxDecoration(
-                                              color: CompanionAppTheme.defeatRed
-                                                  .withOpacity(0.75),
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(4.0)),
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Column(
-                                              mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                              crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                              children: <Widget>[
-                                                Padding(
-                                                  padding: const EdgeInsets.only(
-                                                      left: 4, bottom: 2),
-                                                  child: Text(
-                                                    'Defeat',
-                                                    textAlign: TextAlign.center,
-                                                    style: TextStyle(
-                                                      fontFamily: CompanionAppTheme
-                                                          .fontName,
-                                                      fontWeight: FontWeight.w500,
-                                                      fontSize: 16,
-                                                      letterSpacing: -0.1,
-                                                      color: CompanionAppTheme
-                                                          .defeatRed
-                                                          .withOpacity(0.75),
+                                                      SizedBox(
+                                                        width: 8,
+                                                      ),
+                                                      ClipOval(
+                                                        child: Container(
+                                                          width: 28,
+                                                          height: 28,
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            color:
+                                                                CompanionAppTheme
+                                                                    .victoryGreen,
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        10),
+                                                          ),
+                                                          child: Center(
+                                                            child: Text(
+                                                              '${widget.gamesListData?.winnerHealth}',
+                                                              style: TextStyle(
+                                                                fontFamily:
+                                                                    CompanionAppTheme
+                                                                        .fontName,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                                fontSize: 14,
+                                                                letterSpacing:
+                                                                    0.2,
+                                                                color: CompanionAppTheme
+                                                                    .darkerText,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  )),
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.end,
+                                                children: <Widget>[
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            left: 4, bottom: 3),
+                                                    child: Text(
+                                                      getVictory(),
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      style: TextStyle(
+                                                        fontFamily:
+                                                            CompanionAppTheme
+                                                                .fontName,
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                        fontSize: 20,
+                                                        color: CompanionAppTheme
+                                                            .lightText,
+                                                      ),
                                                     ),
                                                   ),
+                                                ],
+                                              )
+                                            ],
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                    SizedBox(
+                                      height: 8,
+                                    ),
+                                    Row(
+                                      children: <Widget>[
+                                        Container(
+                                          height: getBorderHeight(),
+                                          width: 2,
+                                          decoration: BoxDecoration(
+                                            color: CompanionAppTheme.defeatRed
+                                                .withOpacity(0.75),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(4.0)),
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: <Widget>[
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 4, bottom: 2),
+                                                child: Text(
+                                                  'Defeat',
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(
+                                                    fontFamily:
+                                                        CompanionAppTheme
+                                                            .fontName,
+                                                    fontWeight: FontWeight.w500,
+                                                    fontSize: 16,
+                                                    letterSpacing: -0.1,
+                                                    color: CompanionAppTheme
+                                                        .defeatRed
+                                                        .withOpacity(0.75),
+                                                  ),
                                                 ),
-                                                Row(
-                                                  mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                                  crossAxisAlignment:
-                                                  CrossAxisAlignment.end,
-                                                  children: <Widget>[
-                                                    Padding(
-                                                      padding:
-                                                      const EdgeInsets.only(
-                                                          left: 4, bottom: 3),
-                                                      child: Text(
-                                                        getDefeat(),
-                                                        textAlign: TextAlign.center,
-                                                        style: TextStyle(
-                                                          fontFamily:
-                                                          CompanionAppTheme
-                                                              .fontName,
-                                                          fontWeight:
-                                                          FontWeight.w600,
-                                                          fontSize: 20,
-                                                          color: CompanionAppTheme
-                                                              .lightText,
-                                                        ),
+                                              ),
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.end,
+                                                children: <Widget>[
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            left: 4, bottom: 3),
+                                                    child: Text(
+                                                      getDefeat(),
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      style: TextStyle(
+                                                        fontFamily:
+                                                            CompanionAppTheme
+                                                                .fontName,
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                        fontSize: 20,
+                                                        color: CompanionAppTheme
+                                                            .lightText,
                                                       ),
                                                     ),
-                                                  ],
-                                                )
-                                              ],
-                                            ),
-                                          )
-                                        ],
-                                      )
-                                    ],
-                                  ),
+                                                  ),
+                                                ],
+                                              )
+                                            ],
+                                          ),
+                                        )
+                                      ],
+                                    )
+                                  ],
                                 ),
-                              ],
-                            )
-                          ),
+                              ),
+                            ],
+                          )),
                           Padding(
                             padding: const EdgeInsets.only(right: 16),
                             child: Center(
@@ -422,16 +473,16 @@ class _GamesStatisticsViewState extends State<GamesStatisticsView>
                                       height: 100,
                                       child: Column(
                                         mainAxisAlignment:
-                                        MainAxisAlignment.center,
+                                            MainAxisAlignment.center,
                                         crossAxisAlignment:
-                                        CrossAxisAlignment.center,
+                                            CrossAxisAlignment.center,
                                         children: <Widget>[
                                           Text(
                                             '',
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
                                               fontFamily:
-                                              CompanionAppTheme.fontName,
+                                                  CompanionAppTheme.fontName,
                                               fontWeight: FontWeight.bold,
                                               fontSize: 14,
                                               letterSpacing: 0.0,
@@ -456,8 +507,12 @@ class _GamesStatisticsViewState extends State<GamesStatisticsView>
                                               width: 54,
                                               height: 54,
                                               decoration: BoxDecoration(
-                                                color: getBorderColorOne(widget.gamesListData?.winner ?? ""),
-                                                borderRadius: BorderRadius.circular(27),
+                                                color: getBorderColorOne(widget
+                                                        .gamesListData
+                                                        ?.winner ??
+                                                    ""),
+                                                borderRadius:
+                                                    BorderRadius.circular(27),
                                               ),
                                             ),
                                           ),
@@ -465,7 +520,9 @@ class _GamesStatisticsViewState extends State<GamesStatisticsView>
                                             padding: const EdgeInsets.all(6.0),
                                             child: ClipOval(
                                               child: Image.asset(
-                                                widget.gamesListData?.playerOneImagePath ?? '',
+                                                widget.gamesListData
+                                                        ?.playerOneImagePath ??
+                                                    '',
                                                 width: 42,
                                                 height: 42,
                                                 fit: BoxFit.cover,
@@ -473,6 +530,35 @@ class _GamesStatisticsViewState extends State<GamesStatisticsView>
                                             ),
                                           ),
                                         ],
+                                      ),
+                                    ),
+                                  ),
+                                  Positioned(
+                                    top: -10,
+                                    left: -6,
+                                    child: ClipOval(
+                                      child: Container(
+                                        width: 28,
+                                        height: 28,
+                                        decoration: BoxDecoration(
+                                          color: CompanionAppTheme.lightText,
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                        child: Center(
+                                          child: Text(
+                                            '${widget.gamesListData?.playerOneUltimates}',
+                                            style: TextStyle(
+                                              fontFamily:
+                                                  CompanionAppTheme.fontName,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 14,
+                                              letterSpacing: 0.2,
+                                              color:
+                                                  CompanionAppTheme.darkerText,
+                                            ),
+                                          ),
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -485,23 +571,21 @@ class _GamesStatisticsViewState extends State<GamesStatisticsView>
                                       child: Padding(
                                           padding: const EdgeInsets.all(6.0),
                                           child: Text(
-                                              'vs.',
+                                            'vs.',
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
                                               fontFamily:
-                                              CompanionAppTheme
-                                                  .fontName,
-                                              fontWeight:
-                                              FontWeight.w100,
+                                                  CompanionAppTheme.fontName,
+                                              fontWeight: FontWeight.w100,
                                               fontSize: 16,
-                                              color: CompanionAppTheme
-                                                  .lightText,
+                                              color:
+                                                  CompanionAppTheme.lightText,
                                             ),
-                                          )
-                                      ),
+                                          )),
                                     ),
                                   ),
-                                  if (widget.gamesListData?.gamemode == Mode.koth)
+                                  if (widget.gamesListData?.gamemode ==
+                                      Mode.koth) ...[
                                     Positioned(
                                       top: 0,
                                       right: 0,
@@ -515,16 +599,23 @@ class _GamesStatisticsViewState extends State<GamesStatisticsView>
                                                 width: 54,
                                                 height: 54,
                                                 decoration: BoxDecoration(
-                                                  color: getBorderColorTwo(widget.gamesListData?.winner ?? ""),
-                                                  borderRadius: BorderRadius.circular(27),
+                                                  color: getBorderColorTwo(
+                                                      widget.gamesListData
+                                                              ?.winner ??
+                                                          ""),
+                                                  borderRadius:
+                                                      BorderRadius.circular(27),
                                                 ),
                                               ),
                                             ),
                                             Padding(
-                                              padding: const EdgeInsets.all(6.0),
+                                              padding:
+                                                  const EdgeInsets.all(6.0),
                                               child: ClipOval(
                                                 child: Image.asset(
-                                                  widget.gamesListData?.playerThreeImagePath ?? '',
+                                                  widget.gamesListData
+                                                          ?.playerThreeImagePath ??
+                                                      '',
                                                   width: 42,
                                                   height: 42,
                                                   fit: BoxFit.cover,
@@ -535,7 +626,40 @@ class _GamesStatisticsViewState extends State<GamesStatisticsView>
                                         ),
                                       ),
                                     ),
-                                  if (widget.gamesListData?.gamemode == Mode.twovstwo || widget.gamesListData?.gamemode == Mode.threevsthree)
+                                    Positioned(
+                                      top: -10,
+                                      right: -6,
+                                      child: ClipOval(
+                                        child: Container(
+                                          width: 28,
+                                          height: 28,
+                                          decoration: BoxDecoration(
+                                            color: CompanionAppTheme.lightText,
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                          ),
+                                          child: Center(
+                                            child: Text(
+                                              '${widget.gamesListData?.playerThreeUltimates}',
+                                              style: TextStyle(
+                                                fontFamily:
+                                                    CompanionAppTheme.fontName,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 14,
+                                                letterSpacing: 0.2,
+                                                color: CompanionAppTheme
+                                                    .darkerText,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                  if (widget.gamesListData?.gamemode ==
+                                          Mode.twovstwo ||
+                                      widget.gamesListData?.gamemode ==
+                                          Mode.threevsthree) ...[
                                     Positioned(
                                       top: 0,
                                       left: 60,
@@ -549,16 +673,23 @@ class _GamesStatisticsViewState extends State<GamesStatisticsView>
                                                 width: 54,
                                                 height: 54,
                                                 decoration: BoxDecoration(
-                                                  color: getBorderColorOne(widget.gamesListData?.winner ?? ""),
-                                                  borderRadius: BorderRadius.circular(27),
+                                                  color: getBorderColorOne(
+                                                      widget.gamesListData
+                                                              ?.winner ??
+                                                          ""),
+                                                  borderRadius:
+                                                      BorderRadius.circular(27),
                                                 ),
                                               ),
                                             ),
                                             Padding(
-                                              padding: const EdgeInsets.all(6.0),
+                                              padding:
+                                                  const EdgeInsets.all(6.0),
                                               child: ClipOval(
                                                 child: Image.asset(
-                                                  widget.gamesListData?.playerThreeImagePath ?? '',
+                                                  widget.gamesListData
+                                                          ?.playerThreeImagePath ??
+                                                      '',
                                                   width: 42,
                                                   height: 42,
                                                   fit: BoxFit.cover,
@@ -569,7 +700,40 @@ class _GamesStatisticsViewState extends State<GamesStatisticsView>
                                         ),
                                       ),
                                     ),
-                                  if (widget.gamesListData?.gamemode == Mode.twovstwo || widget.gamesListData?.gamemode == Mode.threevsthree)
+                                    Positioned(
+                                      top: -10,
+                                      right: -6,
+                                      child: ClipOval(
+                                        child: Container(
+                                          width: 28,
+                                          height: 28,
+                                          decoration: BoxDecoration(
+                                            color: CompanionAppTheme.lightText,
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                          ),
+                                          child: Center(
+                                            child: Text(
+                                              '${widget.gamesListData?.playerThreeUltimates}',
+                                              style: TextStyle(
+                                                fontFamily:
+                                                    CompanionAppTheme.fontName,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 14,
+                                                letterSpacing: 0.2,
+                                                color: CompanionAppTheme
+                                                    .darkerText,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                  if (widget.gamesListData?.gamemode ==
+                                          Mode.twovstwo ||
+                                      widget.gamesListData?.gamemode ==
+                                          Mode.threevsthree) ... [
                                     Positioned(
                                       bottom: -16,
                                       right: 60,
@@ -583,16 +747,23 @@ class _GamesStatisticsViewState extends State<GamesStatisticsView>
                                                 width: 54,
                                                 height: 54,
                                                 decoration: BoxDecoration(
-                                                  color: getBorderColorTwo(widget.gamesListData?.winner ?? ""),
-                                                  borderRadius: BorderRadius.circular(27),
+                                                  color: getBorderColorTwo(
+                                                      widget.gamesListData
+                                                          ?.winner ??
+                                                          ""),
+                                                  borderRadius:
+                                                  BorderRadius.circular(27),
                                                 ),
                                               ),
                                             ),
                                             Padding(
-                                              padding: const EdgeInsets.all(6.0),
+                                              padding:
+                                              const EdgeInsets.all(6.0),
                                               child: ClipOval(
                                                 child: Image.asset(
-                                                  widget.gamesListData?.playerFourImagePath ?? '',
+                                                  widget.gamesListData
+                                                      ?.playerFourImagePath ??
+                                                      '',
                                                   width: 42,
                                                   height: 42,
                                                   fit: BoxFit.cover,
@@ -603,7 +774,38 @@ class _GamesStatisticsViewState extends State<GamesStatisticsView>
                                         ),
                                       ),
                                     ),
-                                  if (widget.gamesListData?.gamemode == Mode.threevsthree)
+                                    Positioned(
+                                      bottom: -20,
+                                      right: 98,
+                                      child: ClipOval(
+                                        child: Container(
+                                          width: 28,
+                                          height: 28,
+                                          decoration: BoxDecoration(
+                                            color: CompanionAppTheme.lightText,
+                                            borderRadius:
+                                            BorderRadius.circular(10),
+                                          ),
+                                          child: Center(
+                                            child: Text(
+                                              '${widget.gamesListData?.playerFourUltimates}',
+                                              style: TextStyle(
+                                                fontFamily:
+                                                CompanionAppTheme.fontName,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 14,
+                                                letterSpacing: 0.2,
+                                                color: CompanionAppTheme
+                                                    .darkerText,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                  if (widget.gamesListData?.gamemode ==
+                                      Mode.threevsthree) ... [
                                     Positioned(
                                       bottom: -64,
                                       right: 30,
@@ -617,16 +819,23 @@ class _GamesStatisticsViewState extends State<GamesStatisticsView>
                                                 width: 54,
                                                 height: 54,
                                                 decoration: BoxDecoration(
-                                                  color: getBorderColorTwo(widget.gamesListData?.winner ?? ""),
-                                                  borderRadius: BorderRadius.circular(27),
+                                                  color: getBorderColorTwo(
+                                                      widget.gamesListData
+                                                          ?.winner ??
+                                                          ""),
+                                                  borderRadius:
+                                                  BorderRadius.circular(27),
                                                 ),
                                               ),
                                             ),
                                             Padding(
-                                              padding: const EdgeInsets.all(6.0),
+                                              padding:
+                                              const EdgeInsets.all(6.0),
                                               child: ClipOval(
                                                 child: Image.asset(
-                                                  widget.gamesListData?.playerSixImagePath ?? '',
+                                                  widget.gamesListData
+                                                      ?.playerSixImagePath ??
+                                                      '',
                                                   width: 42,
                                                   height: 42,
                                                   fit: BoxFit.cover,
@@ -637,7 +846,38 @@ class _GamesStatisticsViewState extends State<GamesStatisticsView>
                                         ),
                                       ),
                                     ),
-                                  if (widget.gamesListData?.gamemode == Mode.threevsthree)
+                                    Positioned(
+                                      bottom: -70,
+                                      right: 20,
+                                      child: ClipOval(
+                                        child: Container(
+                                          width: 28,
+                                          height: 28,
+                                          decoration: BoxDecoration(
+                                            color: CompanionAppTheme.lightText,
+                                            borderRadius:
+                                            BorderRadius.circular(10),
+                                          ),
+                                          child: Center(
+                                            child: Text(
+                                              '${widget.gamesListData?.playerSixUltimates}',
+                                              style: TextStyle(
+                                                fontFamily:
+                                                CompanionAppTheme.fontName,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 14,
+                                                letterSpacing: 0.2,
+                                                color: CompanionAppTheme
+                                                    .darkerText,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                  if (widget.gamesListData?.gamemode ==
+                                      Mode.threevsthree) ... [
                                     Positioned(
                                       top: -50,
                                       right: 31,
@@ -651,16 +891,23 @@ class _GamesStatisticsViewState extends State<GamesStatisticsView>
                                                 width: 54,
                                                 height: 54,
                                                 decoration: BoxDecoration(
-                                                  color: getBorderColorOne(widget.gamesListData?.winner ?? ""),
-                                                  borderRadius: BorderRadius.circular(27),
+                                                  color: getBorderColorOne(
+                                                      widget.gamesListData
+                                                          ?.winner ??
+                                                          ""),
+                                                  borderRadius:
+                                                  BorderRadius.circular(27),
                                                 ),
                                               ),
                                             ),
                                             Padding(
-                                              padding: const EdgeInsets.all(6.0),
+                                              padding:
+                                              const EdgeInsets.all(6.0),
                                               child: ClipOval(
                                                 child: Image.asset(
-                                                  widget.gamesListData?.playerFiveImagePath ?? '',
+                                                  widget.gamesListData
+                                                      ?.playerFiveImagePath ??
+                                                      '',
                                                   width: 42,
                                                   height: 42,
                                                   fit: BoxFit.cover,
@@ -671,6 +918,36 @@ class _GamesStatisticsViewState extends State<GamesStatisticsView>
                                         ),
                                       ),
                                     ),
+                                    Positioned(
+                                      top: -60,
+                                      right: 20,
+                                      child: ClipOval(
+                                        child: Container(
+                                          width: 28,
+                                          height: 28,
+                                          decoration: BoxDecoration(
+                                            color: CompanionAppTheme.lightText,
+                                            borderRadius:
+                                            BorderRadius.circular(10),
+                                          ),
+                                          child: Center(
+                                            child: Text(
+                                              '${widget.gamesListData?.playerFiveUltimates}',
+                                              style: TextStyle(
+                                                fontFamily:
+                                                CompanionAppTheme.fontName,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 14,
+                                                letterSpacing: 0.2,
+                                                color: CompanionAppTheme
+                                                    .darkerText,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                   Positioned(
                                     bottom: -16,
                                     right: 0,
@@ -684,8 +961,12 @@ class _GamesStatisticsViewState extends State<GamesStatisticsView>
                                               width: 54,
                                               height: 54,
                                               decoration: BoxDecoration(
-                                                color: getBorderColorTwo(widget.gamesListData?.winner ?? ""),
-                                                borderRadius: BorderRadius.circular(27),
+                                                color: getBorderColorTwo(widget
+                                                        .gamesListData
+                                                        ?.winner ??
+                                                    ""),
+                                                borderRadius:
+                                                    BorderRadius.circular(27),
                                               ),
                                             ),
                                           ),
@@ -693,7 +974,9 @@ class _GamesStatisticsViewState extends State<GamesStatisticsView>
                                             padding: const EdgeInsets.all(6.0),
                                             child: ClipOval(
                                               child: Image.asset(
-                                                widget.gamesListData?.playerTwoImagePath ?? '',
+                                                widget.gamesListData
+                                                        ?.playerTwoImagePath ??
+                                                    '',
                                                 width: 42,
                                                 height: 42,
                                                 fit: BoxFit.cover,
@@ -703,7 +986,36 @@ class _GamesStatisticsViewState extends State<GamesStatisticsView>
                                         ],
                                       ),
                                     ),
-                                  )
+                                  ),
+                                  Positioned(
+                                    bottom: -22,
+                                    right: -12,
+                                    child: ClipOval(
+                                      child: Container(
+                                        width: 28,
+                                        height: 28,
+                                        decoration: BoxDecoration(
+                                          color: CompanionAppTheme.lightText,
+                                          borderRadius:
+                                          BorderRadius.circular(10),
+                                        ),
+                                        child: Center(
+                                          child: Text(
+                                            '${widget.gamesListData?.playerTwoUltimates}',
+                                            style: TextStyle(
+                                              fontFamily:
+                                              CompanionAppTheme.fontName,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 14,
+                                              letterSpacing: 0.2,
+                                              color: CompanionAppTheme
+                                                  .darkerText,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
                                 ],
                               ),
                             ),
@@ -722,33 +1034,32 @@ class _GamesStatisticsViewState extends State<GamesStatisticsView>
                         Padding(
                           padding: const EdgeInsets.only(left: 16, bottom: 8),
                           child: Text(
-                            DateFormat('dd/MM/yyyy').format(DateTime.fromMillisecondsSinceEpoch(widget.gamesListData?.date ?? 0)),
+                            DateFormat('dd/MM/yyyy').format(
+                                DateTime.fromMillisecondsSinceEpoch(
+                                    widget.gamesListData?.date ?? 0)),
                             style: TextStyle(
-                              fontFamily: CompanionAppTheme
-                                  .fontName,
+                              fontFamily: CompanionAppTheme.fontName,
                               fontWeight: FontWeight.w500,
                               fontSize: 16,
                               letterSpacing: -0.1,
-                              color: CompanionAppTheme
-                                  .lightText
-                                  .withOpacity(0.5),
+                              color:
+                                  CompanionAppTheme.lightText.withOpacity(0.5),
                             ),
                           ),
                         ),
                         Spacer(),
                         Padding(
-                          padding: const EdgeInsets.only(right: 16, bottom: 8),
-                          child: InkWell(
-                            onTap: () => {
-                              showAlertDialog(context, userService)
-                            },
-                            child: Icon(
-                              Icons.delete_forever,
-                              color: CompanionAppTheme.lightText,
-                              size: 26,
-                            ),
-                          )
-                        ),
+                            padding:
+                                const EdgeInsets.only(right: 16, bottom: 8),
+                            child: InkWell(
+                              onTap: () =>
+                                  {showAlertDialog(context, userService)},
+                              child: Icon(
+                                Icons.delete_forever,
+                                color: CompanionAppTheme.lightText,
+                                size: 26,
+                              ),
+                            )),
                       ],
                     )
                   ],

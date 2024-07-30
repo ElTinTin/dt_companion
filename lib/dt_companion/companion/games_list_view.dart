@@ -273,44 +273,21 @@ class GameView extends StatelessWidget {
                                   ],
                                 ),
                               if (gamesListData?.gamemode == Mode.threevsthree)
-                                Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      gamesListData?.playerOne ?? "",
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontFamily: CompanionAppTheme.fontName,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 14,
-                                        letterSpacing: 0.2,
-                                        color: CompanionAppTheme.lightText,
-                                      ),
-                                    ),
-                                    Text(
-                                      ' - ${gamesListData?.playerTwo ?? ""}',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontFamily: CompanionAppTheme.fontName,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 14,
-                                        letterSpacing: 0.2,
-                                        color: CompanionAppTheme.lightText,
-                                      ),
-                                    ),
-                                    Text(
-                                      ' - ${gamesListData?.playerFive ?? ""}',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontFamily: CompanionAppTheme.fontName,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 14,
-                                        letterSpacing: 0.2,
-                                        color: CompanionAppTheme.lightText,
-                                      ),
-                                    ),
-                                  ],
+                                Text(
+                                  '${gamesListData?.playerOne ?? ""}  '
+                                      '- ${gamesListData?.playerTwo ?? ""}  '
+                                      '- ${gamesListData?.playerFive ?? ""}',
+                                  textAlign: TextAlign.center,
+                                  overflow: TextOverflow.fade,
+                                  maxLines: 1,
+                                  softWrap: false,
+                                  style: TextStyle(
+                                    fontFamily: CompanionAppTheme.fontName,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14,
+                                    letterSpacing: 0.2,
+                                    color: CompanionAppTheme.lightText,
+                                  ),
                                 ),
                               SizedBox(height: 8,),
                               Text(
@@ -388,45 +365,20 @@ class GameView extends StatelessWidget {
                                   ],
                                 ),
                               if (gamesListData?.gamemode == Mode.threevsthree)
-                                Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      gamesListData?.playerThree ?? "",
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontFamily: CompanionAppTheme.fontName,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 14,
-                                        letterSpacing: 0.2,
-                                        color: CompanionAppTheme.lightText,
-                                      ),
-                                    ),
-                                    Text(
-                                      ' - ${gamesListData?.playerFour ?? ""}',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontFamily: CompanionAppTheme.fontName,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 14,
-                                        letterSpacing: 0.2,
-                                        color: CompanionAppTheme.lightText,
-                                      ),
-                                    ),
-                                    Text(
-                                      ' - ${gamesListData?.playerSix ?? ""}',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontFamily: CompanionAppTheme.fontName,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 14,
-                                        letterSpacing: 0.2,
-                                        color: CompanionAppTheme.lightText,
-                                      ),
-                                    ),
-                                  ],
-                                )
+                                Text(
+                                  '${gamesListData?.playerThree} - ${gamesListData?.playerFour} - ${gamesListData?.playerSix}',
+                                  textAlign: TextAlign.center,
+                                  overflow: TextOverflow.fade,
+                                  maxLines: 1,
+                                  softWrap: false,
+                                  style: TextStyle(
+                                    fontFamily: CompanionAppTheme.fontName,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14,
+                                    letterSpacing: 0.2,
+                                    color: CompanionAppTheme.lightText,
+                                  ),
+                                ),
                             ],
                           ),
                         )

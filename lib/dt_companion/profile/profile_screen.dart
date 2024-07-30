@@ -5,6 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../companion_app_theme.dart';
 import '../ui_view/google_signin_view.dart';
+import '../ui_view/title_view.dart';
 
 
 class ProfileScreen extends StatefulWidget {
@@ -71,6 +72,18 @@ class _ProfileScreenState extends State<ProfileScreen>
     const int count = 3;
 
     listViews.add(
+      TitleView(
+        titleTxt: 'Import/Export your data',
+        subTxt: '',
+        animation: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
+            parent: widget.animationController!,
+            curve:
+            Interval((1 / 8) * 1, 1.0, curve: Curves.fastOutSlowIn))),
+        animationController: widget.animationController!,
+      ),
+    );
+
+    listViews.add(
         AnimatedBuilder(
           animation: widget.animationController!,
           builder: (BuildContext context, Widget? child) {
@@ -93,6 +106,18 @@ class _ProfileScreenState extends State<ProfileScreen>
             );
           },
         )
+    );
+
+    listViews.add(
+      TitleView(
+        titleTxt: 'Rules & FAQ',
+        subTxt: '',
+        animation: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
+            parent: widget.animationController!,
+            curve:
+            Interval((1 / 8) * 1, 1.0, curve: Curves.fastOutSlowIn))),
+        animationController: widget.animationController!,
+      ),
     );
 
     listViews.add(

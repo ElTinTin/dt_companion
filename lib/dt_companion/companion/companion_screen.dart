@@ -56,7 +56,7 @@ class _CompanionScreenState extends State<CompanionScreen>
 
     _getInAppReviewStatus();
     _analytics();
-    _inAppReview();
+    /*_inAppReview();*/
     _loadAd();
 
     scrollController.addListener(() {

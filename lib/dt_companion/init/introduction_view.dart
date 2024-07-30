@@ -60,7 +60,7 @@ class OnBoarding extends StatelessWidget {
                       ),
                       child: Image.asset(
                         'assets/dt_companion/slide_1.png',
-                        height: 400,
+                        height: MediaQuery.of(context).size.height * 0.5,
                       ),
                     ))
             ),
@@ -84,7 +84,7 @@ class OnBoarding extends StatelessWidget {
                       ),
                       child: Image.asset(
                         'assets/dt_companion/slide_2.png',
-                        height: 400,
+                        height: MediaQuery.of(context).size.height * 0.5,
                       ),
                     ))
             ),
@@ -108,7 +108,7 @@ class OnBoarding extends StatelessWidget {
                       ),
                       child: Image.asset(
                         'assets/dt_companion/slide_3.png',
-                        height: 400,
+                        height: MediaQuery.of(context).size.height * 0.5,
                       ),
                     ))
             ),
@@ -125,8 +125,8 @@ class OnBoarding extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              const SizedBox(
-                height: 470,
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.6,
               ),
               Text(
                 'All your stats ...',
@@ -160,11 +160,11 @@ class OnBoarding extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              const SizedBox(
-                height: 470,
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.6,
               ),
               Text(
-                'Simply way to add a match.',
+                'Add a match.',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: CompanionAppTheme.lightText,
@@ -176,7 +176,7 @@ class OnBoarding extends StatelessWidget {
                 height: 20,
               ),
               const Text(
-                'Three modes (1v1, 2v2, KOTH). Select your character, opponents/partners names, their character and who won the game.',
+                'Select your character, opponents/partners names, their character and who won the game.',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: CompanionAppTheme.lightText,
@@ -195,11 +195,11 @@ class OnBoarding extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              const SizedBox(
-                height: 470,
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.6,
               ),
               Text(
-                'Access FAQ, more is coming.',
+                'FAQ, Save, Profile.',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: CompanionAppTheme.lightText,

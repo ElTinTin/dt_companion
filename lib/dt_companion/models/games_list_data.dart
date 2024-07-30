@@ -1,7 +1,5 @@
 import '../companion/match_view.dart';
 
-import '../companion/match_view.dart';
-
 class GamesListData {
   GamesListData(
       {this.playerOneImagePath = '',

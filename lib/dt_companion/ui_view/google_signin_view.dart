@@ -99,17 +99,15 @@ class _GoogleSignInViewState extends State<GoogleSignInView> {
           return (userCredential.value == '' || userCredential.value == null)
               ? SizedBox(
                   child: Center(
-                    child: Card(
-                        color: CompanionAppTheme.lightText,
-                        elevation: 5,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10)),
-                        child: Row(
-                          children: [
-                            SizedBox(
-                              width: 16,
-                            ),
-                            IconButton(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Card(
+                            color: CompanionAppTheme.lightText,
+                            elevation: 5,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10)),
+                            child: IconButton(
                               iconSize: 22,
                               icon: SizedBox(
                                 width: 22,
@@ -124,8 +122,14 @@ class _GoogleSignInViewState extends State<GoogleSignInView> {
                               onPressed: () async {
                                 userCredential.value = await signInWithGoogle();
                               },
-                            ),
-                            IconButton(
+                            ),),
+                        SizedBox(width: 64,),
+                        Card(
+                            color: CompanionAppTheme.lightText,
+                            elevation: 5,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10)),
+                            child: IconButton(
                               iconSize: 22,
                               icon: SizedBox(
                                 width: 22,
@@ -140,23 +144,9 @@ class _GoogleSignInViewState extends State<GoogleSignInView> {
                               onPressed: () async {
                                 userCredential.value = await signInWithApple();
                               },
-                            ),
-                            SizedBox(
-                              width: 32,
-                            ),
-                            Text(
-                              'Import / Export your data',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontFamily: CompanionAppTheme.fontName,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18,
-                                letterSpacing: 0.0,
-                                color: CompanionAppTheme.darkerText,
-                              ),
-                            ),
-                          ],
-                        )),
+                            ),),
+                      ],
+                    )
                   ),
                 )
               : Center(
@@ -252,7 +242,7 @@ class _GoogleSignInViewState extends State<GoogleSignInView> {
                                       await userService.backupDataToFirestore();
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(
-                                        SnackBar(content: Text('Data saved.')),
+                                        SnackBar(content: Text('Data saved. Log in with same account for retrieve them.')),
                                       );
                                     },
                                   ),
