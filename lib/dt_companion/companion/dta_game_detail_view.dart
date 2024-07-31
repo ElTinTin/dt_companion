@@ -1,9 +1,11 @@
 import 'package:dt_companion/dt_companion/companion_app_theme.dart';
+import 'package:dt_companion/dt_companion/extension/localization_extension.dart';
 import 'package:dt_companion/dt_companion/extension/string_extension.dart';
 import 'package:dt_companion/dt_companion/models/dta_cards.dart';
 import 'package:dt_companion/dt_companion/models/heroes_list_data.dart';
 import 'package:dt_companion/dt_companion/service.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_switch/flutter_switch.dart';
@@ -150,7 +152,7 @@ class _DTAGameDetailViewState extends State<DTAGameDetailView>
                                 padding: EdgeInsets.only(
                                     left: 8, right: 8, top: 0, bottom: 8),
                                 child: Text(
-                                  'Campaign Detail',
+                                  'dta_detail_title'.tr(context),
                                   textAlign: TextAlign.left,
                                   style: TextStyle(
                                     fontFamily: CompanionAppTheme.fontName,
@@ -270,8 +272,8 @@ class _DTAGameDetailViewState extends State<DTAGameDetailView>
                                           right: 6, top: 4, bottom: 24),
                                       child: Text(
                                         widget.dtaListData.difficulty == 0
-                                            ? 'Normal'
-                                            : 'Veteran',
+                                            ? 'dta_difficulty_normal'.tr(context)
+                                            : 'dta_difficulty_veteran'.tr(context),
                                         style: TextStyle(
                                           fontFamily:
                                               CompanionAppTheme.fontName,
@@ -295,7 +297,7 @@ class _DTAGameDetailViewState extends State<DTAGameDetailView>
                                               BorderRadius.circular(20.0),
                                             ),
                                             child: Text(
-                                              'Legacy',
+                                              'dta_add_legacy'.tr(context),
                                               style: TextStyle(
                                                 fontFamily:
                                                 CompanionAppTheme.fontName,
@@ -319,7 +321,7 @@ class _DTAGameDetailViewState extends State<DTAGameDetailView>
                                               BorderRadius.circular(20.0),
                                             ),
                                             child: Text(
-                                              'Mythic',
+                                              'dta_add_mythic'.tr(context),
                                               style: TextStyle(
                                                 fontFamily:
                                                 CompanionAppTheme.fontName,
@@ -425,85 +427,82 @@ class _DTAGameDetailViewState extends State<DTAGameDetailView>
                                       ],
                                     ),
                                   ),
-                                Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Padding(
-                                      padding: EdgeInsets.only(
-                                          top: 16,
-                                          bottom: 16,
-                                          left: 16,
-                                          right: 16),
-                                      child: ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                            foregroundColor:
-                                                CompanionAppTheme.darkerText,
-                                            backgroundColor: widget
-                                                    .dtaListData.inprogress
-                                                ? CompanionAppTheme.lightText
-                                                : Colors.grey,
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
-                                            ),
-                                            elevation: 15.0,
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: 8, vertical: 16),
-                                            textStyle: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.bold,
-                                                color: CompanionAppTheme
-                                                    .darkerText)),
-                                        child: const Text('New scenario'),
-                                        onPressed: () {
-                                          if (widget.dtaListData.inprogress) {
-                                            showModalBottomSheet<void>(
-                                              context: context,
-                                              isScrollControlled: true,
-                                              builder: (BuildContext context) {
-                                                return FractionallySizedBox(
-                                                  heightFactor: 0.8,
-                                                  child:
-                                                      createScenarioBottomSheet(
-                                                          userService),
-                                                );
-                                              },
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                      top: 16,
+                                      bottom: 16,
+                                      left: 16,
+                                      right: 16),
+                                  child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                        foregroundColor:
+                                        CompanionAppTheme.darkerText,
+                                        backgroundColor: widget
+                                            .dtaListData.inprogress
+                                            ? CompanionAppTheme.lightText
+                                            : Colors.grey,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                          BorderRadius.circular(8),
+                                        ),
+                                        elevation: 15.0,
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 8, vertical: 16),
+                                        textStyle: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                            color: CompanionAppTheme
+                                                .darkerText)),
+                                    child: Text('dta_detail_new_scenario'.tr(context)),
+                                    onPressed: () {
+                                      if (widget.dtaListData.inprogress) {
+                                        showModalBottomSheet<void>(
+                                          context: context,
+                                          isScrollControlled: true,
+                                          builder: (BuildContext context) {
+                                            return FractionallySizedBox(
+                                              heightFactor: 0.8,
+                                              child:
+                                              createScenarioBottomSheet(
+                                                  userService),
                                             );
-                                          }
-                                        },
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.only(
-                                          top: 16, bottom: 16, right: 16),
-                                      child: ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                            foregroundColor:
-                                                CompanionAppTheme.darkerText,
-                                            backgroundColor:
-                                                CompanionAppTheme.defeatRed,
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
-                                            ),
-                                            elevation: 15.0,
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: 8, vertical: 16),
-                                            textStyle: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.bold,
-                                                color: CompanionAppTheme
-                                                    .darkerText)),
-                                        child: const Text('End campaign'),
-                                        onPressed: () {
-                                          widget.dtaListData.inprogress = false;
-                                          userService.updateDtaData(
-                                              widget.dtaListData);
-                                        },
-                                      ),
-                                    ),
-                                  ],
+                                          },
+                                        );
+                                      }
+                                    },
+                                  ),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                      top: 16,
+                                      bottom: 16,
+                                      left: 16,
+                                      right: 16),
+                                  child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                        foregroundColor:
+                                        CompanionAppTheme.darkerText,
+                                        backgroundColor:
+                                        CompanionAppTheme.defeatRed,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                          BorderRadius.circular(8),
+                                        ),
+                                        elevation: 15.0,
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 8, vertical: 16),
+                                        textStyle: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                            color: CompanionAppTheme
+                                                .darkerText)),
+                                    child: Text('dta_detail_end_campaign'.tr(context)),
+                                    onPressed: () {
+                                      widget.dtaListData.inprogress = false;
+                                      userService.updateDtaData(
+                                          widget.dtaListData);
+                                    },
+                                  ),
                                 ),
                                 SizedBox(
                                   height: 16,
@@ -581,13 +580,14 @@ class _DTAGameDetailViewState extends State<DTAGameDetailView>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Remaining salves',
+                            'dta_detail_remaining_salves'.tr(context),
                             style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w400,
                                 color: CompanionAppTheme.darkerText),
                           ),
-                          Text('+1 for every unspent salve',
+                          Text(
+                              'dta_detail_remaining_salves_desc'.tr(context),
                               style: TextStyle(
                                   fontSize: 12,
                                   fontWeight: FontWeight.w100,
@@ -623,13 +623,14 @@ class _DTAGameDetailViewState extends State<DTAGameDetailView>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Unspent gold',
+                            'dta_detail_unspent_gold'.tr(context),
                             style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w400,
                                 color: CompanionAppTheme.darkerText),
                           ),
-                          Text('+1 for every 5 gold your team did not spend',
+                          Text(
+                              'dta_detail_unspent_gold_desc'.tr(context),
                               style: TextStyle(
                                   fontSize: 12,
                                   fontWeight: FontWeight.w100,
@@ -665,13 +666,14 @@ class _DTAGameDetailViewState extends State<DTAGameDetailView>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Unclaimed boss loot',
+                            'dta_detail_unclaimed_boss'.tr(context),
                             style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w400,
                                 color: CompanionAppTheme.darkerText),
                           ),
-                          Text('+1 for every unclaimed boss loot',
+                          Text(
+                              'dta_detail_unclaimed_boss_desc'.tr(context),
                               style: TextStyle(
                                   fontSize: 12,
                                   fontWeight: FontWeight.w100,
@@ -707,13 +709,14 @@ class _DTAGameDetailViewState extends State<DTAGameDetailView>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Explored all tiles',
+                            'dta_detail_explored_all'.tr(context),
                             style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w400,
                                 color: CompanionAppTheme.darkerText),
                           ),
-                          Text('+5 if you explored all environment tiles',
+                          Text(
+                              'dta_detail_explored_all_desc'.tr(context),
                               style: TextStyle(
                                   fontSize: 12,
                                   fontWeight: FontWeight.w100,
@@ -749,13 +752,13 @@ class _DTAGameDetailViewState extends State<DTAGameDetailView>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Scenario score',
+                            'dta_detail_scenario_score'.tr(context),
                             style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w400,
                                 color: CompanionAppTheme.darkerText),
                           ),
-                          Text('Difficulty of the campaign',
+                          Text('dta_detail_scenario_score_desc'.tr(context),
                               style: TextStyle(
                                   fontSize: 12,
                                   fontWeight: FontWeight.w100,
@@ -788,7 +791,7 @@ class _DTAGameDetailViewState extends State<DTAGameDetailView>
                         width: 16,
                       ),
                       Text(
-                        'Won Scenario',
+                        'dta_detail_scenario_won'.tr(context),
                         style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w400,
@@ -827,7 +830,7 @@ class _DTAGameDetailViewState extends State<DTAGameDetailView>
                       SizedBox(
                         width: 16,
                       ),
-                      Text('Total score',
+                      Text('dta_detail_total_score'.tr(context),
                           style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w400,
@@ -887,7 +890,7 @@ class _DTAGameDetailViewState extends State<DTAGameDetailView>
                           child: Row(
                             children: [
                               Text(
-                                'New Scenario',
+                                'dta_detail_new_scenario'.tr(context),
                                 style: TextStyle(
                                     fontSize: 24,
                                     fontWeight: FontWeight.bold,
@@ -905,7 +908,7 @@ class _DTAGameDetailViewState extends State<DTAGameDetailView>
                               width: 16,
                             ),
                             Text(
-                              'Scenario number',
+                              'dta_detail_scenario_number'.tr(context),
                               style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
@@ -970,13 +973,13 @@ class _DTAGameDetailViewState extends State<DTAGameDetailView>
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Remaining salves',
+                                  'dta_detail_remaining_salves'.tr(context),
                                   style: TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,
                                       color: CompanionAppTheme.lightText),
                                 ),
-                                Text('+1 for every unspent salve',
+                                Text('dta_detail_remaining_salves_desc'.tr(context),
                                     style: TextStyle(
                                         fontSize: 12,
                                         fontWeight: FontWeight.w100,
@@ -1042,13 +1045,13 @@ class _DTAGameDetailViewState extends State<DTAGameDetailView>
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Unspent gold',
+                                  'dta_detail_unspent_gold'.tr(context),
                                   style: TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,
                                       color: CompanionAppTheme.lightText),
                                 ),
-                                Text('+1 for every 5 gold your team did not spend',
+                                Text('dta_detail_unspent_gold_desc'.tr(context),
                                     style: TextStyle(
                                         fontSize: 12,
                                         fontWeight: FontWeight.w100,
@@ -1114,13 +1117,13 @@ class _DTAGameDetailViewState extends State<DTAGameDetailView>
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Unclaimed boss loot',
+                                  'dta_detail_unclaimed_boss'.tr(context),
                                   style: TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,
                                       color: CompanionAppTheme.lightText),
                                 ),
-                                Text('+1 for every unclaimed boss loot',
+                                Text('dta_detail_unclaimed_boss_desc'.tr(context),
                                     style: TextStyle(
                                         fontSize: 12,
                                         fontWeight: FontWeight.w100,
@@ -1186,13 +1189,13 @@ class _DTAGameDetailViewState extends State<DTAGameDetailView>
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Explored all tiles',
+                                  'dta_detail_explored_all'.tr(context),
                                   style: TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,
                                       color: CompanionAppTheme.lightText),
                                 ),
-                                Text('+5 if you explored all environment tiles',
+                                Text('dta_detail_explored_all_desc'.tr(context),
                                     style: TextStyle(
                                         fontSize: 12,
                                         fontWeight: FontWeight.w100,
@@ -1233,13 +1236,13 @@ class _DTAGameDetailViewState extends State<DTAGameDetailView>
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Scenario score',
+                                  'dta_detail_scenario_score'.tr(context),
                                   style: TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,
                                       color: CompanionAppTheme.lightText),
                                 ),
-                                Text('Difficulty of the campaign',
+                                Text('dta_detail_scenario_score_desc'.tr(context),
                                     style: TextStyle(
                                         fontSize: 12,
                                         fontWeight: FontWeight.w100,
@@ -1274,7 +1277,7 @@ class _DTAGameDetailViewState extends State<DTAGameDetailView>
                               width: 16,
                             ),
                             Text(
-                              'Won Scenario',
+                              'dta_detail_scenario_won'.tr(context),
                               style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
@@ -1310,7 +1313,7 @@ class _DTAGameDetailViewState extends State<DTAGameDetailView>
                             SizedBox(
                               width: 16,
                             ),
-                            Text('Total score',
+                            Text('dta_detail_total_score'.tr(context),
                                 style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
@@ -1345,7 +1348,7 @@ class _DTAGameDetailViewState extends State<DTAGameDetailView>
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
                                     color: CompanionAppTheme.darkerText)),
-                            child: const Text('Save'),
+                            child: Text('match_save'.tr(context)),
                             onPressed: () {
                               widget.dtaListData.scoreboards.add(Scoreboard(
                                 totalScore: getTotalScore(),
@@ -1369,7 +1372,7 @@ class _DTAGameDetailViewState extends State<DTAGameDetailView>
                           ),
                         ),
                         SizedBox(
-                          height: 8,
+                          height: 88,
                         ),
                       ],
                     ),
@@ -1446,7 +1449,7 @@ class _DTAGameDetailViewState extends State<DTAGameDetailView>
                         child: TextField(
                           controller: _searchController,
                           decoration: InputDecoration(
-                            labelText: 'Search',
+                            labelText: 'dta_detail_search'.tr(context),
                             border: OutlineInputBorder(),
                             suffixIcon: IconButton(
                               icon: Icon(Icons.clear),
@@ -1478,7 +1481,7 @@ class _DTAGameDetailViewState extends State<DTAGameDetailView>
                         child: Row(
                           children: [
                             Text(
-                              'Your deck',
+                              'dta_detail_deck'.tr(context),
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
@@ -1536,7 +1539,7 @@ class _DTAGameDetailViewState extends State<DTAGameDetailView>
                         child: Row(
                           children: [
                             Text(
-                              'Loot cards',
+                              'dta_detail_loot_cards'.tr(context),
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
@@ -1552,7 +1555,7 @@ class _DTAGameDetailViewState extends State<DTAGameDetailView>
                         children: cardType.values.map((type) {
                           return ChoiceChip(
                             label: Text(
-                                type.toString().split('.').last.capitalize()),
+                                type.toString().split('.').last.tr(context)),
                             selected: _type == type,
                             onSelected: (selected) {
                               setState(() {
@@ -1612,6 +1615,7 @@ class _DTAGameDetailViewState extends State<DTAGameDetailView>
                           ),
                         ),
                       ),
+                      SizedBox(height: 88,)
                     ],
                   ),
                 ),

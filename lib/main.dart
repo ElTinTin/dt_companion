@@ -8,10 +8,12 @@ import 'package:dt_companion/dt_companion/service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'AppLocalizations.dart';
 import 'firebase_options.dart';
 
 int initScreen = 0;
@@ -60,6 +62,21 @@ class MyApp extends StatelessWidget {
           textTheme: CompanionAppTheme.textTheme,
           platform: TargetPlatform.iOS,
         ),
+        supportedLocales: const [Locale('en'), Locale('fr')],
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        localeResolutionCallback: (deviceLocale, supportedLocales) {
+          for (var locale in supportedLocales) {
+            if (deviceLocale != null && deviceLocale.languageCode == locale.languageCode) {
+              return deviceLocale;
+            }
+          }
+          return supportedLocales.first;
+        },
         initialRoute: initScreen == 0 ? "first" : "/",
         routes: {
           '/': (context) => InitializationWidget(

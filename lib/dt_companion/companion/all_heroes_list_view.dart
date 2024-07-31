@@ -1,4 +1,5 @@
 import 'package:dt_companion/dt_companion/companion_app_theme.dart';
+import 'package:dt_companion/dt_companion/extension/localization_extension.dart';
 import 'package:dt_companion/dt_companion/models/heroes_list_data.dart';
 import 'package:dt_companion/dt_companion/service.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -181,7 +182,7 @@ class _AllHeroesListScreenState extends State<AllHeroesListView>
                                 padding: EdgeInsets.only(
                                     left: 8, right: 8, top: 0, bottom: 8),
                                 child: Text(
-                                  'Heroes',
+                                  'heroes'.tr(context),
                                   textAlign: TextAlign.left,
                                   style: TextStyle(
                                     fontFamily: CompanionAppTheme.fontName,

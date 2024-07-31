@@ -1,4 +1,5 @@
 import 'package:dt_companion/dt_companion/companion_app_theme.dart';
+import 'package:dt_companion/dt_companion/extension/localization_extension.dart';
 import 'package:dt_companion/dt_companion/models/heroes_list_data.dart';
 import 'package:dt_companion/dt_companion/service.dart';
 import 'package:dt_companion/main.dart';
@@ -34,7 +35,7 @@ class _GamesStatisticsViewState extends State<GamesStatisticsView>
     // set up the buttons
     Widget cancelButton = TextButton(
       child: Text(
-        "Cancel",
+        "alert_cancel".tr(context),
         style: TextStyle(color: CompanionAppTheme.lightText),
       ),
       onPressed: () {
@@ -47,7 +48,7 @@ class _GamesStatisticsViewState extends State<GamesStatisticsView>
     );
     Widget continueButton = TextButton(
       child: Text(
-        "Continue",
+        "alert_continue".tr(context),
         style: TextStyle(color: CompanionAppTheme.lightText),
       ),
       onPressed: () {
@@ -62,11 +63,11 @@ class _GamesStatisticsViewState extends State<GamesStatisticsView>
 
     AlertDialog alert = AlertDialog(
       title: Text(
-        "Are you sure ?",
+        "alert_games_titles".tr(context),
         style: TextStyle(color: CompanionAppTheme.dark_grey),
       ),
       content: Text(
-        "Do you want to delete this game? This action is irreversible.",
+        "alert_games_desc".tr(context),
         style: TextStyle(color: CompanionAppTheme.dark_grey),
       ),
       backgroundColor: CompanionAppTheme.lightText,
@@ -290,7 +291,7 @@ class _GamesStatisticsViewState extends State<GamesStatisticsView>
                                                   child: Row(
                                                     children: [
                                                       Text(
-                                                        'Victory',
+                                                        'victory'.tr(context),
                                                         textAlign:
                                                             TextAlign.center,
                                                         style: TextStyle(
@@ -407,7 +408,7 @@ class _GamesStatisticsViewState extends State<GamesStatisticsView>
                                                 padding: const EdgeInsets.only(
                                                     left: 4, bottom: 2),
                                                 child: Text(
-                                                  'Defeat',
+                                                  'defeat'.tr(context),
                                                   textAlign: TextAlign.center,
                                                   style: TextStyle(
                                                     fontFamily:

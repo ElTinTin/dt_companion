@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:dt_companion/dt_companion/companion_app_home_screen.dart';
 import 'package:dt_companion/dt_companion/companion_app_theme.dart';
+import 'package:dt_companion/dt_companion/extension/localization_extension.dart';
 import 'package:dt_companion/dt_companion/models/games_list_data.dart';
 import 'package:dt_companion/dt_companion/models/heroes_list_data.dart';
 import 'package:dt_companion/dt_companion/service.dart';
@@ -57,11 +58,11 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
 
   List<String> get teams {
     if (_gamemode == Mode.koth) {
-      return ['You', 'Player 2', 'Player 3'];
+      return ['You'.tr(context), 'Player 2'.tr(context), 'Player 3'.tr(context)];
     } else if (_gamemode == Mode.twovstwo || _gamemode == Mode.threevsthree) {
-      return ['Team 1', 'Team 2', 'Draw'];
+      return ['Team 1'.tr(context), 'Team 2'.tr(context), 'Draw'.tr(context)];
     } else {
-      return ['You', 'Player 2', 'Draw'];
+      return ['You'.tr(context), 'Player 2'.tr(context), 'Draw'.tr(context)];
     }
   }
 
@@ -222,7 +223,7 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
       _setInAppReviewStatus();
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Game submitted!')),
+        SnackBar(content: Text('snack_match_submitted'.tr(context))),
       );
 
       Navigator.push(
@@ -231,7 +232,7 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
               builder: (context) => CompanionAppHomeScreen(index: 0)));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Missing informations')),
+        SnackBar(content: Text('snack_match_missing'.tr(context))),
       );
     }
   }
@@ -297,7 +298,7 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                 padding: EdgeInsets.only(
                                     left: 8, right: 8, top: 24, bottom: 8),
                                 child: Text(
-                                  'Game',
+                                  'game'.tr(context),
                                   textAlign: TextAlign.left,
                                   style: TextStyle(
                                     fontFamily: CompanionAppTheme.fontName,
@@ -451,8 +452,8 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                   children: [
                                     Text(
                                       _gamemode == Mode.twovstwo
-                                          ? 'Team 1'
-                                          : 'You',
+                                          ? 'Team 1'.tr(context)
+                                          : 'You'.tr(context),
                                       style: TextStyle(
                                         fontFamily: CompanionAppTheme.fontName,
                                         fontWeight: FontWeight.bold,
@@ -467,7 +468,7 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                     DropdownButton<Character>(
                                       menuMaxHeight: 300,
                                       hint: Text(
-                                        'Select Character',
+                                        'character_select'.tr(context),
                                         style: TextStyle(
                                           fontFamily:
                                               CompanionAppTheme.fontName,
@@ -511,7 +512,7 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                           MainAxisAlignment.start,
                                       children: [
                                         Text(
-                                          'Ultimates',
+                                          'ultimates'.tr(context),
                                           style: TextStyle(
                                             fontFamily:
                                                 CompanionAppTheme.fontName,
@@ -583,7 +584,7 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                       DropdownButton<Character>(
                                         menuMaxHeight: 300,
                                         hint: Text(
-                                          'Select Character',
+                                          'character_select'.tr(context),
                                           style: TextStyle(
                                             fontFamily:
                                                 CompanionAppTheme.fontName,
@@ -629,7 +630,7 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                             filled: true,
                                             fillColor:
                                                 CompanionAppTheme.lightText,
-                                            hintText: 'Player 3',
+                                            hintText: 'Player 3'.tr(context),
                                             contentPadding:
                                                 const EdgeInsets.only(
                                                     left: 14.0,
@@ -663,7 +664,7 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                             MainAxisAlignment.start,
                                         children: [
                                           Text(
-                                            'Ultimates',
+                                            'ultimates'.tr(context),
                                             style: TextStyle(
                                               fontFamily:
                                                   CompanionAppTheme.fontName,
@@ -738,7 +739,7 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                       DropdownButton<Character>(
                                         menuMaxHeight: 300,
                                         hint: Text(
-                                          'Select Character',
+                                          'character_select'.tr(context),
                                           style: TextStyle(
                                             fontFamily:
                                                 CompanionAppTheme.fontName,
@@ -785,7 +786,7 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                             filled: true,
                                             fillColor:
                                                 CompanionAppTheme.lightText,
-                                            hintText: 'Player 5',
+                                            hintText: 'Player 5'.tr(context),
                                             contentPadding:
                                                 const EdgeInsets.only(
                                                     left: 14.0,
@@ -819,7 +820,7 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                             MainAxisAlignment.start,
                                         children: [
                                           Text(
-                                            'Ultimates',
+                                            'ultimates'.tr(context),
                                             style: TextStyle(
                                               fontFamily:
                                                   CompanionAppTheme.fontName,
@@ -925,8 +926,8 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                 children: [
                                   Text(
                                     _gamemode == Mode.twovstwo
-                                        ? 'Team 2'
-                                        : 'Player 2',
+                                        ? 'Team 2'.tr(context)
+                                        : 'Player 2'.tr(context),
                                     style: TextStyle(
                                       fontFamily: CompanionAppTheme.fontName,
                                       fontWeight: FontWeight.bold,
@@ -941,7 +942,7 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                   DropdownButton<Character>(
                                     menuMaxHeight: 300,
                                     hint: Text(
-                                      'Select Character',
+                                      'character_select'.tr(context),
                                       style: TextStyle(
                                         fontFamily: CompanionAppTheme.fontName,
                                         fontWeight: FontWeight.normal,
@@ -982,9 +983,7 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                       decoration: InputDecoration(
                                         filled: true,
                                         fillColor: CompanionAppTheme.lightText,
-                                        hintText: _gamemode == Mode.twovstwo
-                                            ? 'Player 2'
-                                            : 'Player 2',
+                                        hintText: 'Player 2'.tr(context),
                                         contentPadding: const EdgeInsets.only(
                                             left: 14.0, bottom: 8.0, top: 8.0),
                                         focusedBorder: OutlineInputBorder(
@@ -1009,7 +1008,7 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                     MainAxisAlignment.start,
                                     children: [
                                       Text(
-                                        'Ultimates',
+                                        'ultimates'.tr(context),
                                         style: TextStyle(
                                           fontFamily:
                                           CompanionAppTheme.fontName,
@@ -1082,7 +1081,7 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                     DropdownButton<Character>(
                                       menuMaxHeight: 300,
                                       hint: Text(
-                                        'Select Character',
+                                        'character_select'.tr(context),
                                         style: TextStyle(
                                           fontFamily: CompanionAppTheme.fontName,
                                           fontWeight: FontWeight.normal,
@@ -1123,7 +1122,7 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                         decoration: InputDecoration(
                                           filled: true,
                                           fillColor: CompanionAppTheme.lightText,
-                                          hintText: 'Player 4',
+                                          hintText: 'Player 4'.tr(context),
                                           contentPadding: const EdgeInsets.only(
                                               left: 14.0, bottom: 8.0, top: 8.0),
                                           focusedBorder: OutlineInputBorder(
@@ -1150,7 +1149,7 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                       MainAxisAlignment.start,
                                       children: [
                                         Text(
-                                          'Ultimates',
+                                          'ultimates'.tr(context),
                                           style: TextStyle(
                                             fontFamily:
                                             CompanionAppTheme.fontName,
@@ -1223,7 +1222,7 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                     DropdownButton<Character>(
                                       menuMaxHeight: 300,
                                       hint: Text(
-                                        'Select Character',
+                                        'character_select'.tr(context),
                                         style: TextStyle(
                                           fontFamily: CompanionAppTheme.fontName,
                                           fontWeight: FontWeight.normal,
@@ -1264,7 +1263,7 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                         decoration: InputDecoration(
                                           filled: true,
                                           fillColor: CompanionAppTheme.lightText,
-                                          hintText: 'Player 6',
+                                          hintText: 'Player 6'.tr(context),
                                           contentPadding: const EdgeInsets.only(
                                               left: 14.0, bottom: 8.0, top: 8.0),
                                           focusedBorder: OutlineInputBorder(
@@ -1293,7 +1292,7 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                       MainAxisAlignment.start,
                                       children: [
                                         Text(
-                                          'Ultimates',
+                                          'ultimates'.tr(context),
                                           style: TextStyle(
                                             fontFamily:
                                             CompanionAppTheme.fontName,
@@ -1403,7 +1402,7 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                   child: Column(
                                     children: [
                                       Text(
-                                        'Player 3',
+                                        'Player 3'.tr(context),
                                         style: TextStyle(
                                           fontFamily: CompanionAppTheme.fontName,
                                           fontWeight: FontWeight.bold,
@@ -1418,7 +1417,7 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                       DropdownButton<Character>(
                                         menuMaxHeight: 300,
                                         hint: Text(
-                                          'Select Character',
+                                          'character_select'.tr(context),
                                           style: TextStyle(
                                             fontFamily:
                                             CompanionAppTheme.fontName,
@@ -1462,7 +1461,7 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                             filled: true,
                                             fillColor:
                                             CompanionAppTheme.lightText,
-                                            hintText: 'Player 3',
+                                            hintText: 'Player 3'.tr(context),
                                             contentPadding: const EdgeInsets.only(
                                                 left: 14.0,
                                                 bottom: 8.0,
@@ -1492,7 +1491,7 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                         MainAxisAlignment.start,
                                         children: [
                                           Text(
-                                            'Ultimates',
+                                            'ultimates'.tr(context),
                                             style: TextStyle(
                                               fontFamily:
                                               CompanionAppTheme.fontName,
@@ -1598,7 +1597,7 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                   child: Column(
                                     children: [
                                       Text(
-                                        'Player 4',
+                                        'Player 4'.tr(context),
                                         style: TextStyle(
                                           fontFamily: CompanionAppTheme.fontName,
                                           fontWeight: FontWeight.bold,
@@ -1613,7 +1612,7 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                       DropdownButton<Character>(
                                         menuMaxHeight: 300,
                                         hint: Text(
-                                          'Select Character',
+                                          'character_select'.tr(context),
                                           style: TextStyle(
                                             fontFamily:
                                             CompanionAppTheme.fontName,
@@ -1657,7 +1656,7 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                             filled: true,
                                             fillColor:
                                             CompanionAppTheme.lightText,
-                                            hintText: 'Player 4',
+                                            hintText: 'Player 4'.tr(context),
                                             contentPadding: const EdgeInsets.only(
                                                 left: 14.0,
                                                 bottom: 8.0,
@@ -1687,7 +1686,7 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                         MainAxisAlignment.start,
                                         children: [
                                           Text(
-                                            'Ultimates',
+                                            'ultimates'.tr(context),
                                             style: TextStyle(
                                               fontFamily:
                                               CompanionAppTheme.fontName,
@@ -1794,7 +1793,7 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                   child: Column(
                                     children: [
                                       Text(
-                                        'Player 5',
+                                        'Player 5'.tr(context),
                                         style: TextStyle(
                                           fontFamily: CompanionAppTheme.fontName,
                                           fontWeight: FontWeight.bold,
@@ -1809,7 +1808,7 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                       DropdownButton<Character>(
                                         menuMaxHeight: 300,
                                         hint: Text(
-                                          'Select Character',
+                                          'character_select'.tr(context),
                                           style: TextStyle(
                                             fontFamily:
                                             CompanionAppTheme.fontName,
@@ -1853,7 +1852,7 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                             filled: true,
                                             fillColor:
                                             CompanionAppTheme.lightText,
-                                            hintText: 'Player 5',
+                                            hintText: 'Player 5'.tr(context),
                                             contentPadding: const EdgeInsets.only(
                                                 left: 14.0,
                                                 bottom: 8.0,
@@ -1883,7 +1882,7 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                         MainAxisAlignment.start,
                                         children: [
                                           Text(
-                                            'Ultimates',
+                                            'ultimates'.tr(context),
                                             style: TextStyle(
                                               fontFamily:
                                               CompanionAppTheme.fontName,
@@ -1990,7 +1989,7 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                   child: Column(
                                     children: [
                                       Text(
-                                        'Player 6',
+                                        'Player 6'.tr(context),
                                         style: TextStyle(
                                           fontFamily: CompanionAppTheme.fontName,
                                           fontWeight: FontWeight.bold,
@@ -2005,7 +2004,7 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                       DropdownButton<Character>(
                                         menuMaxHeight: 300,
                                         hint: Text(
-                                          'Select Character',
+                                          'character_select'.tr(context),
                                           style: TextStyle(
                                             fontFamily:
                                             CompanionAppTheme.fontName,
@@ -2049,7 +2048,7 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                             filled: true,
                                             fillColor:
                                             CompanionAppTheme.lightText,
-                                            hintText: 'Player 6',
+                                            hintText: 'Player 6'.tr(context),
                                             contentPadding: const EdgeInsets.only(
                                                 left: 14.0,
                                                 bottom: 8.0,
@@ -2079,7 +2078,7 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                         MainAxisAlignment.start,
                                         children: [
                                           Text(
-                                            'Ultimates',
+                                            'ultimates'.tr(context),
                                             style: TextStyle(
                                               fontFamily:
                                               CompanionAppTheme.fontName,
@@ -2154,7 +2153,7 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                       ],
                       SizedBox(height: 32),
                       Text(
-                        'Select Winning Team',
+                        'select_winning'.tr(context),
                         style: TextStyle(
                           fontFamily: CompanionAppTheme.fontName,
                           fontWeight: FontWeight.bold,
@@ -2165,7 +2164,7 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                       ),
                       DropdownButton<String>(
                         hint: Text(
-                          'Select Winner',
+                          'select_winner'.tr(context),
                           style: TextStyle(
                             fontFamily: CompanionAppTheme.fontName,
                             fontWeight: FontWeight.normal,
@@ -2200,7 +2199,7 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                         height: 32,
                       ),
                       Text(
-                        'Winner health',
+                        'winner_health'.tr(context),
                         style: TextStyle(
                           fontFamily: CompanionAppTheme.fontName,
                           fontWeight: FontWeight.bold,
@@ -2274,8 +2273,8 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                       builder: (context) =>
                                           CompanionAppHomeScreen(index: 0)));
                             },
-                            child: const Text(
-                              'Quit',
+                            child: Text(
+                              'match_quit'.tr(context),
                               style: TextStyle(
                                 fontFamily: CompanionAppTheme.fontName,
                                 fontWeight: FontWeight.bold,
@@ -2296,8 +2295,8 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                             onPressed: () async {
                               _submit(userService);
                             },
-                            child: const Text(
-                              'Save',
+                            child: Text(
+                              'match_save'.tr(context),
                               style: TextStyle(
                                 fontFamily: CompanionAppTheme.fontName,
                                 fontWeight: FontWeight.bold,

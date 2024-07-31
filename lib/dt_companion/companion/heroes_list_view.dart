@@ -1,4 +1,5 @@
 import 'package:dt_companion/dt_companion/companion_app_theme.dart';
+import 'package:dt_companion/dt_companion/extension/localization_extension.dart';
 import 'package:dt_companion/dt_companion/models/heroes_list_data.dart';
 import 'package:dt_companion/dt_companion/service.dart';
 import 'package:dt_companion/main.dart';
@@ -176,7 +177,7 @@ class HeroView extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                 Text(
-                                  '${heroesListData?.victories} V - ${heroesListData?.draws} D - ${heroesListData?.defeats} L',
+                                  '${heroesListData?.victories} W - ${heroesListData?.draws} D - ${heroesListData?.defeats} L',
                                   style: TextStyle(
                                     fontFamily: CompanionAppTheme.fontName,
                                     fontWeight: FontWeight.bold,
@@ -290,7 +291,7 @@ class EmptyStatsView extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Text(
-                              'No statistics yet',
+                              'no_stats'.tr(context),
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontFamily: CompanionAppTheme.fontName,

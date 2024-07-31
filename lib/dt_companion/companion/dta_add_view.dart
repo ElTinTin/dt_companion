@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:dt_companion/dt_companion/extension/localization_extension.dart';
 import 'package:dt_companion/dt_companion/models/dta_cards.dart';
 import 'package:dt_companion/dt_companion/models/dta_list_data.dart';
 import 'package:dt_companion/dt_companion/profile/faq_screen.dart';
@@ -48,8 +49,6 @@ class _DTAAddViewState extends State<DTAAddView> with TickerProviderStateMixin {
         CurvedAnimation(
             parent: widget.animationController!,
             curve: Interval(0, 0.5, curve: Curves.fastOutSlowIn)));
-
-    addAllListData();
 
     scrollController.addListener(() {
       if (scrollController.offset >= 24) {
@@ -159,7 +158,7 @@ class _DTAAddViewState extends State<DTAAddView> with TickerProviderStateMixin {
       }
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Game created!')),
+        SnackBar(content: Text('dta_add_created'.tr(context))),
       );
 
       Navigator.push(
@@ -168,63 +167,9 @@ class _DTAAddViewState extends State<DTAAddView> with TickerProviderStateMixin {
               builder: (context) => CompanionAppHomeScreen(index: 1)));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Missing information')),
+        SnackBar(content: Text('snack_match_missing'.tr(context))),
       );
     }
-  }
-
-  void addAllListData() {
-    const int count = 1;
-
-    listViews.add(AnimatedBuilder(
-      animation: widget.animationController!,
-      builder: (BuildContext context, Widget? child) {
-        return FadeTransition(
-          opacity: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
-              parent: widget.animationController!,
-              curve:
-                  Interval((1 / count) * 1, 1.0, curve: Curves.fastOutSlowIn))),
-          child: new Transform(
-            transform: new Matrix4.translationValues(
-                0.0,
-                30 *
-                    (1.0 -
-                        Tween<double>(begin: 0.0, end: 1.0)
-                            .animate(CurvedAnimation(
-                                parent: widget.animationController!,
-                                curve: Interval((1 / count) * 1, 1.0,
-                                    curve: Curves.fastOutSlowIn)))
-                            .value),
-                0.0),
-            child: Container(
-                child: Padding(
-              padding: EdgeInsets.all(16),
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    foregroundColor: CompanionAppTheme.darkerText,
-                    backgroundColor: CompanionAppTheme.lightText,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    elevation: 15.0,
-                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                    textStyle: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: CompanionAppTheme.darkerText)),
-                child: const Text('Rulepop'),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const FAQScreen()),
-                  );
-                },
-              ),
-            )),
-          ),
-        );
-      },
-    ));
   }
 
   @override
@@ -310,7 +255,7 @@ class _DTAAddViewState extends State<DTAAddView> with TickerProviderStateMixin {
                                           Row(
                                             children: [
                                               Text(
-                                                'Team name',
+                                                'dta_add_team_name'.tr(context),
                                                 style: TextStyle(
                                                   fontFamily: CompanionAppTheme
                                                       .fontName,
@@ -334,7 +279,7 @@ class _DTAAddViewState extends State<DTAAddView> with TickerProviderStateMixin {
                                                 filled: true,
                                                 fillColor:
                                                     CompanionAppTheme.lightText,
-                                                hintText: 'required',
+                                                hintText: 'dta_add_required'.tr(context),
                                                 contentPadding:
                                                     const EdgeInsets.only(
                                                         left: 14.0,
@@ -376,7 +321,7 @@ class _DTAAddViewState extends State<DTAAddView> with TickerProviderStateMixin {
                                           Row(
                                             children: [
                                               Text(
-                                                'Number of players',
+                                                'dta_add_number_players'.tr(context),
                                                 style: TextStyle(
                                                   fontFamily: CompanionAppTheme
                                                       .fontName,
@@ -442,7 +387,7 @@ class _DTAAddViewState extends State<DTAAddView> with TickerProviderStateMixin {
                                           Row(
                                             children: [
                                               Text(
-                                                'Legacy mode',
+                                                'dta_add_legacy'.tr(context),
                                                 style: TextStyle(
                                                   fontFamily: CompanionAppTheme
                                                       .fontName,
@@ -481,7 +426,7 @@ class _DTAAddViewState extends State<DTAAddView> with TickerProviderStateMixin {
                                           Row(
                                             children: [
                                               Text(
-                                                'Difficulty',
+                                                'dta_add_difficulty'.tr(context),
                                                 style: TextStyle(
                                                   fontFamily: CompanionAppTheme
                                                       .fontName,
@@ -510,14 +455,14 @@ class _DTAAddViewState extends State<DTAAddView> with TickerProviderStateMixin {
                                                     const EdgeInsets.symmetric(
                                                         vertical: 10.0,
                                                         horizontal: 16.0),
-                                                child: Text('Normal'),
+                                                child: Text('dta_difficulty_normal'.tr(context)),
                                               ),
                                               1: Padding(
                                                 padding:
                                                     const EdgeInsets.symmetric(
                                                         vertical: 10.0,
                                                         horizontal: 16.0),
-                                                child: Text('Veteran'),
+                                                child: Text('dta_difficulty_veteran'.tr(context)),
                                               ),
                                             },
                                             onValueChanged: (int value) {
@@ -540,7 +485,7 @@ class _DTAAddViewState extends State<DTAAddView> with TickerProviderStateMixin {
                                           Row(
                                             children: [
                                               Text(
-                                                'Mythic',
+                                                'dta_add_mythic'.tr(context),
                                                 style: TextStyle(
                                                   fontFamily: CompanionAppTheme
                                                       .fontName,
@@ -579,7 +524,7 @@ class _DTAAddViewState extends State<DTAAddView> with TickerProviderStateMixin {
                                           Row(
                                             children: [
                                               Text(
-                                                'You',
+                                                'You'.tr(context),
                                                 style: TextStyle(
                                                   fontFamily: CompanionAppTheme
                                                       .fontName,
@@ -597,7 +542,7 @@ class _DTAAddViewState extends State<DTAAddView> with TickerProviderStateMixin {
                                               DropdownButton<Character>(
                                                 menuMaxHeight: 300,
                                                 hint: Text(
-                                                  'Select Character',
+                                                  'character_select'.tr(context),
                                                   style: TextStyle(
                                                     fontFamily:
                                                         CompanionAppTheme
@@ -651,7 +596,7 @@ class _DTAAddViewState extends State<DTAAddView> with TickerProviderStateMixin {
                                             Row(
                                               children: [
                                                 Text(
-                                                  'Player 2',
+                                                  'Player 2'.tr(context),
                                                   style: TextStyle(
                                                     fontFamily:
                                                         CompanionAppTheme
@@ -670,7 +615,7 @@ class _DTAAddViewState extends State<DTAAddView> with TickerProviderStateMixin {
                                                 DropdownButton<Character>(
                                                   menuMaxHeight: 300,
                                                   hint: Text(
-                                                    'Select Character',
+                                                    'character_select'.tr(context),
                                                     style: TextStyle(
                                                       fontFamily:
                                                           CompanionAppTheme
@@ -726,7 +671,7 @@ class _DTAAddViewState extends State<DTAAddView> with TickerProviderStateMixin {
                                                       fillColor:
                                                           CompanionAppTheme
                                                               .lightText,
-                                                      hintText: 'Player 2',
+                                                      hintText: 'Player 2'.tr(context),
                                                       contentPadding:
                                                           const EdgeInsets.only(
                                                               left: 14.0,
@@ -771,7 +716,7 @@ class _DTAAddViewState extends State<DTAAddView> with TickerProviderStateMixin {
                                             Row(
                                               children: [
                                                 Text(
-                                                  'Player 3',
+                                                  'Player 3'.tr(context),
                                                   style: TextStyle(
                                                     fontFamily:
                                                         CompanionAppTheme
@@ -790,7 +735,7 @@ class _DTAAddViewState extends State<DTAAddView> with TickerProviderStateMixin {
                                                 DropdownButton<Character>(
                                                   menuMaxHeight: 300,
                                                   hint: Text(
-                                                    'Select Character',
+                                                    'character_select'.tr(context),
                                                     style: TextStyle(
                                                       fontFamily:
                                                           CompanionAppTheme
@@ -846,7 +791,7 @@ class _DTAAddViewState extends State<DTAAddView> with TickerProviderStateMixin {
                                                       fillColor:
                                                           CompanionAppTheme
                                                               .lightText,
-                                                      hintText: 'Player 3',
+                                                      hintText: 'Player 3'.tr(context),
                                                       contentPadding:
                                                           const EdgeInsets.only(
                                                               left: 14.0,
@@ -891,7 +836,7 @@ class _DTAAddViewState extends State<DTAAddView> with TickerProviderStateMixin {
                                             Row(
                                               children: [
                                                 Text(
-                                                  'Player 4',
+                                                  'Player 4'.tr(context),
                                                   style: TextStyle(
                                                     fontFamily:
                                                         CompanionAppTheme
@@ -910,7 +855,7 @@ class _DTAAddViewState extends State<DTAAddView> with TickerProviderStateMixin {
                                                 DropdownButton<Character>(
                                                   menuMaxHeight: 300,
                                                   hint: Text(
-                                                    'Select Character',
+                                                    'character_select'.tr(context),
                                                     style: TextStyle(
                                                       fontFamily:
                                                           CompanionAppTheme
@@ -966,7 +911,7 @@ class _DTAAddViewState extends State<DTAAddView> with TickerProviderStateMixin {
                                                       fillColor:
                                                           CompanionAppTheme
                                                               .lightText,
-                                                      hintText: 'Player 4',
+                                                      hintText: 'Player 4'.tr(context),
                                                       contentPadding:
                                                           const EdgeInsets.only(
                                                               left: 14.0,
@@ -1025,8 +970,8 @@ class _DTAAddViewState extends State<DTAAddView> with TickerProviderStateMixin {
                                             index: 1,
                                           )));
                             },
-                            child: const Text(
-                              'Quit',
+                            child: Text(
+                              'match_quit'.tr(context),
                               style: TextStyle(
                                 fontFamily: CompanionAppTheme.fontName,
                                 fontWeight: FontWeight.bold,
@@ -1047,8 +992,8 @@ class _DTAAddViewState extends State<DTAAddView> with TickerProviderStateMixin {
                             onPressed: () async {
                               _submit(userService);
                             },
-                            child: const Text(
-                              'Save',
+                            child: Text(
+                              'match_save'.tr(context),
                               style: TextStyle(
                                 fontFamily: CompanionAppTheme.fontName,
                                 fontWeight: FontWeight.bold,

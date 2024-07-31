@@ -1,4 +1,5 @@
 import 'package:dt_companion/dt_companion/companion_app_theme.dart';
+import 'package:dt_companion/dt_companion/extension/localization_extension.dart';
 import 'package:dt_companion/dt_companion/service.dart';
 import 'package:dt_companion/main.dart';
 import 'package:flutter/material.dart';
@@ -102,7 +103,7 @@ class _OverallStatisticsViewState extends State<OverallStatisticsView>
                                               padding: const EdgeInsets.only(
                                                   left: 4, bottom: 2),
                                               child: Text(
-                                                'Victories',
+                                                'victories'.tr(context),
                                                 textAlign: TextAlign.center,
                                                 style: TextStyle(
                                                   fontFamily: CompanionAppTheme
@@ -175,7 +176,7 @@ class _OverallStatisticsViewState extends State<OverallStatisticsView>
                                               padding: const EdgeInsets.only(
                                                   left: 4, bottom: 2),
                                               child: Text(
-                                                'Defeats',
+                                                'defeats'.tr(context),
                                                 textAlign: TextAlign.center,
                                                 style: TextStyle(
                                                   fontFamily: CompanionAppTheme

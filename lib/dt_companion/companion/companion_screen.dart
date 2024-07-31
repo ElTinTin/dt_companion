@@ -1,6 +1,7 @@
 import 'package:dt_companion/dt_companion/companion/all_games_list_view.dart';
 import 'package:dt_companion/dt_companion/companion/all_heroes_list_view.dart';
 import 'package:dt_companion/dt_companion/companion/games_list_view.dart';
+import 'package:dt_companion/dt_companion/extension/localization_extension.dart';
 import 'package:dt_companion/dt_companion/ui_view/overall_statistics_view.dart';
 import 'package:dt_companion/dt_companion/ui_view/title_view.dart';
 import 'package:dt_companion/dt_companion/companion_app_theme.dart';
@@ -181,7 +182,7 @@ class _CompanionScreenState extends State<CompanionScreen>
                 Column(
                   children: [
                     TitleView(
-                      titleTxt: 'Overall statistics',
+                      titleTxt: 'overall_stats'.tr(context),
                       subTxt: '',
                       animation: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
                           parent: widget.animationController!,
@@ -225,8 +226,8 @@ class _CompanionScreenState extends State<CompanionScreen>
                     ),
                     SizedBox(height: 8,),
                     TitleView(
-                      titleTxt: 'Heroes statistics',
-                      subTxt: 'More',
+                      titleTxt: 'heroes_stats'.tr(context),
+                      subTxt: 'more'.tr(context),
                       animation: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
                           parent: widget.animationController!,
                           curve:
@@ -246,8 +247,8 @@ class _CompanionScreenState extends State<CompanionScreen>
                     ),
                     SizedBox(height: 16,),
                     TitleView(
-                      titleTxt: 'Games History',
-                      subTxt: 'More',
+                      titleTxt: 'games_history'.tr(context),
+                      subTxt: 'more'.tr(context),
                       animation: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
                           parent: widget.animationController!,
                           curve:
@@ -343,7 +344,7 @@ class _CompanionScreenState extends State<CompanionScreen>
                                     top: 24,
                                     bottom: 8),
                                 child: Text(
-                                  'Companion',
+                                  "companion".tr(context),
                                   textAlign: TextAlign.left,
                                   style: TextStyle(
                                     fontFamily: CompanionAppTheme.fontName,

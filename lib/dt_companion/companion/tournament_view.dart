@@ -1,3 +1,4 @@
+import 'package:dt_companion/dt_companion/extension/localization_extension.dart';
 import 'package:dt_companion/dt_companion/profile/faq_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
@@ -189,7 +190,7 @@ class _TournamentScreenState extends State<TournamentScreen>
                                 padding: EdgeInsets.only(
                                     left: 8, right: 8, top: 24, bottom: 8),
                                 child: Text(
-                                  'Tournament',
+                                  'tournament'.tr(context),
                                   textAlign: TextAlign.left,
                                   style: TextStyle(
                                     fontFamily: CompanionAppTheme.fontName,

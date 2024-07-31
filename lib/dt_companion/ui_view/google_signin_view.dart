@@ -1,4 +1,5 @@
 import 'package:dt_companion/dt_companion/companion_app_theme.dart';
+import 'package:dt_companion/dt_companion/extension/localization_extension.dart';
 import 'package:dt_companion/dt_companion/service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -205,14 +206,14 @@ class _GoogleSignInViewState extends State<GoogleSignInView> {
                                             fontWeight: FontWeight.bold,
                                             color:
                                                 CompanionAppTheme.darkerText)),
-                                    child: const Text('Import'),
+                                    child: Text('profile_import'.tr(context)),
                                     onPressed: () async {
                                       await userService
                                           .restoreDataFromFirestore();
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(
                                         SnackBar(
-                                            content: Text('Data backed up.')),
+                                            content: Text('profile_data_backed_up'.tr(context))),
                                       );
                                     },
                                   ),
@@ -237,12 +238,12 @@ class _GoogleSignInViewState extends State<GoogleSignInView> {
                                             fontWeight: FontWeight.bold,
                                             color:
                                                 CompanionAppTheme.darkerText)),
-                                    child: const Text('Export'),
+                                    child: Text('profile_export'.tr(context)),
                                     onPressed: () async {
                                       await userService.backupDataToFirestore();
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(
-                                        SnackBar(content: Text('Data saved. Log in with same account for retrieve them.')),
+                                        SnackBar(content: Text('profile_data_saved'.tr(context))),
                                       );
                                     },
                                   ),
