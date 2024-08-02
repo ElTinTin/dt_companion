@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../main.dart';
-import '../models/games_list_data.dart';
+import '../models/games_data.dart';
 
 
 class AllGamesListView extends StatefulWidget {
@@ -87,7 +87,7 @@ class _AllGamesListScreenState extends State<AllGamesListView>
     );
   }
 
-  Widget getGamesList(List<GamesListData> gamesListData) {
+  Widget getGamesList(List<GamesData> gamesListData) {
     return ListView.builder(
       controller: scrollController,
       padding: EdgeInsets.only(

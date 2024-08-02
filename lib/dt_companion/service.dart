@@ -1,7 +1,9 @@
 import 'package:dt_companion/dt_companion/db_helper/games_dao.dart';
 import 'package:dt_companion/dt_companion/db_helper/heroes_dao.dart';
-import 'package:dt_companion/dt_companion/models/games_list_data.dart';
-import 'package:dt_companion/dt_companion/models/heroes_list_data.dart';
+import 'package:dt_companion/dt_companion/db_helper/user_dao.dart';
+import 'package:dt_companion/dt_companion/models/friends_data.dart';
+import 'package:dt_companion/dt_companion/models/games_data.dart';
+import 'package:dt_companion/dt_companion/models/heroes_data.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:path/path.dart' as p;
@@ -9,16 +11,18 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'db_helper/dta_dao.dart';
 import 'models/dta_cards.dart';
-import 'models/dta_list_data.dart';
+import 'models/dta_data.dart';
 
 class UserService with ChangeNotifier {
   GamesDAO gamesDAO = GamesDAO();
   HeroesDAO heroesDAO = HeroesDAO();
   DTAdventureDAO dtaDAO = DTAdventureDAO();
+  FriendsDAO friendsDAO = FriendsDAO();
 
-  List<GamesListData> gamesListData = [];
-  List<HeroesListData> heroesListData = [];
-  List<DTAListData> dtaListData = [];
+  List<GamesData> gamesListData = [];
+  List<HeroesData> heroesListData = [];
+  List<DTAData> dtaListData = [];
+  List<FriendsData> friendsListData = [];
 
   int victories = 0;
   int defeats = 0;
@@ -29,6 +33,7 @@ class UserService with ChangeNotifier {
     fetchHeroesData();
     fetchGamesData();
     fetchDTAData();
+    fetchFriendsData();
 
     notifyListeners();
   }
@@ -47,7 +52,11 @@ class UserService with ChangeNotifier {
     dtaListData = await dtaDAO.getDTAListData();
   }
 
-  Future<void> insertHeroesData(HeroesListData heroesListData) async {
+  Future<void> fetchFriendsData() async {
+    friendsListData = await friendsDAO.getFriendsData();
+  }
+
+  Future<void> insertHeroesData(HeroesData heroesListData) async {
     heroesDAO.insertHeroesListData(heroesListData);
     this.heroesListData.add(heroesListData);
     getUserVictories();
@@ -55,19 +64,19 @@ class UserService with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> insertGamesData(GamesListData gamesListData) async {
+  Future<void> insertGamesData(GamesData gamesListData) async {
     gamesDAO.insertGamesListData(gamesListData);
     this.gamesListData.insert(0, gamesListData);
     notifyListeners();
   }
 
-  Future<void> insertDtaData(DTAListData game) async {
+  Future<void> insertDtaData(DTAData game) async {
     dtaDAO.insertDTAListData(game);
     this.dtaListData.insert(0, game);
     notifyListeners();
   }
 
-  Future<void> updateHeroesData(HeroesListData heroesListData) async {
+  Future<void> updateHeroesData(HeroesData heroesListData) async {
     heroesDAO.updateHeroesListData(heroesListData);
     this.heroesListData.removeWhere((item)=> item.name == heroesListData.name);
     this.heroesListData.insert(0, heroesListData);
@@ -76,19 +85,19 @@ class UserService with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> updateDtaData(DTAListData game) async {
+  Future<void> updateDtaData(DTAData game) async {
     dtaDAO.updateDTAListData(game);
     this.dtaListData.removeWhere((item)=> item.id == game.id);
     this.dtaListData.insert(0, game);
     notifyListeners();
   }
 
-  void expandScoreboard(DTAListData game, int index) async {
+  void expandScoreboard(DTAData game, int index) async {
     game.scoreboards[index].isExpanded = !game.scoreboards[index].isExpanded;
     notifyListeners();
   }
 
-  void addCardToPlayer(Player player, String card, DTAListData game, cardType type) {
+  void addCardToPlayer(Player player, String card, DTAData game, cardType type) {
     switch (type) {
       case cardType.common:
         player.commonCards.insert(0, card);
@@ -106,7 +115,7 @@ class UserService with ChangeNotifier {
     notifyListeners();
   }
 
-  void removeCardFromPlayer(Player player, String card, DTAListData game) {
+  void removeCardFromPlayer(Player player, String card, DTAData game) {
     var type = cardType.common;
     if (rareDTACardsList.contains(card)) {
       type = cardType.rare;
@@ -138,7 +147,7 @@ class UserService with ChangeNotifier {
     notifyListeners();
   }
 
-  void expandPlayer(DTAListData game, int index) async {
+  void expandPlayer(DTAData game, int index) async {
     game.players[index].isExpanded = !game.players[index].isExpanded;
     notifyListeners();
   }
@@ -151,7 +160,7 @@ class UserService with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> deleteGamesData(GamesListData game) async {
+  Future<void> deleteGamesData(GamesData game) async {
     gamesDAO.deleteGamesListData(game.id);
     this.gamesListData.isNotEmpty
         ? this.gamesListData.removeWhere((item)=> item.id == game.id)
@@ -159,7 +168,7 @@ class UserService with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> deleteDTAData(DTAListData dta) async {
+  Future<void> deleteDTAData(DTAData dta) async {
     dtaDAO.deleteDTAListData(dta.id);
     this.dtaListData.removeWhere((item)=> item.id == dta.id);
     notifyListeners();
@@ -235,14 +244,14 @@ class UserService with ChangeNotifier {
       if (snapshot.exists) {
         Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
 
-        List<GamesListData> gamesData = (data['gamesListData'] as List)
-            .map((item) => GamesListData.fromMap(item))
+        List<GamesData> gamesData = (data['gamesListData'] as List)
+            .map((item) => GamesData.fromMap(item))
             .toList();
-        List<HeroesListData> heroesData = (data['heroesListData'] as List)
-            .map((item) => HeroesListData.fromMap(item))
+        List<HeroesData> heroesData = (data['heroesListData'] as List)
+            .map((item) => HeroesData.fromMap(item))
             .toList();
-        List<DTAListData> dtaData = (data['dtaListData'] as List)
-            .map((item) => DTAListData.fromMap(item))
+        List<DTAData> dtaData = (data['dtaListData'] as List)
+            .map((item) => DTAData.fromMap(item))
             .toList();
 
         await insertFetchedData(gamesData, heroesData, dtaData);
@@ -256,7 +265,7 @@ class UserService with ChangeNotifier {
     }
   }
 
-  Future<void> insertFetchedData(List<GamesListData> gamesData, List<HeroesListData> heroesData, List<DTAListData> dtaData) async {
+  Future<void> insertFetchedData(List<GamesData> gamesData, List<HeroesData> heroesData, List<DTAData> dtaData) async {
     gamesDAO.clearData();
     heroesDAO.clearData();
     dtaDAO.clearData();

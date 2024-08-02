@@ -1,6 +1,6 @@
 import 'package:dt_companion/dt_companion/companion_app_theme.dart';
 import 'package:dt_companion/dt_companion/extension/localization_extension.dart';
-import 'package:dt_companion/dt_companion/models/heroes_list_data.dart';
+import 'package:dt_companion/dt_companion/models/heroes_data.dart';
 import 'package:dt_companion/dt_companion/service.dart';
 import 'package:dt_companion/main.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:path/path.dart' as p;
 
 import '../companion/match_view.dart';
-import '../models/games_list_data.dart';
+import '../models/games_data.dart';
 
 class GamesStatisticsView extends StatefulWidget {
   const GamesStatisticsView(
@@ -18,7 +18,7 @@ class GamesStatisticsView extends StatefulWidget {
 
   final AnimationController? animationController;
   final Animation<double>? animation;
-  final GamesListData? gamesListData;
+  final GamesData? gamesListData;
 
   @override
   _GamesStatisticsViewState createState() => _GamesStatisticsViewState();
@@ -117,10 +117,10 @@ class _GamesStatisticsViewState extends State<GamesStatisticsView>
   }
 
   Future<void> deleteGame(UserService service) async {
-    service.deleteGamesData(widget.gamesListData ?? GamesListData());
+    service.deleteGamesData(widget.gamesListData ?? GamesData());
     String path = widget.gamesListData?.playerOneImagePath ?? '';
     String fileName = p.basenameWithoutExtension(path);
-    HeroesListData hero = service.heroesListData.firstWhere(
+    HeroesData hero = service.heroesListData.firstWhere(
         (hero) => p.basenameWithoutExtension(hero.imagePath) == fileName);
 
     if (hero.totalGamesPlayed == 1) {

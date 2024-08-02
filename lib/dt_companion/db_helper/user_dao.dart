@@ -1,34 +1,34 @@
 import 'package:dt_companion/dt_companion/db_helper/db_helper.dart';
-import 'package:dt_companion/dt_companion/models/user_data.dart';
+import 'package:dt_companion/dt_companion/models/friends_data.dart';
 
-class UserDAO {
-  final dbHelper = UserDBHelper.instance;
+class FriendsDAO {
+  final dbHelper = FriendsDBHelper.instance;
 
-  Future<void> insertUserData(UserData user) async {
+  Future<void> insertFriendsData(FriendsData user) async {
     final db = await dbHelper.database;
-    await db.insert('user', user.toMap());
+    await db.insert('friends', user.toMap());
   }
 
-  Future<List<UserData>> getUserData() async {
+  Future<List<FriendsData>> getFriendsData() async {
     final db = await dbHelper.database;
-    final List<Map<String, dynamic>> maps = await db.query('user');
+    final List<Map<String, dynamic>> maps = await db.query('friends');
     return List.generate(maps.length, (i) {
-      return UserData.fromMap(maps[i]);
+      return FriendsData.fromMap(maps[i]);
     });
   }
 
-  Future<void> updateUserData(UserData user) async {
+  Future<void> updateFriendsData(FriendsData user) async {
     final db = await dbHelper.database;
-    await db.update('user', user.toMap(), where: 'name = ?', whereArgs: [user.name]);
+    await db.update('friends', user.toMap(), where: 'name = ?', whereArgs: [user.name]);
   }
 
-  Future<void> deleteUserData(int id) async {
+  Future<void> deleteFriendsData(int id) async {
     final db = await dbHelper.database;
-    await db.delete('user', where: 'name = ?', whereArgs: [id]);
+    await db.delete('friends', where: 'name = ?', whereArgs: [id]);
   }
 
   Future<void> clearData() async {
     final db = await dbHelper.database;
-    await db.rawDelete('DELETE FROM user');
+    await db.rawDelete('DELETE FROM friends');
   }
 }

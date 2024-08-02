@@ -2,8 +2,8 @@ import 'dart:math';
 import 'package:dt_companion/dt_companion/companion_app_home_screen.dart';
 import 'package:dt_companion/dt_companion/companion_app_theme.dart';
 import 'package:dt_companion/dt_companion/extension/localization_extension.dart';
-import 'package:dt_companion/dt_companion/models/games_list_data.dart';
-import 'package:dt_companion/dt_companion/models/heroes_list_data.dart';
+import 'package:dt_companion/dt_companion/models/games_data.dart';
+import 'package:dt_companion/dt_companion/models/heroes_data.dart';
 import 'package:dt_companion/dt_companion/service.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/cupertino.dart';
@@ -126,9 +126,9 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
   Future<void> _submit(UserService userService) async {
     if (_isFormValid1v1) {
       var winner =
-          (_winningTeam == "You" || _winningTeam == "Team 1") ? true : false;
+          (_winningTeam == "You".tr(context) || _winningTeam == "Team 1".tr(context)) ? true : false;
 
-      var heroesData = HeroesListData(
+      var heroesData = HeroesData(
           name: _playerOne!.displayName,
           imagePath: "assets/dt_companion/${_playerOne!.name}.png",
           victories: 0,
@@ -137,9 +137,9 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
 
       try {
         try {
-          HeroesListData hero = userService.heroesListData
+          HeroesData hero = userService.heroesListData
               .firstWhere((hero) => hero.name == heroesData.name);
-          if (_winningTeam != 'Draw') {
+          if (_winningTeam != 'Draw'.tr(context)) {
             if (winner) {
               heroesData.victories = hero.victories + 1;
               heroesData.defeats = hero.defeats;
@@ -156,7 +156,7 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
           }
           userService.updateHeroesData(heroesData);
         } catch (e) {
-          if (_winningTeam != 'Draw') {
+          if (_winningTeam != 'Draw'.tr(context)) {
             if (winner) {
               heroesData.victories += 1;
             } else {
@@ -173,7 +173,7 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
       }
 
       try {
-        var gameData = GamesListData(
+        var gameData = GamesData(
             playerOneImagePath: "assets/dt_companion/${_playerOne!.name}.png",
             playerOne: 'You',
             playerOneUltimates: int.parse(_playerOneUltimates.text),

@@ -29,8 +29,6 @@ class _TournamentScreenState extends State<TournamentScreen>
             parent: widget.animationController!,
             curve: Interval(0, 0.5, curve: Curves.fastOutSlowIn)));
 
-    addAllListData();
-
     scrollController.addListener(() {
       if (scrollController.offset >= 24) {
         if (topBarOpacity != 1.0) {
@@ -55,44 +53,6 @@ class _TournamentScreenState extends State<TournamentScreen>
     });
 
     super.initState();
-  }
-
-  void addAllListData() {
-    const int count = 1;
-
-    listViews.add(AnimatedBuilder(
-      animation: widget.animationController!,
-      builder: (BuildContext context, Widget? child) {
-        return FadeTransition(
-          opacity: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
-              parent: widget.animationController!,
-              curve:
-                  Interval((1 / count) * 1, 1.0, curve: Curves.fastOutSlowIn))),
-          child: new Transform(
-            transform: new Matrix4.translationValues(
-                0.0,
-                30 *
-                    (1.0 -
-                        Tween<double>(begin: 0.0, end: 1.0)
-                            .animate(CurvedAnimation(
-                                parent: widget.animationController!,
-                                curve: Interval((1 / count) * 1, 1.0,
-                                    curve: Curves.fastOutSlowIn)))
-                            .value),
-                0.0),
-            child: Padding(
-              padding: EdgeInsets.only(left: 48, right: 16, top: 64),
-              child: Lottie.asset(
-                'assets/dt_companion/under_construct.json',
-                width: MediaQuery.of(context).size.width - 64,
-                height: 400,
-                fit: BoxFit.cover,
-              ),
-            )
-          ),
-        );
-      },
-    ));
   }
 
   @override
@@ -123,11 +83,44 @@ class _TournamentScreenState extends State<TournamentScreen>
             80,
         bottom: 62 + MediaQuery.of(context).padding.bottom,
       ),
-      itemCount: listViews.length,
+      itemCount: 1,
       scrollDirection: Axis.vertical,
       itemBuilder: (BuildContext context, int index) {
         widget.animationController?.forward();
-        return listViews[index];
+        return AnimatedBuilder(
+          animation: widget.animationController!,
+          builder: (BuildContext context, Widget? child) {
+            return FadeTransition(
+              opacity: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
+                  parent: widget.animationController!,
+                  curve:
+                  Interval((1 / 1) * 1, 1.0, curve: Curves.fastOutSlowIn))),
+              child: new Transform(
+                  transform: new Matrix4.translationValues(
+                      0.0,
+                      30 *
+                          (1.0 -
+                              Tween<double>(begin: 0.0, end: 1.0)
+                                  .animate(CurvedAnimation(
+                                  parent: widget.animationController!,
+                                  curve: Interval((1 / 1) * 1, 1.0,
+                                      curve: Curves.fastOutSlowIn)))
+                                  .value),
+                      0.0),
+                  child: Center(
+                    child: Padding(
+                      padding: EdgeInsets.all(16),
+                      child: Lottie.asset(
+                        'assets/dt_companion/under_construct.json',
+                        width: MediaQuery.of(context).size.width * 0.9,
+                        height: MediaQuery.of(context).size.height * 0.5,
+                      ),
+                    ),
+                  )
+              ),
+            );
+          },
+        );
       },
     );
   }

@@ -1,6 +1,6 @@
 import 'package:dt_companion/dt_companion/companion_app_theme.dart';
 import 'package:dt_companion/dt_companion/extension/localization_extension.dart';
-import 'package:dt_companion/dt_companion/models/heroes_list_data.dart';
+import 'package:dt_companion/dt_companion/models/heroes_data.dart';
 import 'package:dt_companion/dt_companion/service.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
@@ -63,7 +63,7 @@ class _AllHeroesListScreenState extends State<AllHeroesListView>
   Future<void> _analytics() async {
     // Analytics
     await FirebaseAnalytics.instance
-        .logScreenView(screenName: 'HeroesView');
+        .logScreenView(screenName: 'FriendsView');
   }
 
   @override
@@ -87,7 +87,7 @@ class _AllHeroesListScreenState extends State<AllHeroesListView>
     );
   }
 
-  Widget getHeroesList(List<HeroesListData> heroesListData) {
+  Widget getHeroesList(List<HeroesData> heroesListData) {
     return ListView.builder(
       controller: scrollController,
       padding: EdgeInsets.only(

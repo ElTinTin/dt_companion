@@ -1,5 +1,6 @@
 import 'package:dt_companion/dt_companion/extension/localization_extension.dart';
 import 'package:dt_companion/dt_companion/profile/faq_screen.dart';
+import 'package:dt_companion/dt_companion/profile/friends_list_view.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -101,6 +102,112 @@ class _ProfileScreenState extends State<ProfileScreen>
         widget.animationController?.forward();
         return Column(
           children: [
+            /*AnimatedBuilder(
+              animation: widget.animationController!,
+              builder: (BuildContext context, Widget? child) {
+                return FadeTransition(
+                  opacity: Tween<double>(begin: 0.0, end: 1.0).animate(
+                      CurvedAnimation(
+                          parent: widget.animationController!,
+                          curve: Interval((1 / 5) * 4, 1.0,
+                              curve: Curves.fastOutSlowIn))),
+                  child: new Transform(
+                    transform: new Matrix4.translationValues(
+                        0.0,
+                        30 *
+                            (1.0 -
+                                Tween<double>(begin: 0.0, end: 1.0)
+                                    .animate(CurvedAnimation(
+                                    parent: widget.animationController!,
+                                    curve: Interval((1 / 5) * 4, 1.0,
+                                        curve: Curves.fastOutSlowIn)))
+                                    .value),
+                        0.0),
+                    child: Container(
+                        width: MediaQuery.of(context).size.width * 0.8,
+                        child: Padding(
+                          padding: EdgeInsets.all(16),
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                foregroundColor: CompanionAppTheme.darkerText,
+                                backgroundColor: CompanionAppTheme.lightText,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                elevation: 15.0,
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 8, vertical: 16),
+                                textStyle: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: CompanionAppTheme.darkerText)),
+                            child: Text('profile_friends_title'.tr(context)),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => FriendsListView(animationController: widget.animationController!)),
+                              );
+                            },
+                          ),
+                        )),
+                  ),
+                );
+              },
+            ),*/
+            AnimatedBuilder(
+              animation: widget.animationController!,
+              builder: (BuildContext context, Widget? child) {
+                return FadeTransition(
+                  opacity: Tween<double>(begin: 0.0, end: 1.0).animate(
+                      CurvedAnimation(
+                          parent: widget.animationController!,
+                          curve: Interval((1 / 5) * 4, 1.0,
+                              curve: Curves.fastOutSlowIn))),
+                  child: new Transform(
+                    transform: new Matrix4.translationValues(
+                        0.0,
+                        30 *
+                            (1.0 -
+                                Tween<double>(begin: 0.0, end: 1.0)
+                                    .animate(CurvedAnimation(
+                                    parent: widget.animationController!,
+                                    curve: Interval((1 / 5) * 4, 1.0,
+                                        curve: Curves.fastOutSlowIn)))
+                                    .value),
+                        0.0),
+                    child: Container(
+                        width: MediaQuery.of(context).size.width * 0.8,
+                        child: Padding(
+                          padding: EdgeInsets.all(16),
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                foregroundColor: CompanionAppTheme.darkerText,
+                                backgroundColor: CompanionAppTheme.lightText,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                elevation: 15.0,
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 8, vertical: 16),
+                                textStyle: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: CompanionAppTheme.darkerText)),
+                            child: const Text('Rulepop'),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const FAQScreen()),
+                              );
+                            },
+                          ),
+                        )),
+                  ),
+                );
+              },
+            ),
             TitleView(
               titleTxt: 'profile_import_export'.tr(context),
               subTxt: '',
@@ -136,69 +243,6 @@ class _ProfileScreenState extends State<ProfileScreen>
                         child: Padding(
                             padding: EdgeInsets.all(16),
                             child: GoogleSignInView())),
-                  ),
-                );
-              },
-            ),
-            TitleView(
-              titleTxt: 'profile_rules'.tr(context),
-              subTxt: '',
-              animation: Tween<double>(begin: 0.0, end: 1.0).animate(
-                  CurvedAnimation(
-                      parent: widget.animationController!,
-                      curve: Interval((1 / 5) * 3, 1.0,
-                          curve: Curves.fastOutSlowIn))),
-              animationController: widget.animationController!,
-            ),
-            AnimatedBuilder(
-              animation: widget.animationController!,
-              builder: (BuildContext context, Widget? child) {
-                return FadeTransition(
-                  opacity: Tween<double>(begin: 0.0, end: 1.0).animate(
-                      CurvedAnimation(
-                          parent: widget.animationController!,
-                          curve: Interval((1 / 5) * 4, 1.0,
-                              curve: Curves.fastOutSlowIn))),
-                  child: new Transform(
-                    transform: new Matrix4.translationValues(
-                        0.0,
-                        30 *
-                            (1.0 -
-                                Tween<double>(begin: 0.0, end: 1.0)
-                                    .animate(CurvedAnimation(
-                                        parent: widget.animationController!,
-                                        curve: Interval((1 / 5) * 4, 1.0,
-                                            curve: Curves.fastOutSlowIn)))
-                                    .value),
-                        0.0),
-                    child: Container(
-                        width: MediaQuery.of(context).size.width * 0.8,
-                        child: Padding(
-                          padding: EdgeInsets.all(16),
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                foregroundColor: CompanionAppTheme.darkerText,
-                                backgroundColor: CompanionAppTheme.lightText,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                elevation: 15.0,
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 8, vertical: 16),
-                                textStyle: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    color: CompanionAppTheme.darkerText)),
-                            child: const Text('Rulepop'),
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const FAQScreen()),
-                              );
-                            },
-                          ),
-                        )),
                   ),
                 );
               },
@@ -318,7 +362,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                     0.0, 30 * (1.0 - topBarAnimation!.value), 0.0),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: CompanionAppTheme.white.withOpacity(topBarOpacity),
+                    color: CompanionAppTheme.dark_grey.withOpacity(topBarOpacity),
                     borderRadius: const BorderRadius.only(
                       bottomLeft: Radius.circular(32.0),
                     ),

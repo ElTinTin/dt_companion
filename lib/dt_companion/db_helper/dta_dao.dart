@@ -1,20 +1,20 @@
 import 'package:dt_companion/dt_companion/db_helper/db_helper.dart';
-import 'package:dt_companion/dt_companion/models/dta_list_data.dart';
+import 'package:dt_companion/dt_companion/models/dta_data.dart';
 
 class DTAdventureDAO {
   final dbHelper = DTADBHelper.instance;
 
-  Future<void> insertDTAListData(DTAListData game) async {
+  Future<void> insertDTAListData(DTAData game) async {
     final db = await dbHelper.database;
     await db.insert('dta', game.toMap());
   }
 
-  Future<List<DTAListData>> getDTAListData() async {
+  Future<List<DTAData>> getDTAListData() async {
     final db = await dbHelper.database;
     final List<Map<String, dynamic>> maps = await db.query('dta');
 
-    List<DTAListData> dtaList = List.generate(maps.length, (i) {
-      return DTAListData.fromMap(maps[i]);
+    List<DTAData> dtaList = List.generate(maps.length, (i) {
+      return DTAData.fromMap(maps[i]);
     });
 
     dtaList.sort((a, b) => DateTime.fromMillisecondsSinceEpoch(b.date).compareTo(DateTime.fromMillisecondsSinceEpoch(a.date)));
@@ -22,7 +22,7 @@ class DTAdventureDAO {
     return dtaList;
   }
 
-  Future<void> updateDTAListData(DTAListData game) async {
+  Future<void> updateDTAListData(DTAData game) async {
     final db = await dbHelper.database;
     await db.update('dta', game.toMap(), where: 'id = ?', whereArgs: [game.id]);
   }

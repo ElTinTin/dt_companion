@@ -1,7 +1,7 @@
 import 'package:dt_companion/dt_companion/companion/heroes_list_view.dart';
 import 'package:dt_companion/dt_companion/companion_app_theme.dart';
 import 'package:dt_companion/dt_companion/extension/localization_extension.dart';
-import 'package:dt_companion/dt_companion/models/games_list_data.dart';
+import 'package:dt_companion/dt_companion/models/games_data.dart';
 import 'package:dt_companion/dt_companion/service.dart';
 import 'package:dt_companion/main.dart';
 import 'package:flutter/material.dart';
@@ -39,7 +39,7 @@ class _GamesListViewState extends State<GamesListView>
     super.dispose();
   }
 
-  Widget getGamesList(List<GamesListData> gamesListData) {
+  Widget getGamesList(List<GamesData> gamesListData) {
     return ListView.builder(
       padding: const EdgeInsets.only(
           top: 0, bottom: 0, right: 16, left: 16),
@@ -118,34 +118,34 @@ class GameView extends StatelessWidget {
       {Key? key, this.gamesListData, this.animationController, this.animation})
       : super(key: key);
 
-  final GamesListData? gamesListData;
+  final GamesData? gamesListData;
   final AnimationController? animationController;
   final Animation<double>? animation;
 
-  Color getBorderColorOne(String winner) {
-    if (winner == 'Draw') {
+  Color getBorderColorOne(String winner, BuildContext context) {
+    if (winner == 'Draw'.tr(context)) {
       return CompanionAppTheme.drawOrange;
-    } else if (winner == 'Team 1' || winner == 'You'){
+    } else if (winner == 'Team 1'.tr(context) || winner == 'You'.tr(context)){
       return CompanionAppTheme.victoryGreen;
     } else {
       return CompanionAppTheme.defeatRed;
     }
   }
 
-  Color getBorderColorTwo(String winner) {
-    if (winner == 'Draw') {
+  Color getBorderColorTwo(String winner, BuildContext context) {
+    if (winner == 'Draw'.tr(context)) {
       return CompanionAppTheme.drawOrange;
-    } else if (winner == 'Team 2' || winner == 'Player 2') {
+    } else if (winner == 'Team 2'.tr(context) || winner == 'Player 2'.tr(context)) {
       return CompanionAppTheme.victoryGreen;
     } else {
       return CompanionAppTheme.defeatRed;
     }
   }
 
-  Color getBorderColorThree(String winner) {
-    if (winner == 'Draw') {
+  Color getBorderColorThree(String winner, BuildContext context) {
+    if (winner == 'Draw'.tr(context)) {
       return CompanionAppTheme.drawOrange;
-    } else if (winner == 'Player 3'){
+    } else if (winner == 'Player 3'.tr(context)){
       return CompanionAppTheme.victoryGreen;
     } else {
       return CompanionAppTheme.defeatRed;
@@ -170,7 +170,7 @@ class GameView extends StatelessWidget {
                     padding: const EdgeInsets.only(
                         top: 32, left: 8, right: 8, bottom: 16),
                     child: Container(
-                      width: gamesListData?.gamemode != Mode.onevsone ? 180 : 130,
+                      width: gamesListData?.gamemode != Mode.onevsone ? 180 : 150,
                       decoration: BoxDecoration(
                         boxShadow: <BoxShadow>[
                           BoxShadow(
@@ -337,7 +337,7 @@ class GameView extends StatelessWidget {
                                 ),
                               if (gamesListData?.gamemode == Mode.onevsone)
                                 Text(
-                                  '${gamesListData?.playerThree}'.tr(context),
+                                  '${gamesListData?.playerTwo}'.tr(context),
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     fontFamily: CompanionAppTheme.fontName,
@@ -401,7 +401,7 @@ class GameView extends StatelessWidget {
                               width: 54,
                               height: 54,
                               decoration: BoxDecoration(
-                                color: getBorderColorOne(gamesListData?.winner ?? ""),
+                                color: getBorderColorOne(gamesListData?.winner ?? "", context),
                                 borderRadius: BorderRadius.circular(27),
                               ),
                             ),
@@ -435,7 +435,7 @@ class GameView extends StatelessWidget {
                                 width: 54,
                                 height: 54,
                                 decoration: BoxDecoration(
-                                  color: getBorderColorTwo(gamesListData?.winner ?? ""),
+                                  color: getBorderColorTwo(gamesListData?.winner ?? "", context),
                                   borderRadius: BorderRadius.circular(27),
                                 ),
                               ),
@@ -469,7 +469,7 @@ class GameView extends StatelessWidget {
                                 width: 54,
                                 height: 54,
                                 decoration: BoxDecoration(
-                                  color: getBorderColorOne(gamesListData?.winner ?? ""),
+                                  color: getBorderColorOne(gamesListData?.winner ?? "", context),
                                   borderRadius: BorderRadius.circular(27),
                                 ),
                               ),
@@ -503,7 +503,7 @@ class GameView extends StatelessWidget {
                                 width: 54,
                                 height: 54,
                                 decoration: BoxDecoration(
-                                  color: getBorderColorTwo(gamesListData?.winner ?? ""),
+                                  color: getBorderColorTwo(gamesListData?.winner ?? "", context),
                                   borderRadius: BorderRadius.circular(27),
                                 ),
                               ),
@@ -537,7 +537,7 @@ class GameView extends StatelessWidget {
                                 width: 54,
                                 height: 54,
                                 decoration: BoxDecoration(
-                                  color: getBorderColorTwo(gamesListData?.winner ?? ""),
+                                  color: getBorderColorTwo(gamesListData?.winner ?? "", context),
                                   borderRadius: BorderRadius.circular(27),
                                 ),
                               ),
@@ -571,7 +571,7 @@ class GameView extends StatelessWidget {
                                 width: 54,
                                 height: 54,
                                 decoration: BoxDecoration(
-                                  color: getBorderColorOne(gamesListData?.winner ?? ""),
+                                  color: getBorderColorOne(gamesListData?.winner ?? "", context),
                                   borderRadius: BorderRadius.circular(27),
                                 ),
                               ),
@@ -604,7 +604,7 @@ class GameView extends StatelessWidget {
                               width: 54,
                               height: 54,
                               decoration: BoxDecoration(
-                                color: getBorderColorTwo(gamesListData?.winner ?? ""),
+                                color: getBorderColorTwo(gamesListData?.winner ?? "", context),
                                 borderRadius: BorderRadius.circular(27),
                               ),
                             ),

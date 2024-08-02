@@ -1,6 +1,6 @@
 import 'package:dt_companion/dt_companion/companion_app_theme.dart';
 import 'package:dt_companion/dt_companion/extension/localization_extension.dart';
-import 'package:dt_companion/dt_companion/models/heroes_list_data.dart';
+import 'package:dt_companion/dt_companion/models/heroes_data.dart';
 import 'package:dt_companion/dt_companion/service.dart';
 import 'package:dt_companion/main.dart';
 import 'package:flutter/material.dart';
@@ -37,7 +37,7 @@ class _HeroesListViewState extends State<HeroesListView>
     super.dispose();
   }
 
-  Widget getHeroesList(List<HeroesListData> heroesListData) {
+  Widget getHeroesList(List<HeroesData> heroesListData) {
     return ListView.builder(
       padding: const EdgeInsets.only(top: 0, bottom: 0, right: 16, left: 16),
       itemCount: heroesListData.length,
@@ -109,7 +109,7 @@ class HeroView extends StatelessWidget {
       {Key? key, this.heroesListData, this.animationController, this.animation})
       : super(key: key);
 
-  final HeroesListData? heroesListData;
+  final HeroesData? heroesListData;
   final AnimationController? animationController;
   final Animation<double>? animation;
 

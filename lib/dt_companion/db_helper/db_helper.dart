@@ -3,10 +3,10 @@ import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
-class UserDBHelper {
-  UserDBHelper._();
+class FriendsDBHelper {
+  FriendsDBHelper._();
 
-  static final UserDBHelper instance = UserDBHelper._();
+  static final FriendsDBHelper instance = FriendsDBHelper._();
 
   static Database? _database;
 
@@ -19,7 +19,7 @@ class UserDBHelper {
 
   Future<Database> initDB() async {
     Directory dir = await getApplicationDocumentsDirectory();
-    String path = dir.path + "/user_database.db";
+    String path = dir.path + "/friends_database.db";
 
     return await openDatabase(
       path,
@@ -27,8 +27,10 @@ class UserDBHelper {
       readOnly: false,
       onCreate: (db, version) async {
         await db.execute('''
-          CREATE TABLE user (
-            name TEXT PRIMARY KEY
+          CREATE TABLE friends (
+            name TEXT PRIMARY KEY,
+            victories INTEGER,
+            defeats INTEGER
           )
         ''');
       },

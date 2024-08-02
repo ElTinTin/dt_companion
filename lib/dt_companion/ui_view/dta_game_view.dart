@@ -1,6 +1,6 @@
 import 'package:dt_companion/dt_companion/companion_app_theme.dart';
-import 'package:dt_companion/dt_companion/models/dta_list_data.dart';
-import 'package:dt_companion/dt_companion/models/heroes_list_data.dart';
+import 'package:dt_companion/dt_companion/models/dta_data.dart';
+import 'package:dt_companion/dt_companion/models/heroes_data.dart';
 import 'package:dt_companion/dt_companion/service.dart';
 import 'package:dt_companion/main.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +14,7 @@ class DTAGameView extends StatefulWidget {
 
   final AnimationController? animationController;
   final Animation<double>? animation;
-  final DTAListData? dtaListData;
+  final DTAData? dtaListData;
 
   @override
   _DTAGameViewState createState() => _DTAGameViewState();

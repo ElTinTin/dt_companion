@@ -1,20 +1,20 @@
 import 'package:dt_companion/dt_companion/db_helper/db_helper.dart';
-import 'package:dt_companion/dt_companion/models/games_list_data.dart';
+import 'package:dt_companion/dt_companion/models/games_data.dart';
 
 class GamesDAO {
   final dbHelper = GamesDBHelper.instance;
 
-  Future<void> insertGamesListData(GamesListData games) async {
+  Future<void> insertGamesListData(GamesData games) async {
     final db = await dbHelper.database;
     await db.insert('games', games.toMap());
   }
 
-  Future<List<GamesListData>> getGamesListData() async {
+  Future<List<GamesData>> getGamesListData() async {
     final db = await dbHelper.database;
     final List<Map<String, dynamic>> maps = await db.query('games');
 
-    List<GamesListData> gamesList = List.generate(maps.length, (i) {
-      return GamesListData.fromMap(maps[i]);
+    List<GamesData> gamesList = List.generate(maps.length, (i) {
+      return GamesData.fromMap(maps[i]);
     });
 
     // Trier par date décroissante (du plus récent au plus ancien)
@@ -23,7 +23,7 @@ class GamesDAO {
     return gamesList;
   }
 
-  Future<void> updateGamesListData(GamesListData games) async {
+  Future<void> updateGamesListData(GamesData games) async {
     final db = await dbHelper.database;
     await db.update('games', games.toMap(), where: 'id = ?', whereArgs: [games.id]);
   }

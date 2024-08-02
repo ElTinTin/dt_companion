@@ -1,6 +1,6 @@
 import 'package:dt_companion/dt_companion/companion/dta_game_detail_view.dart';
 import 'package:dt_companion/dt_companion/companion_app_theme.dart';
-import 'package:dt_companion/dt_companion/models/dta_list_data.dart';
+import 'package:dt_companion/dt_companion/models/dta_data.dart';
 import 'package:dt_companion/dt_companion/service.dart';
 import 'package:dt_companion/dt_companion/ui_view/dta_game_view.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -88,7 +88,7 @@ class _DTAListViewState extends State<DTAListView>
     );
   }
 
-  Widget getDTAList(List<DTAListData> dtaListData) {
+  Widget getDTAList(List<DTAData> dtaListData) {
     return ListView.builder(
       controller: scrollController,
       padding: EdgeInsets.only(
@@ -109,13 +109,14 @@ class _DTAListViewState extends State<DTAListView>
         widget.animationController?.forward();
 
         if (dtaListData.length == 0) {
-          return Padding(
-            padding: EdgeInsets.only(left: 16, right: 16, top: 64),
-            child: Lottie.asset(
-              'assets/dt_companion/empty_lottie.json',
-              width: MediaQuery.of(context).size.width - 64,
-              height: 400,
-              fit: BoxFit.cover,
+          return Center(
+            child: Padding(
+              padding: EdgeInsets.all(16),
+              child: Lottie.asset(
+                'assets/dt_companion/empty_lottie.json',
+                width: MediaQuery.of(context).size.width * 0.8,
+                height: MediaQuery.of(context).size.height * 0.5,
+              ),
             ),
           );
         } else {

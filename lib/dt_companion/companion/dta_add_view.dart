@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:dt_companion/dt_companion/extension/localization_extension.dart';
 import 'package:dt_companion/dt_companion/models/dta_cards.dart';
-import 'package:dt_companion/dt_companion/models/dta_list_data.dart';
+import 'package:dt_companion/dt_companion/models/dta_data.dart';
 import 'package:dt_companion/dt_companion/profile/faq_screen.dart';
 import 'package:dt_companion/dt_companion/service.dart';
 import 'package:flutter/cupertino.dart';
@@ -13,7 +13,7 @@ import 'package:flutter_switch/flutter_switch.dart';
 
 import '../companion_app_home_screen.dart';
 import '../companion_app_theme.dart';
-import '../models/heroes_list_data.dart';
+import '../models/heroes_data.dart';
 
 class DTAAddView extends StatefulWidget {
   const DTAAddView({Key? key, this.animationController}) : super(key: key);
@@ -135,7 +135,7 @@ class _DTAAddViewState extends State<DTAAddView> with TickerProviderStateMixin {
             legendaryCards: []));
       }
 
-      var dtaData = DTAListData(
+      var dtaData = DTAData(
           id: generateRandomId(),
           teamName: _teamNameController.text,
           campaignScore: 0,

@@ -2,7 +2,7 @@ import 'package:dt_companion/dt_companion/companion_app_theme.dart';
 import 'package:dt_companion/dt_companion/extension/localization_extension.dart';
 import 'package:dt_companion/dt_companion/extension/string_extension.dart';
 import 'package:dt_companion/dt_companion/models/dta_cards.dart';
-import 'package:dt_companion/dt_companion/models/heroes_list_data.dart';
+import 'package:dt_companion/dt_companion/models/heroes_data.dart';
 import 'package:dt_companion/dt_companion/service.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/cupertino.dart';
@@ -13,7 +13,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 
 import '../../main.dart';
-import '../models/dta_list_data.dart';
+import '../models/dta_data.dart';
 
 class DTAGameDetailView extends StatefulWidget {
   const DTAGameDetailView(
@@ -21,7 +21,7 @@ class DTAGameDetailView extends StatefulWidget {
       : super(key: key);
 
   final AnimationController? animationController;
-  final DTAListData dtaListData;
+  final DTAData dtaListData;
 
   @override
   _DTAGameDetailViewState createState() => _DTAGameDetailViewState();
