@@ -138,66 +138,70 @@ class _GamesStatisticsViewState extends State<GamesStatisticsView>
     }
   }
 
-  String getVictory() {
+  String getPlayerText(String? playerName, String customText, BuildContext context) {
+    return (playerName ?? "") == customText ? "$customText".tr(context) : playerName ?? "";
+  }
+
+  String getVictory(BuildContext context) {
     final winner = widget.gamesListData?.winner;
 
     if (widget.gamesListData?.gamemode == Mode.onevsone) {
       if (winner == 'You') {
         return widget.gamesListData?.playerOne ?? '';
       } else {
-        return widget.gamesListData?.playerThree ?? '';
+        return '${getPlayerText(widget.gamesListData?.playerTwo, "Player 2", context)}';
       }
     } else if (widget.gamesListData?.gamemode == Mode.twovstwo) {
       if (winner == 'Team 1') {
-        return '${widget.gamesListData?.playerOne} \n${widget.gamesListData?.playerTwo}';
+        return '${widget.gamesListData?.playerOne} \n${getPlayerText(widget.gamesListData?.playerTwo, "Player 2", context)}';
       } else {
-        return '${widget.gamesListData?.playerThree} \n${widget.gamesListData?.playerFour}';
+        return '${getPlayerText(widget.gamesListData?.playerThree, "Player 3", context)} \n${getPlayerText(widget.gamesListData?.playerFour, "Player 4", context)}';
       }
     } else if (widget.gamesListData?.gamemode == Mode.koth) {
       if (winner == 'You') {
         return '${widget.gamesListData?.playerOne}';
       } else if (winner == 'Player 2') {
-        return '${widget.gamesListData?.playerTwo}';
+        return '${getPlayerText(widget.gamesListData?.playerTwo, "Player 2", context)}';
       } else {
-        return '${widget.gamesListData?.playerThree}';
+        return '${getPlayerText(widget.gamesListData?.playerThree, "Player 3", context)}';
       }
     } else {
       if (winner == 'Team 1') {
-        return '${widget.gamesListData?.playerOne} \n${widget.gamesListData?.playerTwo} \n${widget.gamesListData?.playerFive}';
+        return '${widget.gamesListData?.playerOne} \n${getPlayerText(widget.gamesListData?.playerTwo, "Player 2", context)} \n${getPlayerText(widget.gamesListData?.playerFive, "Player 5", context)}';
       } else {
-        return '${widget.gamesListData?.playerThree} \n${widget.gamesListData?.playerFour} \n${widget.gamesListData?.playerSix}';
+        return '${getPlayerText(widget.gamesListData?.playerThree, "Player 3", context)} \n${getPlayerText(widget.gamesListData?.playerFour, "Player 4", context)} \n${getPlayerText(widget.gamesListData?.playerSix, "Player 6", context)}';
       }
     }
   }
 
-  String getDefeat() {
+  String getDefeat(BuildContext context) {
     final winner = widget.gamesListData?.winner;
 
     if (widget.gamesListData?.gamemode == Mode.onevsone) {
       if (winner == 'Player 2') {
         return widget.gamesListData?.playerOne ?? '';
       } else {
-        return widget.gamesListData?.playerThree ?? '';
+        return '${getPlayerText(widget.gamesListData?.playerTwo, "Player 2", context)}';
       }
     } else if (widget.gamesListData?.gamemode == Mode.twovstwo) {
       if (winner == 'Team 2') {
-        return '${widget.gamesListData?.playerOne} \n${widget.gamesListData?.playerTwo}';
+        return '${widget.gamesListData?.playerOne} \n${getPlayerText(widget.gamesListData?.playerTwo, "Player 2", context)}';
       } else {
-        return '${widget.gamesListData?.playerThree} \n${widget.gamesListData?.playerFour}';
+        return '${getPlayerText(widget.gamesListData?.playerThree, "Player 3", context)} \n${getPlayerText(widget.gamesListData?.playerFour, "Player 4", context)}';
       }
     } else if (widget.gamesListData?.gamemode == Mode.koth) {
       if (winner == 'You') {
-        return '${widget.gamesListData?.playerTwo} \n${widget.gamesListData?.playerThree}';
+        return '${getPlayerText(widget.gamesListData?.playerTwo, "Player 2", context)} \n${getPlayerText(widget.gamesListData?.playerThree, "Player 3", context)}';
       } else if (winner == 'Player 2') {
-        return '${widget.gamesListData?.playerOne} \n${widget.gamesListData?.playerThree}';
+        return '${widget.gamesListData?.playerOne} \n${getPlayerText(widget.gamesListData?.playerThree, "Player 3", context)}';
       } else {
-        return '${widget.gamesListData?.playerOne} \n${widget.gamesListData?.playerTwo}';
+        return '${widget.gamesListData?.playerOne} \n${getPlayerText(widget.gamesListData?.playerTwo, "Player 2", context)}';
       }
     } else {
       if (winner == 'Team 2') {
-        return '${widget.gamesListData?.playerOne} \n${widget.gamesListData?.playerTwo} \n${widget.gamesListData?.playerFive}';
+        return '${widget.gamesListData?.playerOne} \n${getPlayerText(widget.gamesListData?.playerTwo, "Player 2", context)} \n${getPlayerText(widget.gamesListData?.playerFive, "Player 5", context)}';
       } else {
-        return '${widget.gamesListData?.playerThree} \n${widget.gamesListData?.playerFour} \n${widget.gamesListData?.playerSix}';
+        return '${getPlayerText(widget.gamesListData?.playerThree, "Player 3", context)} \n${getPlayerText(widget.gamesListData?.playerFour, "Player 4", context)} \n${getPlayerText(widget.gamesListData?.playerSix, "Player 6", context)}';
       }
     }
   }
@@ -359,7 +363,7 @@ class _GamesStatisticsViewState extends State<GamesStatisticsView>
                                                         const EdgeInsets.only(
                                                             left: 4, bottom: 3),
                                                     child: Text(
-                                                      getVictory(),
+                                                      getVictory(context),
                                                       textAlign:
                                                           TextAlign.center,
                                                       style: TextStyle(
@@ -434,7 +438,7 @@ class _GamesStatisticsViewState extends State<GamesStatisticsView>
                                                         const EdgeInsets.only(
                                                             left: 4, bottom: 3),
                                                     child: Text(
-                                                      getDefeat(),
+                                                      getDefeat(context),
                                                       textAlign:
                                                           TextAlign.center,
                                                       style: TextStyle(
