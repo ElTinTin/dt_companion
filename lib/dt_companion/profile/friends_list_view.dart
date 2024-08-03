@@ -11,7 +11,6 @@ import 'package:provider/provider.dart';
 import '../../main.dart';
 import '../ui_view/heroes_statistics_view.dart';
 
-
 class FriendsListView extends StatefulWidget {
   const FriendsListView({Key? key, this.animationController}) : super(key: key);
 
@@ -26,6 +25,7 @@ class _FriendsListScreenState extends State<FriendsListView>
 
   final ScrollController scrollController = ScrollController();
   double topBarOpacity = 0.0;
+  TextEditingController _newFriend = TextEditingController();
 
   @override
   void initState() {
@@ -64,8 +64,75 @@ class _FriendsListScreenState extends State<FriendsListView>
 
   Future<void> _analytics() async {
     // Analytics
-    await FirebaseAnalytics.instance
-        .logScreenView(screenName: 'HeroesView');
+    await FirebaseAnalytics.instance.logScreenView(screenName: 'FriendsListView');
+  }
+
+  void showAlertDialog(BuildContext context, UserService service) {
+    // set up the buttons
+    Widget cancelButton = TextButton(
+      child: Text(
+        "alert_cancel".tr(context),
+        style: TextStyle(color: CompanionAppTheme.lightText),
+      ),
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+      style: ButtonStyle(
+        backgroundColor:
+        MaterialStateProperty.all<Color>(CompanionAppTheme.dark_grey),
+      ),
+    );
+    Widget continueButton = TextButton(
+      child: Text(
+        "alert_continue".tr(context),
+        style: TextStyle(color: CompanionAppTheme.lightText),
+      ),
+      onPressed: () {
+        Navigator.of(context).pop();
+        service.insertFriendsData(FriendsData(name: _newFriend.text, victories: 0, defeats: 0));
+      },
+      style: ButtonStyle(
+        backgroundColor:
+        MaterialStateProperty.all<Color>(CompanionAppTheme.darkerText),
+      ),
+    );
+
+    AlertDialog alert = AlertDialog(
+      title: Text(
+        "alert_friends_title".tr(context),
+        style: TextStyle(color: CompanionAppTheme.dark_grey),
+      ),
+      content: TextField(
+        decoration: InputDecoration(
+          enabledBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: CompanionAppTheme.dark_grey),
+          ),
+          focusedBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: CompanionAppTheme.dark_grey),
+          ),
+          hintText: "..."
+        ),
+        style: TextStyle(
+          color: CompanionAppTheme.dark_grey
+        ),
+        cursorColor: CompanionAppTheme.dark_grey,
+        controller: _newFriend,
+        autofocus: true,
+      ),
+      backgroundColor: CompanionAppTheme.lightText,
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
   }
 
   @override
@@ -79,7 +146,7 @@ class _FriendsListScreenState extends State<FriendsListView>
         body: Stack(
           children: <Widget>[
             getFriendsList(userService.friendsListData),
-            getAppBarUI(),
+            getAppBarUI(userService),
             SizedBox(
               height: MediaQuery.of(context).padding.bottom,
             )
@@ -101,17 +168,16 @@ class _FriendsListScreenState extends State<FriendsListView>
       itemCount: friendsListData.length,
       scrollDirection: Axis.vertical,
       itemBuilder: (BuildContext context, int index) {
-        final Animation<double> animation =
-        Tween<double>(begin: 0.0, end: 1.0).animate(
-            CurvedAnimation(
+        final Animation<double> animation = Tween<double>(begin: 0.0, end: 1.0)
+            .animate(CurvedAnimation(
                 parent: widget.animationController!,
                 curve: Interval((1 / friendsListData.length) * index, 1.0,
                     curve: Curves.fastOutSlowIn)));
         widget.animationController?.forward();
 
         return Padding(
-          padding: const EdgeInsets.only(
-              top: 0, bottom: 0, right: 12, left: 12),
+          padding:
+              const EdgeInsets.only(top: 0, bottom: 0, right: 12, left: 12),
           child: FriendsStatisticsView(
             animation: animation,
             animationController: widget.animationController!,
@@ -122,7 +188,7 @@ class _FriendsListScreenState extends State<FriendsListView>
     );
   }
 
-  Widget getAppBarUI() {
+  Widget getAppBarUI(UserService userService) {
     return Column(
       children: <Widget>[
         AnimatedBuilder(
@@ -135,7 +201,8 @@ class _FriendsListScreenState extends State<FriendsListView>
                     0.0, 30 * (1.0 - topBarAnimation!.value), 0.0),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: CompanionAppTheme.dark_grey.withOpacity(topBarOpacity),
+                    color:
+                        CompanionAppTheme.dark_grey.withOpacity(topBarOpacity),
                     borderRadius: const BorderRadius.only(
                       bottomLeft: Radius.circular(32.0),
                     ),
@@ -165,9 +232,7 @@ class _FriendsListScreenState extends State<FriendsListView>
                                 padding: EdgeInsets.only(
                                     left: 32, right: 32, top: 4, bottom: 8),
                                 child: InkWell(
-                                  onTap: () => {
-                                    Navigator.pop(context)
-                                  },
+                                  onTap: () => {Navigator.pop(context)},
                                   child: SizedBox(
                                     width: 20,
                                     height: 22,
@@ -177,8 +242,7 @@ class _FriendsListScreenState extends State<FriendsListView>
                                       size: 22,
                                     ),
                                   ),
-                                )
-                            ),
+                                )),
                             Expanded(
                               child: Padding(
                                 padding: EdgeInsets.only(
@@ -200,6 +264,7 @@ class _FriendsListScreenState extends State<FriendsListView>
                               padding: EdgeInsets.only(top: 0, right: 8),
                               child: IconButton(
                                 onPressed: () => {
+                                showAlertDialog(context, userService)
                                 },
                                 icon: Icon(
                                   Icons.add_circle,
@@ -210,7 +275,7 @@ class _FriendsListScreenState extends State<FriendsListView>
                             )
                           ],
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ),

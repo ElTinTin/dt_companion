@@ -735,14 +735,14 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                         height: 16,
                                       ),
                                     ],
-                                    if (_gamemode == Mode.threevsthree)
+                                    if (_gamemode == Mode.threevsthree) ...[
                                       DropdownButton<Character>(
                                         menuMaxHeight: 300,
                                         hint: Text(
                                           'character_select'.tr(context),
                                           style: TextStyle(
                                             fontFamily:
-                                                CompanionAppTheme.fontName,
+                                            CompanionAppTheme.fontName,
                                             fontWeight: FontWeight.bold,
                                             fontSize: 14,
                                             letterSpacing: 0.2,
@@ -763,18 +763,17 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                               character.displayName,
                                               style: TextStyle(
                                                 fontFamily:
-                                                    CompanionAppTheme.fontName,
+                                                CompanionAppTheme.fontName,
                                                 fontWeight: FontWeight.bold,
                                                 fontSize: 14,
                                                 letterSpacing: 0.2,
                                                 color:
-                                                    CompanionAppTheme.lightText,
+                                                CompanionAppTheme.lightText,
                                               ),
                                             ),
                                           );
                                         }).toList(),
                                       ),
-                                    if (_gamemode == Mode.threevsthree) ...[
                                       SizedBox(
                                         height: 16,
                                       ),

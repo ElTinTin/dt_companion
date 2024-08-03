@@ -8,6 +8,7 @@ import 'dart:math' as math;
 
 import 'package:provider/provider.dart';
 
+import '../service.dart';
 import 'overall_statistics_view.dart';
 
 class FriendsStatisticsView extends StatefulWidget {
@@ -33,8 +34,65 @@ class _FriendsStatisticsViewState extends State<FriendsStatisticsView>
     super.initState();
   }
 
+  void showAlertDialog(BuildContext context, UserService service) {
+    // set up the buttons
+    Widget cancelButton = TextButton(
+      child: Text(
+        "alert_cancel".tr(context),
+        style: TextStyle(color: CompanionAppTheme.lightText),
+      ),
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+      style: ButtonStyle(
+        backgroundColor:
+        MaterialStateProperty.all<Color>(CompanionAppTheme.dark_grey),
+      ),
+    );
+    Widget continueButton = TextButton(
+      child: Text(
+        "alert_continue".tr(context),
+        style: TextStyle(color: CompanionAppTheme.lightText),
+      ),
+      onPressed: () {
+        Navigator.of(context).pop();
+        service.deleteFriendsData(widget.friendsData?.name ?? "");
+      },
+      style: ButtonStyle(
+        backgroundColor:
+        MaterialStateProperty.all<Color>(CompanionAppTheme.darkerText),
+      ),
+    );
+
+    AlertDialog alert = AlertDialog(
+      title: Text(
+        "alert_games_title".tr(context),
+        style: TextStyle(color: CompanionAppTheme.dark_grey),
+      ),
+      content: Text(
+        "alert_friends_delete_desc".tr(context),
+        style: TextStyle(color: CompanionAppTheme.dark_grey),
+      ),
+      backgroundColor: CompanionAppTheme.lightText,
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final userService = Provider.of<UserService>(context);
+
     return AnimatedBuilder(
       animation: widget.animationController!,
       builder: (BuildContext context, Widget? child) {
@@ -325,6 +383,30 @@ class _FriendsStatisticsViewState extends State<FriendsStatisticsView>
                               ],
                             ),
                           ),
+                          Divider(
+                            color: CompanionAppTheme.lightText,
+                            thickness: 1,
+                          ),
+                          Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Spacer(),
+                              Padding(
+                                  padding:
+                                  const EdgeInsets.only(right: 16, bottom: 8),
+                                  child: InkWell(
+                                    onTap: () => {
+                                      showAlertDialog(context, userService)
+                                    },
+                                    child: Icon(
+                                      Icons.delete_forever,
+                                      color: CompanionAppTheme.lightText,
+                                      size: 26,
+                                    ),
+                                  )),
+                            ],
+                          )
                         ],
                       ),
                       /*Positioned(

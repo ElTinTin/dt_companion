@@ -56,6 +56,12 @@ class UserService with ChangeNotifier {
     friendsListData = await friendsDAO.getFriendsData();
   }
 
+  Future<void> insertFriendsData(FriendsData friendsData) async {
+    friendsDAO.insertFriendsData(friendsData);
+    this.friendsListData.add(friendsData);
+    notifyListeners();
+  }
+
   Future<void> insertHeroesData(HeroesData heroesListData) async {
     heroesDAO.insertHeroesListData(heroesListData);
     this.heroesListData.add(heroesListData);
@@ -157,6 +163,12 @@ class UserService with ChangeNotifier {
     this.heroesListData.removeWhere((item)=> p.basenameWithoutExtension(item.imagePath) == hero);
     getUserVictories();
     getUserDefeats();
+    notifyListeners();
+  }
+
+  Future<void> deleteFriendsData(String friend) async {
+    friendsDAO.deleteFriendsData(friend);
+    this.friendsListData.removeWhere((item)=> item.name == friend);
     notifyListeners();
   }
 
@@ -269,6 +281,9 @@ class UserService with ChangeNotifier {
     gamesDAO.clearData();
     heroesDAO.clearData();
     dtaDAO.clearData();
+    gamesListData = [];
+    heroesListData = [];
+    dtaListData = [];
 
     for (var game in gamesData) {
       await gamesDAO.insertGamesListData(game);

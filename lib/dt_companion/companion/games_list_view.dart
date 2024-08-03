@@ -122,6 +122,11 @@ class GameView extends StatelessWidget {
   final AnimationController? animationController;
   final Animation<double>? animation;
 
+
+  String getPlayerText(String? playerName, String customText, BuildContext context) {
+    return (playerName ?? "") == customText ? "$customText".tr(context) : playerName ?? "";
+  }
+
   Color getBorderColorOne(String winner, BuildContext context) {
     if (winner == 'Draw'.tr(context)) {
       return CompanionAppTheme.drawOrange;
@@ -219,7 +224,7 @@ class GameView extends StatelessWidget {
                                       ),
                                     ),
                                     Text(
-                                      ' - ' + '${gamesListData?.playerTwo}'.tr(context),
+                                      ' - ${getPlayerText(gamesListData?.playerTwo, "Player 2", context)}',
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                         fontFamily: CompanionAppTheme.fontName,
@@ -260,7 +265,7 @@ class GameView extends StatelessWidget {
                                     ),
                                     Spacer(),
                                     Text(
-                                      '${gamesListData?.playerTwo}'.tr(context),
+                                      '${getPlayerText(gamesListData?.playerTwo, "Player 2", context)}',
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                         fontFamily: CompanionAppTheme.fontName,
@@ -276,8 +281,8 @@ class GameView extends StatelessWidget {
                               if (gamesListData?.gamemode == Mode.threevsthree)
                                 Text(
                                   '${gamesListData?.playerOne.tr(context) ?? ""} - '
-                                      '${gamesListData?.playerTwo.tr(context) ?? ""} - '
-                                      '${gamesListData?.playerFive.tr(context) ?? ""}',
+                                      '${getPlayerText(gamesListData?.playerTwo, "Player 2", context)} - '
+                                      '${getPlayerText(gamesListData?.playerFive, "Player 5", context)}',
                                   textAlign: TextAlign.center,
                                   overflow: TextOverflow.fade,
                                   maxLines: 1,
@@ -312,7 +317,7 @@ class GameView extends StatelessWidget {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Text(
-                                      '${gamesListData?.playerThree}'.tr(context),
+                                      '${getPlayerText(gamesListData?.playerTwo, "Player 2", context)}',
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                         fontFamily: CompanionAppTheme.fontName,
@@ -323,7 +328,7 @@ class GameView extends StatelessWidget {
                                       ),
                                     ),
                                     Text(
-                                      ' - ' + '${gamesListData?.playerFour}'.tr(context),
+                                      ' - ' + '${getPlayerText(gamesListData?.playerFour, "Player 4", context)}',
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                         fontFamily: CompanionAppTheme.fontName,
@@ -337,7 +342,7 @@ class GameView extends StatelessWidget {
                                 ),
                               if (gamesListData?.gamemode == Mode.onevsone)
                                 Text(
-                                  '${gamesListData?.playerTwo}'.tr(context),
+                                  '${getPlayerText(gamesListData?.playerTwo, "Player 2", context)}',
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     fontFamily: CompanionAppTheme.fontName,
@@ -353,7 +358,7 @@ class GameView extends StatelessWidget {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Text(
-                                      '${gamesListData?.playerThree}'.tr(context),
+                                      '${getPlayerText(gamesListData?.playerThree, "Player 3", context)}',
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                         fontFamily: CompanionAppTheme.fontName,
@@ -367,9 +372,9 @@ class GameView extends StatelessWidget {
                                 ),
                               if (gamesListData?.gamemode == Mode.threevsthree)
                                 Text(
-                                  '${gamesListData?.playerThree.tr(context) ?? ""} - '
-                                      '${gamesListData?.playerFour.tr(context) ?? ""} - '
-                                      '${gamesListData?.playerSix.tr(context) ?? ""}',
+                                  '${getPlayerText(gamesListData?.playerThree, "Player 3", context)} - '
+                                      '${getPlayerText(gamesListData?.playerFour, "Player 4", context)} - '
+                                      '${getPlayerText(gamesListData?.playerSix, "Player 6", context)}',
                                   textAlign: TextAlign.center,
                                   overflow: TextOverflow.fade,
                                   maxLines: 1,

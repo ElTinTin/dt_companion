@@ -22,9 +22,9 @@ class FriendsDAO {
     await db.update('friends', user.toMap(), where: 'name = ?', whereArgs: [user.name]);
   }
 
-  Future<void> deleteFriendsData(int id) async {
+  Future<void> deleteFriendsData(String name) async {
     final db = await dbHelper.database;
-    await db.delete('friends', where: 'name = ?', whereArgs: [id]);
+    await db.delete('friends', where: 'name = ?', whereArgs: [name]);
   }
 
   Future<void> clearData() async {
