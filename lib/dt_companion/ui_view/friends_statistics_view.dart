@@ -213,7 +213,7 @@ class _FriendsStatisticsViewState extends State<FriendsStatisticsView>
                                                         const EdgeInsets.only(
                                                             left: 4, bottom: 3),
                                                         child: Text(
-                                                          '${(widget.friendsData?.victories ?? 0 * widget.animation!.value).toInt()}',
+                                                          '${(widget.friendsData?.victoriesAgainst ?? 0 * widget.animation!.value).toInt()}',
                                                           textAlign: TextAlign.center,
                                                           style: TextStyle(
                                                             fontFamily:
@@ -286,7 +286,7 @@ class _FriendsStatisticsViewState extends State<FriendsStatisticsView>
                                                         const EdgeInsets.only(
                                                             left: 4, bottom: 3),
                                                         child: Text(
-                                                          '${(widget.friendsData?.defeats ?? 0 * widget.animation!.value).toInt()}',
+                                                          '${(widget.friendsData?.defeatsAgainst ?? 0 * widget.animation!.value).toInt()}',
                                                           textAlign: TextAlign.center,
                                                           style: TextStyle(
                                                             fontFamily:
@@ -329,7 +329,7 @@ class _FriendsStatisticsViewState extends State<FriendsStatisticsView>
                                               CrossAxisAlignment.center,
                                               children: <Widget>[
                                                 Text(
-                                                  '${(getWinPercentage(widget.friendsData?.victories ?? 0, widget.friendsData?.defeats ?? 0) * widget.animation!.value).toStringAsFixed(2)}',
+                                                  '${(getWinPercentage(widget.friendsData?.victoriesAgainst ?? 0, widget.friendsData?.defeatsAgainst ?? 0) * widget.animation!.value).toStringAsFixed(2)}',
                                                   textAlign: TextAlign.center,
                                                   style: TextStyle(
                                                     fontFamily:
@@ -367,7 +367,7 @@ class _FriendsStatisticsViewState extends State<FriendsStatisticsView>
                                                   CompanionAppTheme.victoryGreen
                                                 ],
                                                 angle:
-                                                (getWinPercentage(widget.friendsData?.victories ?? 0, widget.friendsData?.defeats ?? 0) / 100 * 360) +
+                                                (getWinPercentage(widget.friendsData?.victoriesAgainst ?? 0, widget.friendsData?.defeatsAgainst ?? 0) / 100 * 360) +
                                                     (360 - 140) *
                                                         (1.0 - widget.animation!.value)),
                                             child: SizedBox(

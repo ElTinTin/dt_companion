@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:dt_companion/dt_companion/companion_app_home_screen.dart';
 import 'package:dt_companion/dt_companion/companion_app_theme.dart';
 import 'package:dt_companion/dt_companion/extension/localization_extension.dart';
+import 'package:dt_companion/dt_companion/models/friends_data.dart';
 import 'package:dt_companion/dt_companion/models/games_data.dart';
 import 'package:dt_companion/dt_companion/models/heroes_data.dart';
 import 'package:dt_companion/dt_companion/service.dart';
@@ -26,34 +27,96 @@ class MatchView extends StatefulWidget {
 
 class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
   Animation<double>? topBarAnimation;
-  List<Widget> listViews = <Widget>[];
   double topBarOpacity = 0.0;
+  final ScrollController scrollController = ScrollController();
+
+  // Player 1 - You
   Character? _playerOne;
   TextEditingController _playerOneUltimates = TextEditingController(text: '0');
+  // Player 2
   Character? _playerTwo;
+  TextEditingController _player2Controller = TextEditingController();
+  FriendsData? _friendsTwo;
   TextEditingController _playerTwoUltimates = TextEditingController(text: '0');
+  // PLayer 3
   Character? _playerThree;
+  TextEditingController _player3Controller = TextEditingController();
+  FriendsData? _friendsThree;
   TextEditingController _playerThreeUltimates =
       TextEditingController(text: '0');
+  // PLayer 4
   Character? _playerFour;
+  TextEditingController _player4Controller = TextEditingController();
+  FriendsData? _friendsFour;
   TextEditingController _playerFourUltimates = TextEditingController(text: '0');
+  // Player 5
   Character? _playerFive;
+  TextEditingController _player5Controller = TextEditingController();
+  FriendsData? _friendsFive;
   TextEditingController _playerFiveUltimates = TextEditingController(text: '0');
+  // Player 6
   Character? _playerSix;
+  TextEditingController _player6Controller = TextEditingController();
+  FriendsData? _friendsSix;
   TextEditingController _playerSixUltimates = TextEditingController(text: '0');
+
+
   Mode _gamemode = Mode.onevsone;
   String? _winningTeam;
-  TextEditingController _player2Controller = TextEditingController();
-  TextEditingController _player3Controller = TextEditingController();
-  TextEditingController _player4Controller = TextEditingController();
-  TextEditingController _player5Controller = TextEditingController();
-  TextEditingController _player6Controller = TextEditingController();
-  final ScrollController scrollController = ScrollController();
+
   int _kothPlayers = 3;
   int _winnerHealth = 1;
 
-  bool get _isFormValid1v1 {
-    return _playerOne != null && _playerTwo != null && _winningTeam != null;
+  bool get _isFormValid {
+    switch (_gamemode) {
+      case Mode.onevsone:
+        return _playerOne != null
+            && _playerTwo != null
+            && _winningTeam != null;
+      case Mode.twovstwo:
+        return _playerOne != null
+            && _playerTwo != null
+            && _playerThree != null
+            && _playerFour != null
+            && _winningTeam != null;
+      case Mode.koth:
+        if (_kothPlayers == 3) {
+          return _playerOne != null
+              && _playerTwo != null
+              && _playerThree != null
+              && _winningTeam != null;
+        } else if (_kothPlayers == 4) {
+          return _playerOne != null
+              && _playerTwo != null
+              && _playerThree != null
+              && _playerFour != null
+              && _winningTeam != null;
+        } else if (_kothPlayers == 5) {
+          return _playerOne != null
+              && _playerTwo != null
+              && _playerThree != null
+              && _playerFour != null
+              && _playerFive != null
+              && _winningTeam != null;
+        } else {
+          return _playerOne != null
+              && _playerTwo != null
+              && _playerThree != null
+              && _playerFour != null
+              && _playerFive != null
+              && _playerSix != null
+              && _winningTeam != null;
+        }
+      case Mode.threevsthree:
+        return _playerOne != null
+            && _playerTwo != null
+            && _playerThree != null
+            && _playerFour != null
+            && _playerFive != null
+            && _playerSix != null
+            && _winningTeam != null;
+    }
+
   }
 
   List<String> get teams {
@@ -123,8 +186,48 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
     return min + random.nextInt(max - min + 1);
   }
 
+  String getPlayer(TextEditingController controller, int player, FriendsData? friend) {
+    if (friend != null) {
+      return friend.name;
+    } else {
+      return controller.text != "" ? controller.text : "Player $player";
+    }
+  }
+
+  void updatePlayerData(FriendsData? playerData, TextEditingController controller, bool isWinnerInverted, UserService userService) {
+    bool currentPlayerWinner = (_winningTeam == "You".tr(context) || _winningTeam == "Team 1".tr(context)) ? true : false;
+    if (isWinnerInverted) {
+      currentPlayerWinner = !currentPlayerWinner;
+    }
+
+    if (playerData != null) {
+      if (_winningTeam != 'Draw'.tr(context)) {
+        if (currentPlayerWinner) {
+          playerData.defeatsAgainst += 1;
+        } else {
+          playerData.victoriesAgainst += 1;
+        }
+      } else {
+        playerData.drawsAgainst += 1;
+      }
+      userService.updateFriendsData(playerData);
+    } else if (controller.value.text != "") {
+      FriendsData newPlayer = FriendsData(name: controller.text);
+      if (_winningTeam != 'Draw'.tr(context)) {
+        if (currentPlayerWinner) {
+          newPlayer.defeatsAgainst += 1;
+        } else {
+          newPlayer.victoriesAgainst += 1;
+        }
+      } else {
+        newPlayer.drawsAgainst += 1;
+      }
+      userService.insertFriendsData(newPlayer);
+    }
+  }
+
   Future<void> _submit(UserService userService) async {
-    if (_isFormValid1v1) {
+    if (_isFormValid) {
       var winner =
           (_winningTeam == "You".tr(context) || _winningTeam == "Team 1".tr(context)) ? true : false;
 
@@ -178,37 +281,27 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
             playerOne: 'You',
             playerOneUltimates: int.parse(_playerOneUltimates.text),
             playerTwoImagePath: "assets/dt_companion/${_playerTwo!.name}.png",
-            playerTwo: _player2Controller.text != ""
-                ? _player2Controller.text
-                : "Player 2",
+            playerTwo: getPlayer(_player2Controller, 2, _friendsTwo),
             playerTwoUltimates: int.parse(_playerTwoUltimates.text),
             playerThreeImagePath: _playerThree != null
                 ? "assets/dt_companion/${_playerThree!.name}.png"
                 : "",
-            playerThree: _player3Controller.text != ""
-                ? _player3Controller.text
-                : "Player 3",
+            playerThree: getPlayer(_player3Controller, 3, _friendsThree),
             playerThreeUltimates: int.parse(_playerThreeUltimates.text),
             playerFourImagePath: _playerFour != null
                 ? "assets/dt_companion/${_playerFour!.name}.png"
                 : "",
             playerFourUltimates: int.parse(_playerFourUltimates.text),
-            playerFour: _player4Controller.text != ""
-                ? _player4Controller.text
-                : "Player 4",
+            playerFour: getPlayer(_player4Controller, 4, _friendsFour),
             playerFiveImagePath: _playerFive != null
                 ? "assets/dt_companion/${_playerFive!.name}.png"
                 : "",
-            playerFive: _player5Controller.text != ""
-                ? _player5Controller.text
-                : "Player 5",
+            playerFive: getPlayer(_player5Controller, 5, _friendsFive),
             playerFiveUltimates: int.parse(_playerFiveUltimates.text),
             playerSixImagePath: _playerSix != null
                 ? "assets/dt_companion/${_playerSix!.name}.png"
                 : "",
-            playerSix: _player6Controller.text != ""
-                ? _player6Controller.text
-                : "Player 6",
+            playerSix: getPlayer(_player6Controller, 6, _friendsSix),
             playerSixUltimates: int.parse(_playerSixUltimates.text),
             gamemode: _gamemode,
             id: generateRandomId(),
@@ -217,6 +310,16 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
             date: DateTime.now().millisecondsSinceEpoch);
         userService.insertGamesData(gameData);
       } catch (e) {
+        print(e);
+      }
+
+      try {
+        updatePlayerData(_friendsTwo, _player2Controller, false, userService); // Joueur 2
+        updatePlayerData(_friendsThree, _player3Controller, true, userService); // Joueur 3, condition inversée
+        updatePlayerData(_friendsFour, _player4Controller, false, userService); // Joueur 4
+        updatePlayerData(_friendsFive, _player5Controller, true, userService); // Joueur 5, condition inversée
+        updatePlayerData(_friendsSix, _player6Controller, false, userService); // Joueur 6
+      } catch(e) {
         print(e);
       }
 
@@ -386,7 +489,21 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                       SizedBox(
                         height: 16,
                       ),
-                      if (_gamemode == Mode.koth)
+                      if (_gamemode == Mode.koth) ... [
+                        Text(
+                          'dta_add_number_players'.tr(context),
+                          style: TextStyle(
+                            fontFamily:
+                            CompanionAppTheme.fontName,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                            letterSpacing: 0.2,
+                            color: CompanionAppTheme.lightText,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 16,
+                        ),
                         NumberPicker(
                           value: _kothPlayers,
                           minValue: 3,
@@ -417,6 +534,7 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                 color: CompanionAppTheme.lightText, width: 4),
                           ),
                         ),
+                      ],
                       SizedBox(
                         height: 32,
                       ),
@@ -464,6 +582,10 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                     ),
                                     SizedBox(
                                       height: 16,
+                                    ),
+                                    Divider(color: CompanionAppTheme.lightText),
+                                    SizedBox(
+                                      height: 8,
                                     ),
                                     DropdownButton<Character>(
                                       menuMaxHeight: 300,
@@ -578,8 +700,9 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                     ),
                                     if (_gamemode == Mode.twovstwo ||
                                         _gamemode == Mode.threevsthree) ...[
+                                      Divider(color: CompanionAppTheme.lightText),
                                       SizedBox(
-                                        height: 16,
+                                        height: 8,
                                       ),
                                       DropdownButton<Character>(
                                         menuMaxHeight: 300,
@@ -619,41 +742,74 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                           );
                                         }).toList(),
                                       ),
-                                      SizedBox(
-                                        height: 16,
-                                      ),
-                                      SizedBox(
-                                        width: 300,
-                                        child: TextField(
-                                          controller: _player2Controller,
-                                          decoration: InputDecoration(
-                                            filled: true,
-                                            fillColor:
-                                                CompanionAppTheme.lightText,
-                                            hintText: 'Player 3'.tr(context),
-                                            contentPadding:
-                                                const EdgeInsets.only(
-                                                    left: 14.0,
-                                                    bottom: 8.0,
-                                                    top: 8.0),
-                                            focusedBorder: OutlineInputBorder(
-                                              borderSide: BorderSide(
-                                                  color: CompanionAppTheme
-                                                      .lightText),
-                                              borderRadius:
+                                      SizedBox(height: 32),
+                                      Row(
+                                        children: [
+                                          SizedBox(
+                                            width: 150,
+                                            child: TextField(
+                                              controller: _player3Controller,
+                                              decoration: InputDecoration(
+                                                filled: true,
+                                                fillColor: CompanionAppTheme.lightText,
+                                                hintText: 'Player 3'.tr(context),
+                                                contentPadding: const EdgeInsets.only(
+                                                    left: 14.0, bottom: 8.0, top: 8.0),
+                                                focusedBorder: OutlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                      color: CompanionAppTheme.lightText),
+                                                  borderRadius:
                                                   BorderRadius.circular(25.7),
-                                            ),
-                                            enabledBorder: UnderlineInputBorder(
-                                              borderSide: BorderSide(
-                                                  color: CompanionAppTheme
-                                                      .lightText),
-                                              borderRadius:
+                                                ),
+                                                enabledBorder: UnderlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                      color: CompanionAppTheme.lightText),
+                                                  borderRadius:
                                                   BorderRadius.circular(25.7),
+                                                ),
+                                              ),
+                                              cursorColor: CompanionAppTheme.darkerText,
                                             ),
                                           ),
-                                          cursorColor:
-                                              CompanionAppTheme.darkerText,
-                                        ),
+                                          Spacer(),
+                                          DropdownButton<FriendsData>(
+                                            menuMaxHeight: 200,
+                                            hint: Text(
+                                              'friend_select'.tr(context),
+                                              style: TextStyle(
+                                                fontFamily: CompanionAppTheme.fontName,
+                                                fontWeight: FontWeight.normal,
+                                                fontSize: 14,
+                                                letterSpacing: 0.2,
+                                                color: CompanionAppTheme.lightText,
+                                              ),
+                                            ),
+                                            value: _friendsThree,
+                                            onChanged: (FriendsData? newValue) {
+                                              setState(() {
+                                                _friendsThree = newValue;
+                                              });
+                                            },
+                                            items: userService.friendsListData
+                                                .map((FriendsData friend) {
+                                              return DropdownMenuItem<FriendsData>(
+                                                value: friend,
+                                                child: Text(
+                                                  friend.name,
+                                                  style: TextStyle(
+                                                    fontFamily:
+                                                    CompanionAppTheme.fontName,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 14,
+                                                    letterSpacing: 0.2,
+                                                    color: CompanionAppTheme.lightText,
+                                                  ),
+                                                ),
+                                              );
+                                            }).toList(),
+                                          ),
+                                          SizedBox(width: 16,)
+                                        ],
                                       ),
                                       SizedBox(
                                         height: 16,
@@ -736,6 +892,10 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                       ),
                                     ],
                                     if (_gamemode == Mode.threevsthree) ...[
+                                      Divider(color: CompanionAppTheme.lightText),
+                                      SizedBox(
+                                        height: 8,
+                                      ),
                                       DropdownButton<Character>(
                                         menuMaxHeight: 300,
                                         hint: Text(
@@ -774,41 +934,74 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                           );
                                         }).toList(),
                                       ),
-                                      SizedBox(
-                                        height: 16,
-                                      ),
-                                      SizedBox(
-                                        width: 300,
-                                        child: TextField(
-                                          controller: _player5Controller,
-                                          decoration: InputDecoration(
-                                            filled: true,
-                                            fillColor:
-                                                CompanionAppTheme.lightText,
-                                            hintText: 'Player 5'.tr(context),
-                                            contentPadding:
-                                                const EdgeInsets.only(
-                                                    left: 14.0,
-                                                    bottom: 8.0,
-                                                    top: 8.0),
-                                            focusedBorder: OutlineInputBorder(
-                                              borderSide: BorderSide(
-                                                  color: CompanionAppTheme
-                                                      .lightText),
-                                              borderRadius:
+                                      SizedBox(height: 32),
+                                      Row(
+                                        children: [
+                                          SizedBox(
+                                            width: 150,
+                                            child: TextField(
+                                              controller: _player5Controller,
+                                              decoration: InputDecoration(
+                                                filled: true,
+                                                fillColor: CompanionAppTheme.lightText,
+                                                hintText: 'Player 5'.tr(context),
+                                                contentPadding: const EdgeInsets.only(
+                                                    left: 14.0, bottom: 8.0, top: 8.0),
+                                                focusedBorder: OutlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                      color: CompanionAppTheme.lightText),
+                                                  borderRadius:
                                                   BorderRadius.circular(25.7),
-                                            ),
-                                            enabledBorder: UnderlineInputBorder(
-                                              borderSide: BorderSide(
-                                                  color: CompanionAppTheme
-                                                      .lightText),
-                                              borderRadius:
+                                                ),
+                                                enabledBorder: UnderlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                      color: CompanionAppTheme.lightText),
+                                                  borderRadius:
                                                   BorderRadius.circular(25.7),
+                                                ),
+                                              ),
+                                              cursorColor: CompanionAppTheme.darkerText,
                                             ),
                                           ),
-                                          cursorColor:
-                                              CompanionAppTheme.darkerText,
-                                        ),
+                                          Spacer(),
+                                          DropdownButton<FriendsData>(
+                                            menuMaxHeight: 200,
+                                            hint: Text(
+                                              'friend_select'.tr(context),
+                                              style: TextStyle(
+                                                fontFamily: CompanionAppTheme.fontName,
+                                                fontWeight: FontWeight.normal,
+                                                fontSize: 14,
+                                                letterSpacing: 0.2,
+                                                color: CompanionAppTheme.lightText,
+                                              ),
+                                            ),
+                                            value: _friendsFive,
+                                            onChanged: (FriendsData? newValue) {
+                                              setState(() {
+                                                _friendsFive = newValue;
+                                              });
+                                            },
+                                            items: userService.friendsListData
+                                                .map((FriendsData friend) {
+                                              return DropdownMenuItem<FriendsData>(
+                                                value: friend,
+                                                child: Text(
+                                                  friend.name,
+                                                  style: TextStyle(
+                                                    fontFamily:
+                                                    CompanionAppTheme.fontName,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 14,
+                                                    letterSpacing: 0.2,
+                                                    color: CompanionAppTheme.lightText,
+                                                  ),
+                                                ),
+                                              );
+                                            }).toList(),
+                                          ),
+                                          SizedBox(width: 16,)
+                                        ],
                                       ),
                                       SizedBox(
                                         height: 16,
@@ -938,6 +1131,10 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                   SizedBox(
                                     height: 16,
                                   ),
+                                  Divider(color: CompanionAppTheme.lightText),
+                                  SizedBox(
+                                    height: 8,
+                                  ),
                                   DropdownButton<Character>(
                                     menuMaxHeight: 300,
                                     hint: Text(
@@ -974,32 +1171,74 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                       );
                                     }).toList(),
                                   ),
-                                  SizedBox(height: 16),
-                                  SizedBox(
-                                    width: 300,
-                                    child: TextField(
-                                      controller: _player3Controller,
-                                      decoration: InputDecoration(
-                                        filled: true,
-                                        fillColor: CompanionAppTheme.lightText,
-                                        hintText: 'Player 2'.tr(context),
-                                        contentPadding: const EdgeInsets.only(
-                                            left: 14.0, bottom: 8.0, top: 8.0),
-                                        focusedBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                              color: CompanionAppTheme.lightText),
-                                          borderRadius:
-                                          BorderRadius.circular(25.7),
+                                  SizedBox(height: 32),
+                                  Row(
+                                      children: [
+                                        SizedBox(
+                                          width: 150,
+                                          child: TextField(
+                                            controller: _player2Controller,
+                                            decoration: InputDecoration(
+                                              filled: true,
+                                              fillColor: CompanionAppTheme.lightText,
+                                              hintText: 'Player 2'.tr(context),
+                                              contentPadding: const EdgeInsets.only(
+                                                  left: 14.0, bottom: 8.0, top: 8.0),
+                                              focusedBorder: OutlineInputBorder(
+                                                borderSide: BorderSide(
+                                                    color: CompanionAppTheme.lightText),
+                                                borderRadius:
+                                                BorderRadius.circular(25.7),
+                                              ),
+                                              enabledBorder: UnderlineInputBorder(
+                                                borderSide: BorderSide(
+                                                    color: CompanionAppTheme.lightText),
+                                                borderRadius:
+                                                BorderRadius.circular(25.7),
+                                              ),
+                                            ),
+                                            cursorColor: CompanionAppTheme.darkerText,
+                                          ),
                                         ),
-                                        enabledBorder: UnderlineInputBorder(
-                                          borderSide: BorderSide(
-                                              color: CompanionAppTheme.lightText),
-                                          borderRadius:
-                                          BorderRadius.circular(25.7),
+                                        Spacer(),
+                                        DropdownButton<FriendsData>(
+                                          menuMaxHeight: 200,
+                                          hint: Text(
+                                            'friend_select'.tr(context),
+                                            style: TextStyle(
+                                              fontFamily: CompanionAppTheme.fontName,
+                                              fontWeight: FontWeight.normal,
+                                              fontSize: 14,
+                                              letterSpacing: 0.2,
+                                              color: CompanionAppTheme.lightText,
+                                            ),
+                                          ),
+                                          value: _friendsTwo,
+                                          onChanged: (FriendsData? newValue) {
+                                            setState(() {
+                                              _friendsTwo = newValue;
+                                            });
+                                          },
+                                          items: userService.friendsListData
+                                              .map((FriendsData friend) {
+                                            return DropdownMenuItem<FriendsData>(
+                                              value: friend,
+                                              child: Text(
+                                                friend.name,
+                                                style: TextStyle(
+                                                  fontFamily:
+                                                  CompanionAppTheme.fontName,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 14,
+                                                  letterSpacing: 0.2,
+                                                  color: CompanionAppTheme.lightText,
+                                                ),
+                                              ),
+                                            );
+                                          }).toList(),
                                         ),
-                                      ),
-                                      cursorColor: CompanionAppTheme.darkerText,
-                                    ),
+                                        SizedBox(width: 16,)
+                                      ],
                                   ),
                                   SizedBox(height: 16),
                                   Row(
@@ -1077,6 +1316,10 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                   SizedBox(height: 16,),
                                   if (_gamemode == Mode.twovstwo ||
                                       _gamemode == Mode.threevsthree) ...[
+                                    Divider(color: CompanionAppTheme.lightText),
+                                    SizedBox(
+                                      height: 8,
+                                    ),
                                     DropdownButton<Character>(
                                       menuMaxHeight: 300,
                                       hint: Text(
@@ -1113,34 +1356,74 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                         );
                                       }).toList(),
                                     ),
-                                    SizedBox(height: 16),
-                                    SizedBox(
-                                      width: 300,
-                                      child: TextField(
-                                        controller: _player4Controller,
-                                        decoration: InputDecoration(
-                                          filled: true,
-                                          fillColor: CompanionAppTheme.lightText,
-                                          hintText: 'Player 4'.tr(context),
-                                          contentPadding: const EdgeInsets.only(
-                                              left: 14.0, bottom: 8.0, top: 8.0),
-                                          focusedBorder: OutlineInputBorder(
-                                            borderSide: BorderSide(
-                                                color:
-                                                CompanionAppTheme.lightText),
-                                            borderRadius:
-                                            BorderRadius.circular(25.7),
-                                          ),
-                                          enabledBorder: UnderlineInputBorder(
-                                            borderSide: BorderSide(
-                                                color:
-                                                CompanionAppTheme.lightText),
-                                            borderRadius:
-                                            BorderRadius.circular(25.7),
+                                    SizedBox(height: 32),
+                                    Row(
+                                      children: [
+                                        SizedBox(
+                                          width: 150,
+                                          child: TextField(
+                                            controller: _player4Controller,
+                                            decoration: InputDecoration(
+                                              filled: true,
+                                              fillColor: CompanionAppTheme.lightText,
+                                              hintText: 'Player 4'.tr(context),
+                                              contentPadding: const EdgeInsets.only(
+                                                  left: 14.0, bottom: 8.0, top: 8.0),
+                                              focusedBorder: OutlineInputBorder(
+                                                borderSide: BorderSide(
+                                                    color: CompanionAppTheme.lightText),
+                                                borderRadius:
+                                                BorderRadius.circular(25.7),
+                                              ),
+                                              enabledBorder: UnderlineInputBorder(
+                                                borderSide: BorderSide(
+                                                    color: CompanionAppTheme.lightText),
+                                                borderRadius:
+                                                BorderRadius.circular(25.7),
+                                              ),
+                                            ),
+                                            cursorColor: CompanionAppTheme.darkerText,
                                           ),
                                         ),
-                                        cursorColor: CompanionAppTheme.darkerText,
-                                      ),
+                                        Spacer(),
+                                        DropdownButton<FriendsData>(
+                                          menuMaxHeight: 200,
+                                          hint: Text(
+                                            'friend_select'.tr(context),
+                                            style: TextStyle(
+                                              fontFamily: CompanionAppTheme.fontName,
+                                              fontWeight: FontWeight.normal,
+                                              fontSize: 14,
+                                              letterSpacing: 0.2,
+                                              color: CompanionAppTheme.lightText,
+                                            ),
+                                          ),
+                                          value: _friendsFour,
+                                          onChanged: (FriendsData? newValue) {
+                                            setState(() {
+                                              _friendsFour = newValue;
+                                            });
+                                          },
+                                          items: userService.friendsListData
+                                              .map((FriendsData friend) {
+                                            return DropdownMenuItem<FriendsData>(
+                                              value: friend,
+                                              child: Text(
+                                                friend.name,
+                                                style: TextStyle(
+                                                  fontFamily:
+                                                  CompanionAppTheme.fontName,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 14,
+                                                  letterSpacing: 0.2,
+                                                  color: CompanionAppTheme.lightText,
+                                                ),
+                                              ),
+                                            );
+                                          }).toList(),
+                                        ),
+                                        SizedBox(width: 16,)
+                                      ],
                                     ),
                                     SizedBox(height: 16),
                                     Row(
@@ -1218,6 +1501,10 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                     SizedBox(height: 16,)
                                   ],
                                   if (_gamemode == Mode.threevsthree) ... [
+                                    Divider(color: CompanionAppTheme.lightText),
+                                    SizedBox(
+                                      height: 8,
+                                    ),
                                     DropdownButton<Character>(
                                       menuMaxHeight: 300,
                                       hint: Text(
@@ -1254,34 +1541,74 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                         );
                                       }).toList(),
                                     ),
-                                    SizedBox(height: 16),
-                                    SizedBox(
-                                      width: 300,
-                                      child: TextField(
-                                        controller: _player6Controller,
-                                        decoration: InputDecoration(
-                                          filled: true,
-                                          fillColor: CompanionAppTheme.lightText,
-                                          hintText: 'Player 6'.tr(context),
-                                          contentPadding: const EdgeInsets.only(
-                                              left: 14.0, bottom: 8.0, top: 8.0),
-                                          focusedBorder: OutlineInputBorder(
-                                            borderSide: BorderSide(
-                                                color:
-                                                CompanionAppTheme.lightText),
-                                            borderRadius:
-                                            BorderRadius.circular(25.7),
-                                          ),
-                                          enabledBorder: UnderlineInputBorder(
-                                            borderSide: BorderSide(
-                                                color:
-                                                CompanionAppTheme.lightText),
-                                            borderRadius:
-                                            BorderRadius.circular(25.7),
+                                    SizedBox(height: 32),
+                                    Row(
+                                      children: [
+                                        SizedBox(
+                                          width: 150,
+                                          child: TextField(
+                                            controller: _player6Controller,
+                                            decoration: InputDecoration(
+                                              filled: true,
+                                              fillColor: CompanionAppTheme.lightText,
+                                              hintText: 'Player 6'.tr(context),
+                                              contentPadding: const EdgeInsets.only(
+                                                  left: 14.0, bottom: 8.0, top: 8.0),
+                                              focusedBorder: OutlineInputBorder(
+                                                borderSide: BorderSide(
+                                                    color: CompanionAppTheme.lightText),
+                                                borderRadius:
+                                                BorderRadius.circular(25.7),
+                                              ),
+                                              enabledBorder: UnderlineInputBorder(
+                                                borderSide: BorderSide(
+                                                    color: CompanionAppTheme.lightText),
+                                                borderRadius:
+                                                BorderRadius.circular(25.7),
+                                              ),
+                                            ),
+                                            cursorColor: CompanionAppTheme.darkerText,
                                           ),
                                         ),
-                                        cursorColor: CompanionAppTheme.darkerText,
-                                      ),
+                                        Spacer(),
+                                        DropdownButton<FriendsData>(
+                                          menuMaxHeight: 200,
+                                          hint: Text(
+                                            'friend_select'.tr(context),
+                                            style: TextStyle(
+                                              fontFamily: CompanionAppTheme.fontName,
+                                              fontWeight: FontWeight.normal,
+                                              fontSize: 14,
+                                              letterSpacing: 0.2,
+                                              color: CompanionAppTheme.lightText,
+                                            ),
+                                          ),
+                                          value: _friendsSix,
+                                          onChanged: (FriendsData? newValue) {
+                                            setState(() {
+                                              _friendsSix = newValue;
+                                            });
+                                          },
+                                          items: userService.friendsListData
+                                              .map((FriendsData friend) {
+                                            return DropdownMenuItem<FriendsData>(
+                                              value: friend,
+                                              child: Text(
+                                                friend.name,
+                                                style: TextStyle(
+                                                  fontFamily:
+                                                  CompanionAppTheme.fontName,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 14,
+                                                  letterSpacing: 0.2,
+                                                  color: CompanionAppTheme.lightText,
+                                                ),
+                                              ),
+                                            );
+                                          }).toList(),
+                                        ),
+                                        SizedBox(width: 16,)
+                                      ],
                                     ),
                                     SizedBox(
                                       height: 16,
@@ -1413,6 +1740,10 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                       SizedBox(
                                         height: 16,
                                       ),
+                                      Divider(color: CompanionAppTheme.lightText),
+                                      SizedBox(
+                                        height: 8,
+                                      ),
                                       DropdownButton<Character>(
                                         menuMaxHeight: 300,
                                         hint: Text(
@@ -1451,38 +1782,74 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                           );
                                         }).toList(),
                                       ),
-                                      SizedBox(height: 16),
-                                      SizedBox(
-                                        width: 300,
-                                        child: TextField(
-                                          controller: _player3Controller,
-                                          decoration: InputDecoration(
-                                            filled: true,
-                                            fillColor:
-                                            CompanionAppTheme.lightText,
-                                            hintText: 'Player 3'.tr(context),
-                                            contentPadding: const EdgeInsets.only(
-                                                left: 14.0,
-                                                bottom: 8.0,
-                                                top: 8.0),
-                                            focusedBorder: OutlineInputBorder(
-                                              borderSide: BorderSide(
-                                                  color: CompanionAppTheme
-                                                      .lightText),
-                                              borderRadius:
-                                              BorderRadius.circular(25.7),
-                                            ),
-                                            enabledBorder: UnderlineInputBorder(
-                                              borderSide: BorderSide(
-                                                  color: CompanionAppTheme
-                                                      .lightText),
-                                              borderRadius:
-                                              BorderRadius.circular(25.7),
+                                      SizedBox(height: 32),
+                                      Row(
+                                        children: [
+                                          SizedBox(
+                                            width: 150,
+                                            child: TextField(
+                                              controller: _player3Controller,
+                                              decoration: InputDecoration(
+                                                filled: true,
+                                                fillColor: CompanionAppTheme.lightText,
+                                                hintText: 'Player 3'.tr(context),
+                                                contentPadding: const EdgeInsets.only(
+                                                    left: 14.0, bottom: 8.0, top: 8.0),
+                                                focusedBorder: OutlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                      color: CompanionAppTheme.lightText),
+                                                  borderRadius:
+                                                  BorderRadius.circular(25.7),
+                                                ),
+                                                enabledBorder: UnderlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                      color: CompanionAppTheme.lightText),
+                                                  borderRadius:
+                                                  BorderRadius.circular(25.7),
+                                                ),
+                                              ),
+                                              cursorColor: CompanionAppTheme.darkerText,
                                             ),
                                           ),
-                                          cursorColor:
-                                          CompanionAppTheme.darkerText,
-                                        ),
+                                          Spacer(),
+                                          DropdownButton<FriendsData>(
+                                            menuMaxHeight: 200,
+                                            hint: Text(
+                                              'friend_select'.tr(context),
+                                              style: TextStyle(
+                                                fontFamily: CompanionAppTheme.fontName,
+                                                fontWeight: FontWeight.normal,
+                                                fontSize: 14,
+                                                letterSpacing: 0.2,
+                                                color: CompanionAppTheme.lightText,
+                                              ),
+                                            ),
+                                            value: _friendsThree,
+                                            onChanged: (FriendsData? newValue) {
+                                              setState(() {
+                                                _friendsThree = newValue;
+                                              });
+                                            },
+                                            items: userService.friendsListData
+                                                .map((FriendsData friend) {
+                                              return DropdownMenuItem<FriendsData>(
+                                                value: friend,
+                                                child: Text(
+                                                  friend.name,
+                                                  style: TextStyle(
+                                                    fontFamily:
+                                                    CompanionAppTheme.fontName,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 14,
+                                                    letterSpacing: 0.2,
+                                                    color: CompanionAppTheme.lightText,
+                                                  ),
+                                                ),
+                                              );
+                                            }).toList(),
+                                          ),
+                                          SizedBox(width: 16,)
+                                        ],
                                       ),
                                       SizedBox(height: 16),
                                       Row(
@@ -1608,6 +1975,10 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                       SizedBox(
                                         height: 16,
                                       ),
+                                      Divider(color: CompanionAppTheme.lightText),
+                                      SizedBox(
+                                        height: 8,
+                                      ),
                                       DropdownButton<Character>(
                                         menuMaxHeight: 300,
                                         hint: Text(
@@ -1646,38 +2017,74 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                           );
                                         }).toList(),
                                       ),
-                                      SizedBox(height: 16),
-                                      SizedBox(
-                                        width: 300,
-                                        child: TextField(
-                                          controller: _player4Controller,
-                                          decoration: InputDecoration(
-                                            filled: true,
-                                            fillColor:
-                                            CompanionAppTheme.lightText,
-                                            hintText: 'Player 4'.tr(context),
-                                            contentPadding: const EdgeInsets.only(
-                                                left: 14.0,
-                                                bottom: 8.0,
-                                                top: 8.0),
-                                            focusedBorder: OutlineInputBorder(
-                                              borderSide: BorderSide(
-                                                  color: CompanionAppTheme
-                                                      .lightText),
-                                              borderRadius:
-                                              BorderRadius.circular(25.7),
-                                            ),
-                                            enabledBorder: UnderlineInputBorder(
-                                              borderSide: BorderSide(
-                                                  color: CompanionAppTheme
-                                                      .lightText),
-                                              borderRadius:
-                                              BorderRadius.circular(25.7),
+                                      SizedBox(height: 32),
+                                      Row(
+                                        children: [
+                                          SizedBox(
+                                            width: 150,
+                                            child: TextField(
+                                              controller: _player4Controller,
+                                              decoration: InputDecoration(
+                                                filled: true,
+                                                fillColor: CompanionAppTheme.lightText,
+                                                hintText: 'Player 4'.tr(context),
+                                                contentPadding: const EdgeInsets.only(
+                                                    left: 14.0, bottom: 8.0, top: 8.0),
+                                                focusedBorder: OutlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                      color: CompanionAppTheme.lightText),
+                                                  borderRadius:
+                                                  BorderRadius.circular(25.7),
+                                                ),
+                                                enabledBorder: UnderlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                      color: CompanionAppTheme.lightText),
+                                                  borderRadius:
+                                                  BorderRadius.circular(25.7),
+                                                ),
+                                              ),
+                                              cursorColor: CompanionAppTheme.darkerText,
                                             ),
                                           ),
-                                          cursorColor:
-                                          CompanionAppTheme.darkerText,
-                                        ),
+                                          Spacer(),
+                                          DropdownButton<FriendsData>(
+                                            menuMaxHeight: 200,
+                                            hint: Text(
+                                              'friend_select'.tr(context),
+                                              style: TextStyle(
+                                                fontFamily: CompanionAppTheme.fontName,
+                                                fontWeight: FontWeight.normal,
+                                                fontSize: 14,
+                                                letterSpacing: 0.2,
+                                                color: CompanionAppTheme.lightText,
+                                              ),
+                                            ),
+                                            value: _friendsFour,
+                                            onChanged: (FriendsData? newValue) {
+                                              setState(() {
+                                                _friendsFour = newValue;
+                                              });
+                                            },
+                                            items: userService.friendsListData
+                                                .map((FriendsData friend) {
+                                              return DropdownMenuItem<FriendsData>(
+                                                value: friend,
+                                                child: Text(
+                                                  friend.name,
+                                                  style: TextStyle(
+                                                    fontFamily:
+                                                    CompanionAppTheme.fontName,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 14,
+                                                    letterSpacing: 0.2,
+                                                    color: CompanionAppTheme.lightText,
+                                                  ),
+                                                ),
+                                              );
+                                            }).toList(),
+                                          ),
+                                          SizedBox(width: 16,)
+                                        ],
                                       ),
                                       SizedBox(height: 16),
                                       Row(
@@ -1804,6 +2211,10 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                       SizedBox(
                                         height: 16,
                                       ),
+                                      Divider(color: CompanionAppTheme.lightText),
+                                      SizedBox(
+                                        height: 8,
+                                      ),
                                       DropdownButton<Character>(
                                         menuMaxHeight: 300,
                                         hint: Text(
@@ -1842,38 +2253,74 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                           );
                                         }).toList(),
                                       ),
-                                      SizedBox(height: 16),
-                                      SizedBox(
-                                        width: 300,
-                                        child: TextField(
-                                          controller: _player5Controller,
-                                          decoration: InputDecoration(
-                                            filled: true,
-                                            fillColor:
-                                            CompanionAppTheme.lightText,
-                                            hintText: 'Player 5'.tr(context),
-                                            contentPadding: const EdgeInsets.only(
-                                                left: 14.0,
-                                                bottom: 8.0,
-                                                top: 8.0),
-                                            focusedBorder: OutlineInputBorder(
-                                              borderSide: BorderSide(
-                                                  color: CompanionAppTheme
-                                                      .lightText),
-                                              borderRadius:
-                                              BorderRadius.circular(25.7),
-                                            ),
-                                            enabledBorder: UnderlineInputBorder(
-                                              borderSide: BorderSide(
-                                                  color: CompanionAppTheme
-                                                      .lightText),
-                                              borderRadius:
-                                              BorderRadius.circular(25.7),
+                                      SizedBox(height: 32),
+                                      Row(
+                                        children: [
+                                          SizedBox(
+                                            width: 150,
+                                            child: TextField(
+                                              controller: _player5Controller,
+                                              decoration: InputDecoration(
+                                                filled: true,
+                                                fillColor: CompanionAppTheme.lightText,
+                                                hintText: 'Player 5'.tr(context),
+                                                contentPadding: const EdgeInsets.only(
+                                                    left: 14.0, bottom: 8.0, top: 8.0),
+                                                focusedBorder: OutlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                      color: CompanionAppTheme.lightText),
+                                                  borderRadius:
+                                                  BorderRadius.circular(25.7),
+                                                ),
+                                                enabledBorder: UnderlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                      color: CompanionAppTheme.lightText),
+                                                  borderRadius:
+                                                  BorderRadius.circular(25.7),
+                                                ),
+                                              ),
+                                              cursorColor: CompanionAppTheme.darkerText,
                                             ),
                                           ),
-                                          cursorColor:
-                                          CompanionAppTheme.darkerText,
-                                        ),
+                                          Spacer(),
+                                          DropdownButton<FriendsData>(
+                                            menuMaxHeight: 200,
+                                            hint: Text(
+                                              'friend_select'.tr(context),
+                                              style: TextStyle(
+                                                fontFamily: CompanionAppTheme.fontName,
+                                                fontWeight: FontWeight.normal,
+                                                fontSize: 14,
+                                                letterSpacing: 0.2,
+                                                color: CompanionAppTheme.lightText,
+                                              ),
+                                            ),
+                                            value: _friendsFive,
+                                            onChanged: (FriendsData? newValue) {
+                                              setState(() {
+                                                _friendsFive = newValue;
+                                              });
+                                            },
+                                            items: userService.friendsListData
+                                                .map((FriendsData friend) {
+                                              return DropdownMenuItem<FriendsData>(
+                                                value: friend,
+                                                child: Text(
+                                                  friend.name,
+                                                  style: TextStyle(
+                                                    fontFamily:
+                                                    CompanionAppTheme.fontName,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 14,
+                                                    letterSpacing: 0.2,
+                                                    color: CompanionAppTheme.lightText,
+                                                  ),
+                                                ),
+                                              );
+                                            }).toList(),
+                                          ),
+                                          SizedBox(width: 16,)
+                                        ],
                                       ),
                                       SizedBox(height: 16),
                                       Row(
@@ -2000,6 +2447,10 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                       SizedBox(
                                         height: 16,
                                       ),
+                                      Divider(color: CompanionAppTheme.lightText),
+                                      SizedBox(
+                                        height: 8,
+                                      ),
                                       DropdownButton<Character>(
                                         menuMaxHeight: 300,
                                         hint: Text(
@@ -2038,38 +2489,74 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                           );
                                         }).toList(),
                                       ),
-                                      SizedBox(height: 16),
-                                      SizedBox(
-                                        width: 300,
-                                        child: TextField(
-                                          controller: _player6Controller,
-                                          decoration: InputDecoration(
-                                            filled: true,
-                                            fillColor:
-                                            CompanionAppTheme.lightText,
-                                            hintText: 'Player 6'.tr(context),
-                                            contentPadding: const EdgeInsets.only(
-                                                left: 14.0,
-                                                bottom: 8.0,
-                                                top: 8.0),
-                                            focusedBorder: OutlineInputBorder(
-                                              borderSide: BorderSide(
-                                                  color: CompanionAppTheme
-                                                      .lightText),
-                                              borderRadius:
-                                              BorderRadius.circular(25.7),
-                                            ),
-                                            enabledBorder: UnderlineInputBorder(
-                                              borderSide: BorderSide(
-                                                  color: CompanionAppTheme
-                                                      .lightText),
-                                              borderRadius:
-                                              BorderRadius.circular(25.7),
+                                      SizedBox(height: 32),
+                                      Row(
+                                        children: [
+                                          SizedBox(
+                                            width: 150,
+                                            child: TextField(
+                                              controller: _player6Controller,
+                                              decoration: InputDecoration(
+                                                filled: true,
+                                                fillColor: CompanionAppTheme.lightText,
+                                                hintText: 'Player 6'.tr(context),
+                                                contentPadding: const EdgeInsets.only(
+                                                    left: 14.0, bottom: 8.0, top: 8.0),
+                                                focusedBorder: OutlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                      color: CompanionAppTheme.lightText),
+                                                  borderRadius:
+                                                  BorderRadius.circular(25.7),
+                                                ),
+                                                enabledBorder: UnderlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                      color: CompanionAppTheme.lightText),
+                                                  borderRadius:
+                                                  BorderRadius.circular(25.7),
+                                                ),
+                                              ),
+                                              cursorColor: CompanionAppTheme.darkerText,
                                             ),
                                           ),
-                                          cursorColor:
-                                          CompanionAppTheme.darkerText,
-                                        ),
+                                          Spacer(),
+                                          DropdownButton<FriendsData>(
+                                            menuMaxHeight: 200,
+                                            hint: Text(
+                                              'friend_select'.tr(context),
+                                              style: TextStyle(
+                                                fontFamily: CompanionAppTheme.fontName,
+                                                fontWeight: FontWeight.normal,
+                                                fontSize: 14,
+                                                letterSpacing: 0.2,
+                                                color: CompanionAppTheme.lightText,
+                                              ),
+                                            ),
+                                            value: _friendsSix,
+                                            onChanged: (FriendsData? newValue) {
+                                              setState(() {
+                                                _friendsSix = newValue;
+                                              });
+                                            },
+                                            items: userService.friendsListData
+                                                .map((FriendsData friend) {
+                                              return DropdownMenuItem<FriendsData>(
+                                                value: friend,
+                                                child: Text(
+                                                  friend.name,
+                                                  style: TextStyle(
+                                                    fontFamily:
+                                                    CompanionAppTheme.fontName,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 14,
+                                                    letterSpacing: 0.2,
+                                                    color: CompanionAppTheme.lightText,
+                                                  ),
+                                                ),
+                                              );
+                                            }).toList(),
+                                          ),
+                                          SizedBox(width: 16,)
+                                        ],
                                       ),
                                       SizedBox(height: 16),
                                       Row(
@@ -2151,16 +2638,6 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                         ]
                       ],
                       SizedBox(height: 32),
-                      Text(
-                        'select_winning'.tr(context),
-                        style: TextStyle(
-                          fontFamily: CompanionAppTheme.fontName,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20,
-                          letterSpacing: 0.2,
-                          color: CompanionAppTheme.lightText,
-                        ),
-                      ),
                       DropdownButton<String>(
                         hint: Text(
                           'select_winner'.tr(context),
@@ -2262,7 +2739,7 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                             style: ElevatedButton.styleFrom(
                                 backgroundColor: CompanionAppTheme.darkerText,
                                 padding: EdgeInsets.symmetric(
-                                    horizontal: 50, vertical: 20),
+                                    horizontal: 36, vertical: 24),
                                 textStyle: TextStyle(
                                     fontSize: 30, fontWeight: FontWeight.bold)),
                             onPressed: () async {
@@ -2288,7 +2765,7 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                             style: ElevatedButton.styleFrom(
                                 backgroundColor: CompanionAppTheme.lightText,
                                 padding: EdgeInsets.symmetric(
-                                    horizontal: 50, vertical: 20),
+                                    horizontal: 36, vertical: 24),
                                 textStyle: TextStyle(
                                     fontSize: 30, fontWeight: FontWeight.bold)),
                             onPressed: () async {

@@ -102,7 +102,7 @@ class _ProfileScreenState extends State<ProfileScreen>
         widget.animationController?.forward();
         return Column(
           children: [
-            /*AnimatedBuilder(
+            AnimatedBuilder(
               animation: widget.animationController!,
               builder: (BuildContext context, Widget? child) {
                 return FadeTransition(
@@ -154,7 +154,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                   ),
                 );
               },
-            ),*/
+            ),
             AnimatedBuilder(
               animation: widget.animationController!,
               builder: (BuildContext context, Widget? child) {

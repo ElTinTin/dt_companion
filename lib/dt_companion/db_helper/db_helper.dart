@@ -23,16 +23,45 @@ class FriendsDBHelper {
 
     return await openDatabase(
       path,
-      version: 1,
+      version: 3,
       readOnly: false,
       onCreate: (db, version) async {
         await db.execute('''
           CREATE TABLE friends (
             name TEXT PRIMARY KEY,
-            victories INTEGER,
-            defeats INTEGER
+            victoriesWith INTEGER,
+            victoriesAgainst INTEGER,
+            defeatsWith INTEGER,
+            defeatsAgainst INTEGER,
+            drawsWith INTEGER,
+            drawsAgainst INTEGER
           )
         ''');
+      },
+      onUpgrade: (db, oldVersion, newVersion) {
+        if (oldVersion < 2) {
+          db.execute(
+            "ALTER TABLE friends ADD COLUMN victoriesWith INTEGER",
+          );
+          db.execute(
+            "ALTER TABLE friends ADD COLUMN victoriesAgainst INTEGER",
+          );
+          db.execute(
+            "ALTER TABLE friends ADD COLUMN defeatsWith INTEGER",
+          );
+          db.execute(
+            "ALTER TABLE friends ADD COLUMN defeatsAgainst INTEGER",
+          );
+        }
+        // Handle other versions if necessary
+        if (oldVersion < 3) {
+          db.execute(
+            "ALTER TABLE friends ADD COLUMN drawsWith INTEGER",
+          );
+          db.execute(
+            "ALTER TABLE friends ADD COLUMN drawsAgainst INTEGER",
+          );
+        }
       },
     );
   }

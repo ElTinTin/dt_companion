@@ -1,6 +1,6 @@
 import 'package:dt_companion/dt_companion/db_helper/games_dao.dart';
 import 'package:dt_companion/dt_companion/db_helper/heroes_dao.dart';
-import 'package:dt_companion/dt_companion/db_helper/user_dao.dart';
+import 'package:dt_companion/dt_companion/db_helper/friends_dao.dart';
 import 'package:dt_companion/dt_companion/models/friends_data.dart';
 import 'package:dt_companion/dt_companion/models/games_data.dart';
 import 'package:dt_companion/dt_companion/models/heroes_data.dart';
@@ -95,6 +95,13 @@ class UserService with ChangeNotifier {
     dtaDAO.updateDTAListData(game);
     this.dtaListData.removeWhere((item)=> item.id == game.id);
     this.dtaListData.insert(0, game);
+    notifyListeners();
+  }
+
+  Future<void> updateFriendsData(FriendsData friend) async {
+    friendsDAO.updateFriendsData(friend);
+    this.friendsListData.removeWhere((item) => item.name == friend.name);
+    this.friendsListData.insert(0, friend);
     notifyListeners();
   }
 
@@ -223,11 +230,13 @@ class UserService with ChangeNotifier {
       List<Map<String, dynamic>> gamesData = gamesListData.map((game) => game.toMap()).toList();
       List<Map<String, dynamic>> heroesData = heroesListData.map((hero) => hero.toMap()).toList();
       List<Map<String, dynamic>> dtaData = dtaListData.map((dta) => dta.toMap()).toList();
+      List<Map<String, dynamic>> friendsData = friendsListData.map((dta) => dta.toMap()).toList();
 
       await userDoc.set({
         'gamesListData': gamesData,
         'heroesListData': heroesData,
         'dtaListData': dtaData,
+        'friendsListData': friendsData,
         'timestamp': FieldValue.serverTimestamp(),
       });
 
@@ -265,8 +274,11 @@ class UserService with ChangeNotifier {
         List<DTAData> dtaData = (data['dtaListData'] as List)
             .map((item) => DTAData.fromMap(item))
             .toList();
+        List<FriendsData> friendsData = (data['friendsListData'] as List)
+            .map((item) => FriendsData.fromMap(item))
+            .toList();
 
-        await insertFetchedData(gamesData, heroesData, dtaData);
+        await insertFetchedData(gamesData, heroesData, dtaData, friendsData);
 
         notifyListeners();
       } else {
@@ -277,13 +289,16 @@ class UserService with ChangeNotifier {
     }
   }
 
-  Future<void> insertFetchedData(List<GamesData> gamesData, List<HeroesData> heroesData, List<DTAData> dtaData) async {
+  Future<void> insertFetchedData(List<GamesData> gamesData, List<HeroesData> heroesData, List<DTAData> dtaData, List<FriendsData> friendsData) async {
     gamesDAO.clearData();
     heroesDAO.clearData();
     dtaDAO.clearData();
+    friendsDAO.clearData();
+
     gamesListData = [];
     heroesListData = [];
     dtaListData = [];
+    friendsListData = [];
 
     for (var game in gamesData) {
       await gamesDAO.insertGamesListData(game);
@@ -299,6 +314,11 @@ class UserService with ChangeNotifier {
       await dtaDAO.insertDTAListData(dta);
     }
     dtaListData = await dtaDAO.getDTAListData();
+
+    for(var friends in friendsData) {
+      await friendsDAO.insertFriendsData(friends);
+    }
+    friendsListData = await friendsDAO.getFriendsData();
 
     getUserVictories();
     getUserDefeats();

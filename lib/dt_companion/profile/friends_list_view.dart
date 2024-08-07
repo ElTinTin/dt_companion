@@ -1,7 +1,6 @@
 import 'package:dt_companion/dt_companion/companion_app_theme.dart';
 import 'package:dt_companion/dt_companion/extension/localization_extension.dart';
 import 'package:dt_companion/dt_companion/models/friends_data.dart';
-import 'package:dt_companion/dt_companion/models/heroes_data.dart';
 import 'package:dt_companion/dt_companion/service.dart';
 import 'package:dt_companion/dt_companion/ui_view/friends_statistics_view.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -9,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../main.dart';
-import '../ui_view/heroes_statistics_view.dart';
 
 class FriendsListView extends StatefulWidget {
   const FriendsListView({Key? key, this.animationController}) : super(key: key);
@@ -89,7 +87,8 @@ class _FriendsListScreenState extends State<FriendsListView>
       ),
       onPressed: () {
         Navigator.of(context).pop();
-        service.insertFriendsData(FriendsData(name: _newFriend.text, victories: 0, defeats: 0));
+        service.insertFriendsData(FriendsData(name: _newFriend.text));
+        _newFriend.text = "";
       },
       style: ButtonStyle(
         backgroundColor:
@@ -264,7 +263,7 @@ class _FriendsListScreenState extends State<FriendsListView>
                               padding: EdgeInsets.only(top: 0, right: 8),
                               child: IconButton(
                                 onPressed: () => {
-                                showAlertDialog(context, userService)
+                                  showAlertDialog(context, userService)
                                 },
                                 icon: Icon(
                                   Icons.add_circle,

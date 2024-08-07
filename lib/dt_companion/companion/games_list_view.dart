@@ -224,7 +224,7 @@ class GameView extends StatelessWidget {
                                       ),
                                     ),
                                     Text(
-                                      ' - ${getPlayerText(gamesListData?.playerTwo, "Player 2", context)}',
+                                      ' - ${getPlayerText(gamesListData?.playerThree, "Player 3", context)}',
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                         fontFamily: CompanionAppTheme.fontName,
