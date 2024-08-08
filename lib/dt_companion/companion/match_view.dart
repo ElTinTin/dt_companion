@@ -12,8 +12,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:numberpicker/numberpicker.dart';
+import 'package:overlay_tooltip/overlay_tooltip.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../ui_view/tooltip.dart';
 
 enum Mode { onevsone, twovstwo, koth, threevsthree }
 
@@ -29,6 +32,7 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
   Animation<double>? topBarAnimation;
   double topBarOpacity = 0.0;
   final ScrollController scrollController = ScrollController();
+  final TooltipController _controller = TooltipController();
 
   // Player 1 - You
   Character? _playerOne;
@@ -60,9 +64,9 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
   FriendsData? _friendsSix;
   TextEditingController _playerSixUltimates = TextEditingController(text: '0');
 
-
   Mode _gamemode = Mode.onevsone;
   String? _winningTeam;
+  bool tooltipStatus = true;
 
   int _kothPlayers = 3;
   int _winnerHealth = 1;
@@ -70,58 +74,59 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
   bool get _isFormValid {
     switch (_gamemode) {
       case Mode.onevsone:
-        return _playerOne != null
-            && _playerTwo != null
-            && _winningTeam != null;
+        return _playerOne != null && _playerTwo != null && _winningTeam != null;
       case Mode.twovstwo:
-        return _playerOne != null
-            && _playerTwo != null
-            && _playerThree != null
-            && _playerFour != null
-            && _winningTeam != null;
+        return _playerOne != null &&
+            _playerTwo != null &&
+            _playerThree != null &&
+            _playerFour != null &&
+            _winningTeam != null;
       case Mode.koth:
         if (_kothPlayers == 3) {
-          return _playerOne != null
-              && _playerTwo != null
-              && _playerThree != null
-              && _winningTeam != null;
+          return _playerOne != null &&
+              _playerTwo != null &&
+              _playerThree != null &&
+              _winningTeam != null;
         } else if (_kothPlayers == 4) {
-          return _playerOne != null
-              && _playerTwo != null
-              && _playerThree != null
-              && _playerFour != null
-              && _winningTeam != null;
+          return _playerOne != null &&
+              _playerTwo != null &&
+              _playerThree != null &&
+              _playerFour != null &&
+              _winningTeam != null;
         } else if (_kothPlayers == 5) {
-          return _playerOne != null
-              && _playerTwo != null
-              && _playerThree != null
-              && _playerFour != null
-              && _playerFive != null
-              && _winningTeam != null;
+          return _playerOne != null &&
+              _playerTwo != null &&
+              _playerThree != null &&
+              _playerFour != null &&
+              _playerFive != null &&
+              _winningTeam != null;
         } else {
-          return _playerOne != null
-              && _playerTwo != null
-              && _playerThree != null
-              && _playerFour != null
-              && _playerFive != null
-              && _playerSix != null
-              && _winningTeam != null;
+          return _playerOne != null &&
+              _playerTwo != null &&
+              _playerThree != null &&
+              _playerFour != null &&
+              _playerFive != null &&
+              _playerSix != null &&
+              _winningTeam != null;
         }
       case Mode.threevsthree:
-        return _playerOne != null
-            && _playerTwo != null
-            && _playerThree != null
-            && _playerFour != null
-            && _playerFive != null
-            && _playerSix != null
-            && _winningTeam != null;
+        return _playerOne != null &&
+            _playerTwo != null &&
+            _playerThree != null &&
+            _playerFour != null &&
+            _playerFive != null &&
+            _playerSix != null &&
+            _winningTeam != null;
     }
-
   }
 
   List<String> get teams {
     if (_gamemode == Mode.koth) {
-      return ['You'.tr(context), 'Player 2'.tr(context), 'Player 3'.tr(context)];
+      return [
+        'You'.tr(context),
+        'Player 2'.tr(context),
+        'Player 3'.tr(context)
+      ];
     } else if (_gamemode == Mode.twovstwo || _gamemode == Mode.threevsthree) {
       return ['Team 1'.tr(context), 'Team 2'.tr(context), 'Draw'.tr(context)];
     } else {
@@ -132,6 +137,17 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
   Future<void> _setInAppReviewStatus() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setInt("inAppReviewStatus", 1);
+  }
+
+  Future<bool> _shouldShowTooltip() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool hasShownTooltip = prefs.getBool('hasShownTooltip') ?? false;
+
+    if (!hasShownTooltip) {
+      await prefs.setBool('hasShownTooltip', true);
+      return true;
+    }
+    return false;
   }
 
   Future<void> _analytics() async {
@@ -176,6 +192,7 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
 
   @override
   void dispose() {
+    _controller.dispose();
     super.dispose();
   }
 
@@ -186,7 +203,8 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
     return min + random.nextInt(max - min + 1);
   }
 
-  String getPlayer(TextEditingController controller, int player, FriendsData? friend) {
+  String getPlayer(
+      TextEditingController controller, int player, FriendsData? friend) {
     if (friend != null) {
       return friend.name;
     } else {
@@ -194,33 +212,142 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
     }
   }
 
-  void updatePlayerData(FriendsData? playerData, TextEditingController controller, bool isWinnerInverted, UserService userService) {
-    bool currentPlayerWinner = (_winningTeam == "You".tr(context) || _winningTeam == "Team 1".tr(context)) ? true : false;
-    if (isWinnerInverted) {
-      currentPlayerWinner = !currentPlayerWinner;
-    }
+  void updatePlayerData(
+      FriendsData? playerData,
+      TextEditingController controller,
+      UserService userService) {
+    bool winner = (_winningTeam == "You".tr(context) ||
+            _winningTeam == "Team 1".tr(context));
 
     if (playerData != null) {
       if (_winningTeam != 'Draw'.tr(context)) {
-        if (currentPlayerWinner) {
-          playerData.defeatsAgainst += 1;
+        if (winner) {
+          if (playerData == _friendsTwo) {
+            playerData.defeatsAgainst += 1;
+          } else if (playerData == _friendsThree) {
+            if (_gamemode == Mode.twovstwo || _gamemode == Mode.threevsthree) {
+              playerData.victoriesWith += 1;
+            } else {
+              playerData.defeatsAgainst += 1;
+            }
+          } else if (playerData == _friendsFour) {
+            playerData.defeatsAgainst += 1;
+          } else if (playerData == _friendsFive) {
+            if (_gamemode == Mode.twovstwo || _gamemode == Mode.threevsthree) {
+              playerData.victoriesWith += 1;
+            } else {
+              playerData.defeatsAgainst += 1;
+            }
+          } else {
+            playerData.defeatsAgainst += 1;
+          }
         } else {
-          playerData.victoriesAgainst += 1;
+          if (playerData == _friendsTwo) {
+            playerData.victoriesAgainst += 1;
+          } else if (playerData == _friendsThree) {
+            if (_gamemode == Mode.twovstwo || _gamemode == Mode.threevsthree) {
+              playerData.defeatsWith += 1;
+            } else {
+              playerData.victoriesAgainst += 1;
+            }
+          } else if (playerData == _friendsFour) {
+            playerData.victoriesAgainst += 1;
+          } else if (playerData == _friendsFive) {
+            if (_gamemode == Mode.twovstwo || _gamemode == Mode.threevsthree) {
+              playerData.defeatsWith += 1;
+            } else {
+              playerData.victoriesAgainst += 1;
+            }
+          } else {
+            playerData.victoriesAgainst += 1;
+          }
         }
       } else {
-        playerData.drawsAgainst += 1;
+        if (playerData == _friendsTwo) {
+          playerData.drawsAgainst += 1;
+        } else if (playerData == _friendsThree) {
+          if (_gamemode == Mode.twovstwo || _gamemode == Mode.threevsthree) {
+            playerData.drawsWith += 1;
+          } else {
+            playerData.drawsAgainst += 1;
+          }
+        } else if (playerData == _friendsFour) {
+          playerData.drawsAgainst += 1;
+        } else if (playerData == _friendsFive) {
+          if (_gamemode == Mode.twovstwo || _gamemode == Mode.threevsthree) {
+            playerData.drawsWith += 1;
+          } else {
+            playerData.drawsAgainst += 1;
+          }
+        } else {
+          playerData.drawsAgainst += 1;
+        }
       }
       userService.updateFriendsData(playerData);
     } else if (controller.value.text != "") {
       FriendsData newPlayer = FriendsData(name: controller.text);
       if (_winningTeam != 'Draw'.tr(context)) {
-        if (currentPlayerWinner) {
-          newPlayer.defeatsAgainst += 1;
+        if (winner) {
+          if (newPlayer == _friendsTwo) {
+            newPlayer.defeatsAgainst += 1;
+          } else if (newPlayer == _friendsThree) {
+            if (_gamemode == Mode.twovstwo || _gamemode == Mode.threevsthree) {
+              newPlayer.victoriesWith += 1;
+            } else {
+              newPlayer.defeatsAgainst += 1;
+            }
+          } else if (newPlayer == _friendsFour) {
+            newPlayer.defeatsAgainst += 1;
+          } else if (newPlayer == _friendsFive) {
+            if (_gamemode == Mode.twovstwo || _gamemode == Mode.threevsthree) {
+              newPlayer.victoriesWith += 1;
+            } else {
+              newPlayer.defeatsAgainst += 1;
+            }
+          } else {
+            newPlayer.defeatsAgainst += 1;
+          }
         } else {
-          newPlayer.victoriesAgainst += 1;
+          if (newPlayer == _friendsTwo) {
+            newPlayer.victoriesAgainst += 1;
+          } else if (newPlayer == _friendsThree) {
+            if (_gamemode == Mode.twovstwo || _gamemode == Mode.threevsthree) {
+              newPlayer.defeatsWith += 1;
+            } else {
+              newPlayer.victoriesAgainst += 1;
+            }
+          } else if (newPlayer == _friendsFour) {
+            newPlayer.victoriesAgainst += 1;
+          } else if (newPlayer == _friendsFive) {
+            if (_gamemode == Mode.twovstwo || _gamemode == Mode.threevsthree) {
+              newPlayer.defeatsWith += 1;
+            } else {
+              newPlayer.victoriesAgainst += 1;
+            }
+          } else {
+            newPlayer.victoriesAgainst += 1;
+          }
         }
       } else {
-        newPlayer.drawsAgainst += 1;
+        if (newPlayer == _friendsTwo) {
+          newPlayer.drawsAgainst += 1;
+        } else if (newPlayer == _friendsThree) {
+          if (_gamemode == Mode.twovstwo || _gamemode == Mode.threevsthree) {
+            newPlayer.drawsWith += 1;
+          } else {
+            newPlayer.drawsAgainst += 1;
+          }
+        } else if (newPlayer == _friendsFour) {
+          newPlayer.drawsAgainst += 1;
+        } else if (newPlayer == _friendsFive) {
+          if (_gamemode == Mode.twovstwo || _gamemode == Mode.threevsthree) {
+            newPlayer.drawsWith += 1;
+          } else {
+            newPlayer.drawsAgainst += 1;
+          }
+        } else {
+          newPlayer.drawsAgainst += 1;
+        }
       }
       userService.insertFriendsData(newPlayer);
     }
@@ -228,8 +355,10 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
 
   Future<void> _submit(UserService userService) async {
     if (_isFormValid) {
-      var winner =
-          (_winningTeam == "You".tr(context) || _winningTeam == "Team 1".tr(context)) ? true : false;
+      var winner = (_winningTeam == "You".tr(context) ||
+              _winningTeam == "Team 1".tr(context))
+          ? true
+          : false;
 
       var heroesData = HeroesData(
           name: _playerOne!.displayName,
@@ -314,12 +443,17 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
       }
 
       try {
-        updatePlayerData(_friendsTwo, _player2Controller, false, userService); // Joueur 2
-        updatePlayerData(_friendsThree, _player3Controller, true, userService); // Joueur 3, condition inversée
-        updatePlayerData(_friendsFour, _player4Controller, false, userService); // Joueur 4
-        updatePlayerData(_friendsFive, _player5Controller, true, userService); // Joueur 5, condition inversée
-        updatePlayerData(_friendsSix, _player6Controller, false, userService); // Joueur 6
-      } catch(e) {
+        updatePlayerData(
+            _friendsTwo, _player2Controller, userService); // Joueur 2
+        updatePlayerData(_friendsThree, _player3Controller,
+            userService); // Joueur 3, condition inversée
+        updatePlayerData(
+            _friendsFour, _player4Controller, userService); // Joueur 4
+        updatePlayerData(_friendsFive, _player5Controller,
+            userService); // Joueur 5, condition inversée
+        updatePlayerData(
+            _friendsSix, _player6Controller, userService); // Joueur 6
+      } catch (e) {
         print(e);
       }
 
@@ -489,12 +623,11 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                       SizedBox(
                         height: 16,
                       ),
-                      if (_gamemode == Mode.koth) ... [
+                      if (_gamemode == Mode.koth) ...[
                         Text(
                           'dta_add_number_players'.tr(context),
                           style: TextStyle(
-                            fontFamily:
-                            CompanionAppTheme.fontName,
+                            fontFamily: CompanionAppTheme.fontName,
                             fontWeight: FontWeight.bold,
                             fontSize: 18,
                             letterSpacing: 0.2,
@@ -700,7 +833,8 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                     ),
                                     if (_gamemode == Mode.twovstwo ||
                                         _gamemode == Mode.threevsthree) ...[
-                                      Divider(color: CompanionAppTheme.lightText),
+                                      Divider(
+                                          color: CompanionAppTheme.lightText),
                                       SizedBox(
                                         height: 8,
                                       ),
@@ -751,24 +885,36 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                               controller: _player3Controller,
                                               decoration: InputDecoration(
                                                 filled: true,
-                                                fillColor: CompanionAppTheme.lightText,
-                                                hintText: 'Player 3'.tr(context),
-                                                contentPadding: const EdgeInsets.only(
-                                                    left: 14.0, bottom: 8.0, top: 8.0),
-                                                focusedBorder: OutlineInputBorder(
+                                                fillColor:
+                                                    CompanionAppTheme.lightText,
+                                                hintText:
+                                                    'Player 3'.tr(context),
+                                                contentPadding:
+                                                    const EdgeInsets.only(
+                                                        left: 14.0,
+                                                        bottom: 8.0,
+                                                        top: 8.0),
+                                                focusedBorder:
+                                                    OutlineInputBorder(
                                                   borderSide: BorderSide(
-                                                      color: CompanionAppTheme.lightText),
+                                                      color: CompanionAppTheme
+                                                          .lightText),
                                                   borderRadius:
-                                                  BorderRadius.circular(25.7),
+                                                      BorderRadius.circular(
+                                                          25.7),
                                                 ),
-                                                enabledBorder: UnderlineInputBorder(
+                                                enabledBorder:
+                                                    UnderlineInputBorder(
                                                   borderSide: BorderSide(
-                                                      color: CompanionAppTheme.lightText),
+                                                      color: CompanionAppTheme
+                                                          .lightText),
                                                   borderRadius:
-                                                  BorderRadius.circular(25.7),
+                                                      BorderRadius.circular(
+                                                          25.7),
                                                 ),
                                               ),
-                                              cursorColor: CompanionAppTheme.darkerText,
+                                              cursorColor:
+                                                  CompanionAppTheme.darkerText,
                                             ),
                                           ),
                                           Spacer(),
@@ -777,11 +923,13 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                             hint: Text(
                                               'friend_select'.tr(context),
                                               style: TextStyle(
-                                                fontFamily: CompanionAppTheme.fontName,
+                                                fontFamily:
+                                                    CompanionAppTheme.fontName,
                                                 fontWeight: FontWeight.normal,
                                                 fontSize: 14,
                                                 letterSpacing: 0.2,
-                                                color: CompanionAppTheme.lightText,
+                                                color:
+                                                    CompanionAppTheme.lightText,
                                               ),
                                             ),
                                             value: _friendsThree,
@@ -792,23 +940,28 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                             },
                                             items: userService.friendsListData
                                                 .map((FriendsData friend) {
-                                              return DropdownMenuItem<FriendsData>(
+                                              return DropdownMenuItem<
+                                                  FriendsData>(
                                                 value: friend,
                                                 child: Text(
                                                   friend.name,
                                                   style: TextStyle(
                                                     fontFamily:
-                                                    CompanionAppTheme.fontName,
+                                                        CompanionAppTheme
+                                                            .fontName,
                                                     fontWeight: FontWeight.bold,
                                                     fontSize: 14,
                                                     letterSpacing: 0.2,
-                                                    color: CompanionAppTheme.lightText,
+                                                    color: CompanionAppTheme
+                                                        .lightText,
                                                   ),
                                                 ),
                                               );
                                             }).toList(),
                                           ),
-                                          SizedBox(width: 16,)
+                                          SizedBox(
+                                            width: 16,
+                                          )
                                         ],
                                       ),
                                       SizedBox(
@@ -892,7 +1045,8 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                       ),
                                     ],
                                     if (_gamemode == Mode.threevsthree) ...[
-                                      Divider(color: CompanionAppTheme.lightText),
+                                      Divider(
+                                          color: CompanionAppTheme.lightText),
                                       SizedBox(
                                         height: 8,
                                       ),
@@ -902,7 +1056,7 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                           'character_select'.tr(context),
                                           style: TextStyle(
                                             fontFamily:
-                                            CompanionAppTheme.fontName,
+                                                CompanionAppTheme.fontName,
                                             fontWeight: FontWeight.bold,
                                             fontSize: 14,
                                             letterSpacing: 0.2,
@@ -923,12 +1077,12 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                               character.displayName,
                                               style: TextStyle(
                                                 fontFamily:
-                                                CompanionAppTheme.fontName,
+                                                    CompanionAppTheme.fontName,
                                                 fontWeight: FontWeight.bold,
                                                 fontSize: 14,
                                                 letterSpacing: 0.2,
                                                 color:
-                                                CompanionAppTheme.lightText,
+                                                    CompanionAppTheme.lightText,
                                               ),
                                             ),
                                           );
@@ -943,24 +1097,36 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                               controller: _player5Controller,
                                               decoration: InputDecoration(
                                                 filled: true,
-                                                fillColor: CompanionAppTheme.lightText,
-                                                hintText: 'Player 5'.tr(context),
-                                                contentPadding: const EdgeInsets.only(
-                                                    left: 14.0, bottom: 8.0, top: 8.0),
-                                                focusedBorder: OutlineInputBorder(
+                                                fillColor:
+                                                    CompanionAppTheme.lightText,
+                                                hintText:
+                                                    'Player 5'.tr(context),
+                                                contentPadding:
+                                                    const EdgeInsets.only(
+                                                        left: 14.0,
+                                                        bottom: 8.0,
+                                                        top: 8.0),
+                                                focusedBorder:
+                                                    OutlineInputBorder(
                                                   borderSide: BorderSide(
-                                                      color: CompanionAppTheme.lightText),
+                                                      color: CompanionAppTheme
+                                                          .lightText),
                                                   borderRadius:
-                                                  BorderRadius.circular(25.7),
+                                                      BorderRadius.circular(
+                                                          25.7),
                                                 ),
-                                                enabledBorder: UnderlineInputBorder(
+                                                enabledBorder:
+                                                    UnderlineInputBorder(
                                                   borderSide: BorderSide(
-                                                      color: CompanionAppTheme.lightText),
+                                                      color: CompanionAppTheme
+                                                          .lightText),
                                                   borderRadius:
-                                                  BorderRadius.circular(25.7),
+                                                      BorderRadius.circular(
+                                                          25.7),
                                                 ),
                                               ),
-                                              cursorColor: CompanionAppTheme.darkerText,
+                                              cursorColor:
+                                                  CompanionAppTheme.darkerText,
                                             ),
                                           ),
                                           Spacer(),
@@ -969,11 +1135,13 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                             hint: Text(
                                               'friend_select'.tr(context),
                                               style: TextStyle(
-                                                fontFamily: CompanionAppTheme.fontName,
+                                                fontFamily:
+                                                    CompanionAppTheme.fontName,
                                                 fontWeight: FontWeight.normal,
                                                 fontSize: 14,
                                                 letterSpacing: 0.2,
-                                                color: CompanionAppTheme.lightText,
+                                                color:
+                                                    CompanionAppTheme.lightText,
                                               ),
                                             ),
                                             value: _friendsFive,
@@ -984,23 +1152,28 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                             },
                                             items: userService.friendsListData
                                                 .map((FriendsData friend) {
-                                              return DropdownMenuItem<FriendsData>(
+                                              return DropdownMenuItem<
+                                                  FriendsData>(
                                                 value: friend,
                                                 child: Text(
                                                   friend.name,
                                                   style: TextStyle(
                                                     fontFamily:
-                                                    CompanionAppTheme.fontName,
+                                                        CompanionAppTheme
+                                                            .fontName,
                                                     fontWeight: FontWeight.bold,
                                                     fontSize: 14,
                                                     letterSpacing: 0.2,
-                                                    color: CompanionAppTheme.lightText,
+                                                    color: CompanionAppTheme
+                                                        .lightText,
                                                   ),
                                                 ),
                                               );
                                             }).toList(),
                                           ),
-                                          SizedBox(width: 16,)
+                                          SizedBox(
+                                            width: 16,
+                                          )
                                         ],
                                       ),
                                       SizedBox(
@@ -1161,7 +1334,7 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                           character.displayName,
                                           style: TextStyle(
                                             fontFamily:
-                                            CompanionAppTheme.fontName,
+                                                CompanionAppTheme.fontName,
                                             fontWeight: FontWeight.bold,
                                             fontSize: 14,
                                             letterSpacing: 0.2,
@@ -1171,90 +1344,137 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                       );
                                     }).toList(),
                                   ),
-                                  SizedBox(height: 32),
-                                  Row(
+                                  OverlayTooltipItem(
+                                    tooltipVerticalPosition: TooltipVerticalPosition.TOP,
+                                    displayIndex: 0,
+                                    tooltip: (controller) {
+                                      return Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 15),
+                                        child: MTooltip(
+                                            title: 'tooltip_player_select'.tr(context),
+                                            controller: controller),
+                                      );
+                                    },
+                                    child: Column(
                                       children: [
-                                        SizedBox(
-                                          width: 150,
-                                          child: TextField(
-                                            controller: _player2Controller,
-                                            decoration: InputDecoration(
-                                              filled: true,
-                                              fillColor: CompanionAppTheme.lightText,
-                                              hintText: 'Player 2'.tr(context),
-                                              contentPadding: const EdgeInsets.only(
-                                                  left: 14.0, bottom: 8.0, top: 8.0),
-                                              focusedBorder: OutlineInputBorder(
-                                                borderSide: BorderSide(
-                                                    color: CompanionAppTheme.lightText),
-                                                borderRadius:
-                                                BorderRadius.circular(25.7),
-                                              ),
-                                              enabledBorder: UnderlineInputBorder(
-                                                borderSide: BorderSide(
-                                                    color: CompanionAppTheme.lightText),
-                                                borderRadius:
-                                                BorderRadius.circular(25.7),
+                                        SizedBox(height: 32),
+                                        Row(
+                                          children: [
+                                            SizedBox(
+                                              width: 150,
+                                              child: TextField(
+                                                controller: _player2Controller,
+                                                decoration: InputDecoration(
+                                                  filled: true,
+                                                  fillColor:
+                                                  CompanionAppTheme.lightText,
+                                                  hintText: 'Player 2'.tr(context),
+                                                  contentPadding:
+                                                  const EdgeInsets.only(
+                                                      left: 14.0,
+                                                      bottom: 8.0,
+                                                      top: 8.0),
+                                                  focusedBorder: OutlineInputBorder(
+                                                    borderSide: BorderSide(
+                                                        color: CompanionAppTheme
+                                                            .lightText),
+                                                    borderRadius:
+                                                    BorderRadius.circular(25.7),
+                                                  ),
+                                                  enabledBorder:
+                                                  UnderlineInputBorder(
+                                                    borderSide: BorderSide(
+                                                        color: CompanionAppTheme
+                                                            .lightText),
+                                                    borderRadius:
+                                                    BorderRadius.circular(25.7),
+                                                  ),
+                                                ),
+                                                cursorColor:
+                                                CompanionAppTheme.darkerText,
                                               ),
                                             ),
-                                            cursorColor: CompanionAppTheme.darkerText,
-                                          ),
-                                        ),
-                                        Spacer(),
-                                        DropdownButton<FriendsData>(
-                                          menuMaxHeight: 200,
-                                          hint: Text(
-                                            'friend_select'.tr(context),
-                                            style: TextStyle(
-                                              fontFamily: CompanionAppTheme.fontName,
-                                              fontWeight: FontWeight.normal,
-                                              fontSize: 14,
-                                              letterSpacing: 0.2,
-                                              color: CompanionAppTheme.lightText,
-                                            ),
-                                          ),
-                                          value: _friendsTwo,
-                                          onChanged: (FriendsData? newValue) {
-                                            setState(() {
-                                              _friendsTwo = newValue;
-                                            });
-                                          },
-                                          items: userService.friendsListData
-                                              .map((FriendsData friend) {
-                                            return DropdownMenuItem<FriendsData>(
-                                              value: friend,
-                                              child: Text(
-                                                friend.name,
+                                            Spacer(),
+                                            DropdownButton<FriendsData>(
+                                              menuMaxHeight: 200,
+                                              hint: Text(
+                                                'friend_select'.tr(context),
                                                 style: TextStyle(
                                                   fontFamily:
                                                   CompanionAppTheme.fontName,
-                                                  fontWeight: FontWeight.bold,
+                                                  fontWeight: FontWeight.normal,
                                                   fontSize: 14,
                                                   letterSpacing: 0.2,
-                                                  color: CompanionAppTheme.lightText,
+                                                  color:
+                                                  CompanionAppTheme.lightText,
                                                 ),
                                               ),
-                                            );
-                                          }).toList(),
+                                              value: _friendsTwo,
+                                              onChanged: (FriendsData? newValue) {
+                                                setState(() {
+                                                  _friendsTwo = newValue;
+                                                });
+                                              },
+                                              items: [
+                                                DropdownMenuItem<FriendsData>(
+                                                  value: null,
+                                                  child: Text(
+                                                    'friend_unselect'.tr(context),
+                                                    style: TextStyle(
+                                                      fontFamily: CompanionAppTheme
+                                                          .fontName,
+                                                      fontWeight: FontWeight.bold,
+                                                      fontSize: 14,
+                                                      letterSpacing: 0.2,
+                                                      color: CompanionAppTheme
+                                                          .lightText,
+                                                    ),
+                                                  ),
+                                                ),
+                                                ...userService.friendsListData
+                                                    .map((FriendsData friend) {
+                                                  return DropdownMenuItem<
+                                                      FriendsData>(
+                                                    value: friend,
+                                                    child: Text(
+                                                      friend.name,
+                                                      style: TextStyle(
+                                                        fontFamily:
+                                                        CompanionAppTheme
+                                                            .fontName,
+                                                        fontWeight: FontWeight.bold,
+                                                        fontSize: 14,
+                                                        letterSpacing: 0.2,
+                                                        color: CompanionAppTheme
+                                                            .lightText,
+                                                      ),
+                                                    ),
+                                                  );
+                                                }).toList(),
+                                              ],
+                                            ),
+                                            SizedBox(
+                                              width: 16,
+                                            )
+                                          ],
                                         ),
-                                        SizedBox(width: 16,)
                                       ],
+                                    )
                                   ),
                                   SizedBox(height: 16),
                                   Row(
-                                    mainAxisAlignment:
-                                    MainAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
                                       Text(
                                         'ultimates'.tr(context),
                                         style: TextStyle(
                                           fontFamily:
-                                          CompanionAppTheme.fontName,
+                                              CompanionAppTheme.fontName,
                                           fontWeight: FontWeight.bold,
                                           fontSize: 18,
                                           letterSpacing: 0.2,
-                                          color:
-                                          CompanionAppTheme.lightText,
+                                          color: CompanionAppTheme.lightText,
                                         ),
                                       ),
                                       Spacer(),
@@ -1263,17 +1483,15 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                         height: 44,
                                         child: TextFormField(
                                           onTapOutside: (event) {
-                                            FocusManager
-                                                .instance.primaryFocus
+                                            FocusManager.instance.primaryFocus
                                                 ?.unfocus();
                                           },
                                           controller: _playerTwoUltimates,
-                                          keyboardType:
-                                          TextInputType.number,
+                                          keyboardType: TextInputType.number,
                                           inputFormatters: <TextInputFormatter>[
                                             // for below version 2 use this
-                                            FilteringTextInputFormatter
-                                                .allow(RegExp(r'[0-9]')),
+                                            FilteringTextInputFormatter.allow(
+                                                RegExp(r'[0-9]')),
                                             // for version 2 and greater youcan also use this
                                             FilteringTextInputFormatter
                                                 .digitsOnly
@@ -1281,39 +1499,37 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                           decoration: InputDecoration(
                                             filled: true,
                                             fillColor:
-                                            CompanionAppTheme.lightText,
+                                                CompanionAppTheme.lightText,
                                             hintText: '',
                                             contentPadding:
-                                            const EdgeInsets.only(
-                                                left: 8.0,
-                                                bottom: 4.0,
-                                                top: 4.0),
-                                            focusedBorder:
-                                            OutlineInputBorder(
+                                                const EdgeInsets.only(
+                                                    left: 8.0,
+                                                    bottom: 4.0,
+                                                    top: 4.0),
+                                            focusedBorder: OutlineInputBorder(
                                               borderSide: BorderSide(
                                                   color: CompanionAppTheme
                                                       .lightText),
                                               borderRadius:
-                                              BorderRadius.circular(
-                                                  12.5),
+                                                  BorderRadius.circular(12.5),
                                             ),
-                                            enabledBorder:
-                                            UnderlineInputBorder(
+                                            enabledBorder: UnderlineInputBorder(
                                               borderSide: BorderSide(
                                                   color: CompanionAppTheme
                                                       .lightText),
                                               borderRadius:
-                                              BorderRadius.circular(
-                                                  12.5),
+                                                  BorderRadius.circular(12.5),
                                             ),
                                           ),
                                           cursorColor:
-                                          CompanionAppTheme.darkerText,
+                                              CompanionAppTheme.darkerText,
                                         ),
                                       ),
                                     ],
                                   ),
-                                  SizedBox(height: 16,),
+                                  SizedBox(
+                                    height: 16,
+                                  ),
                                   if (_gamemode == Mode.twovstwo ||
                                       _gamemode == Mode.threevsthree) ...[
                                     Divider(color: CompanionAppTheme.lightText),
@@ -1325,7 +1541,8 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                       hint: Text(
                                         'character_select'.tr(context),
                                         style: TextStyle(
-                                          fontFamily: CompanionAppTheme.fontName,
+                                          fontFamily:
+                                              CompanionAppTheme.fontName,
                                           fontWeight: FontWeight.normal,
                                           fontSize: 14,
                                           letterSpacing: 0.2,
@@ -1346,11 +1563,12 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                             character.displayName,
                                             style: TextStyle(
                                               fontFamily:
-                                              CompanionAppTheme.fontName,
+                                                  CompanionAppTheme.fontName,
                                               fontWeight: FontWeight.bold,
                                               fontSize: 14,
                                               letterSpacing: 0.2,
-                                              color: CompanionAppTheme.lightText,
+                                              color:
+                                                  CompanionAppTheme.lightText,
                                             ),
                                           ),
                                         );
@@ -1365,24 +1583,32 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                             controller: _player4Controller,
                                             decoration: InputDecoration(
                                               filled: true,
-                                              fillColor: CompanionAppTheme.lightText,
+                                              fillColor:
+                                                  CompanionAppTheme.lightText,
                                               hintText: 'Player 4'.tr(context),
-                                              contentPadding: const EdgeInsets.only(
-                                                  left: 14.0, bottom: 8.0, top: 8.0),
+                                              contentPadding:
+                                                  const EdgeInsets.only(
+                                                      left: 14.0,
+                                                      bottom: 8.0,
+                                                      top: 8.0),
                                               focusedBorder: OutlineInputBorder(
                                                 borderSide: BorderSide(
-                                                    color: CompanionAppTheme.lightText),
+                                                    color: CompanionAppTheme
+                                                        .lightText),
                                                 borderRadius:
-                                                BorderRadius.circular(25.7),
+                                                    BorderRadius.circular(25.7),
                                               ),
-                                              enabledBorder: UnderlineInputBorder(
+                                              enabledBorder:
+                                                  UnderlineInputBorder(
                                                 borderSide: BorderSide(
-                                                    color: CompanionAppTheme.lightText),
+                                                    color: CompanionAppTheme
+                                                        .lightText),
                                                 borderRadius:
-                                                BorderRadius.circular(25.7),
+                                                    BorderRadius.circular(25.7),
                                               ),
                                             ),
-                                            cursorColor: CompanionAppTheme.darkerText,
+                                            cursorColor:
+                                                CompanionAppTheme.darkerText,
                                           ),
                                         ),
                                         Spacer(),
@@ -1391,11 +1617,13 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                           hint: Text(
                                             'friend_select'.tr(context),
                                             style: TextStyle(
-                                              fontFamily: CompanionAppTheme.fontName,
+                                              fontFamily:
+                                                  CompanionAppTheme.fontName,
                                               fontWeight: FontWeight.normal,
                                               fontSize: 14,
                                               letterSpacing: 0.2,
-                                              color: CompanionAppTheme.lightText,
+                                              color:
+                                                  CompanionAppTheme.lightText,
                                             ),
                                           ),
                                           value: _friendsFour,
@@ -1404,42 +1632,63 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                               _friendsFour = newValue;
                                             });
                                           },
-                                          items: userService.friendsListData
-                                              .map((FriendsData friend) {
-                                            return DropdownMenuItem<FriendsData>(
-                                              value: friend,
+                                          items: [
+                                            DropdownMenuItem<FriendsData>(
+                                              value: null,
                                               child: Text(
-                                                friend.name,
+                                                'friend_unselect'.tr(context),
                                                 style: TextStyle(
-                                                  fontFamily:
-                                                  CompanionAppTheme.fontName,
+                                                  fontFamily: CompanionAppTheme
+                                                      .fontName,
                                                   fontWeight: FontWeight.bold,
                                                   fontSize: 14,
                                                   letterSpacing: 0.2,
-                                                  color: CompanionAppTheme.lightText,
+                                                  color: CompanionAppTheme
+                                                      .lightText,
                                                 ),
                                               ),
-                                            );
-                                          }).toList(),
+                                            ),
+                                            ...userService.friendsListData
+                                                .map((FriendsData friend) {
+                                              return DropdownMenuItem<
+                                                  FriendsData>(
+                                                value: friend,
+                                                child: Text(
+                                                  friend.name,
+                                                  style: TextStyle(
+                                                    fontFamily:
+                                                        CompanionAppTheme
+                                                            .fontName,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 14,
+                                                    letterSpacing: 0.2,
+                                                    color: CompanionAppTheme
+                                                        .lightText,
+                                                  ),
+                                                ),
+                                              );
+                                            }).toList(),
+                                          ],
                                         ),
-                                        SizedBox(width: 16,)
+                                        SizedBox(
+                                          width: 16,
+                                        )
                                       ],
                                     ),
                                     SizedBox(height: 16),
                                     Row(
                                       mainAxisAlignment:
-                                      MainAxisAlignment.start,
+                                          MainAxisAlignment.start,
                                       children: [
                                         Text(
                                           'ultimates'.tr(context),
                                           style: TextStyle(
                                             fontFamily:
-                                            CompanionAppTheme.fontName,
+                                                CompanionAppTheme.fontName,
                                             fontWeight: FontWeight.bold,
                                             fontSize: 18,
                                             letterSpacing: 0.2,
-                                            color:
-                                            CompanionAppTheme.lightText,
+                                            color: CompanionAppTheme.lightText,
                                           ),
                                         ),
                                         Spacer(),
@@ -1448,17 +1697,15 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                           height: 44,
                                           child: TextFormField(
                                             onTapOutside: (event) {
-                                              FocusManager
-                                                  .instance.primaryFocus
+                                              FocusManager.instance.primaryFocus
                                                   ?.unfocus();
                                             },
                                             controller: _playerFourUltimates,
-                                            keyboardType:
-                                            TextInputType.number,
+                                            keyboardType: TextInputType.number,
                                             inputFormatters: <TextInputFormatter>[
                                               // for below version 2 use this
-                                              FilteringTextInputFormatter
-                                                  .allow(RegExp(r'[0-9]')),
+                                              FilteringTextInputFormatter.allow(
+                                                  RegExp(r'[0-9]')),
                                               // for version 2 and greater youcan also use this
                                               FilteringTextInputFormatter
                                                   .digitsOnly
@@ -1466,41 +1713,40 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                             decoration: InputDecoration(
                                               filled: true,
                                               fillColor:
-                                              CompanionAppTheme.lightText,
+                                                  CompanionAppTheme.lightText,
                                               hintText: '',
                                               contentPadding:
-                                              const EdgeInsets.only(
-                                                  left: 8.0,
-                                                  bottom: 4.0,
-                                                  top: 4.0),
-                                              focusedBorder:
-                                              OutlineInputBorder(
+                                                  const EdgeInsets.only(
+                                                      left: 8.0,
+                                                      bottom: 4.0,
+                                                      top: 4.0),
+                                              focusedBorder: OutlineInputBorder(
                                                 borderSide: BorderSide(
                                                     color: CompanionAppTheme
                                                         .lightText),
                                                 borderRadius:
-                                                BorderRadius.circular(
-                                                    12.5),
+                                                    BorderRadius.circular(12.5),
                                               ),
                                               enabledBorder:
-                                              UnderlineInputBorder(
+                                                  UnderlineInputBorder(
                                                 borderSide: BorderSide(
                                                     color: CompanionAppTheme
                                                         .lightText),
                                                 borderRadius:
-                                                BorderRadius.circular(
-                                                    12.5),
+                                                    BorderRadius.circular(12.5),
                                               ),
                                             ),
                                             cursorColor:
-                                            CompanionAppTheme.darkerText,
+                                                CompanionAppTheme.darkerText,
                                           ),
                                         ),
                                       ],
                                     ),
-                                    SizedBox(height: 16,)
+                                    SizedBox(
+                                      height: 16,
+                                    )
                                   ],
-                                  if (_gamemode == Mode.threevsthree) ... [
+                                  if (_gamemode == Mode.threevsthree) ...[
                                     Divider(color: CompanionAppTheme.lightText),
                                     SizedBox(
                                       height: 8,
@@ -1510,7 +1756,8 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                       hint: Text(
                                         'character_select'.tr(context),
                                         style: TextStyle(
-                                          fontFamily: CompanionAppTheme.fontName,
+                                          fontFamily:
+                                              CompanionAppTheme.fontName,
                                           fontWeight: FontWeight.normal,
                                           fontSize: 14,
                                           letterSpacing: 0.2,
@@ -1531,11 +1778,12 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                             character.displayName,
                                             style: TextStyle(
                                               fontFamily:
-                                              CompanionAppTheme.fontName,
+                                                  CompanionAppTheme.fontName,
                                               fontWeight: FontWeight.bold,
                                               fontSize: 14,
                                               letterSpacing: 0.2,
-                                              color: CompanionAppTheme.lightText,
+                                              color:
+                                                  CompanionAppTheme.lightText,
                                             ),
                                           ),
                                         );
@@ -1550,24 +1798,32 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                             controller: _player6Controller,
                                             decoration: InputDecoration(
                                               filled: true,
-                                              fillColor: CompanionAppTheme.lightText,
+                                              fillColor:
+                                                  CompanionAppTheme.lightText,
                                               hintText: 'Player 6'.tr(context),
-                                              contentPadding: const EdgeInsets.only(
-                                                  left: 14.0, bottom: 8.0, top: 8.0),
+                                              contentPadding:
+                                                  const EdgeInsets.only(
+                                                      left: 14.0,
+                                                      bottom: 8.0,
+                                                      top: 8.0),
                                               focusedBorder: OutlineInputBorder(
                                                 borderSide: BorderSide(
-                                                    color: CompanionAppTheme.lightText),
+                                                    color: CompanionAppTheme
+                                                        .lightText),
                                                 borderRadius:
-                                                BorderRadius.circular(25.7),
+                                                    BorderRadius.circular(25.7),
                                               ),
-                                              enabledBorder: UnderlineInputBorder(
+                                              enabledBorder:
+                                                  UnderlineInputBorder(
                                                 borderSide: BorderSide(
-                                                    color: CompanionAppTheme.lightText),
+                                                    color: CompanionAppTheme
+                                                        .lightText),
                                                 borderRadius:
-                                                BorderRadius.circular(25.7),
+                                                    BorderRadius.circular(25.7),
                                               ),
                                             ),
-                                            cursorColor: CompanionAppTheme.darkerText,
+                                            cursorColor:
+                                                CompanionAppTheme.darkerText,
                                           ),
                                         ),
                                         Spacer(),
@@ -1576,11 +1832,13 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                           hint: Text(
                                             'friend_select'.tr(context),
                                             style: TextStyle(
-                                              fontFamily: CompanionAppTheme.fontName,
+                                              fontFamily:
+                                                  CompanionAppTheme.fontName,
                                               fontWeight: FontWeight.normal,
                                               fontSize: 14,
                                               letterSpacing: 0.2,
-                                              color: CompanionAppTheme.lightText,
+                                              color:
+                                                  CompanionAppTheme.lightText,
                                             ),
                                           ),
                                           value: _friendsSix,
@@ -1589,25 +1847,47 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                               _friendsSix = newValue;
                                             });
                                           },
-                                          items: userService.friendsListData
-                                              .map((FriendsData friend) {
-                                            return DropdownMenuItem<FriendsData>(
-                                              value: friend,
+                                          items: [
+                                            DropdownMenuItem<FriendsData>(
+                                              value: null,
                                               child: Text(
-                                                friend.name,
+                                                'friend_unselect'.tr(context),
                                                 style: TextStyle(
-                                                  fontFamily:
-                                                  CompanionAppTheme.fontName,
+                                                  fontFamily: CompanionAppTheme
+                                                      .fontName,
                                                   fontWeight: FontWeight.bold,
                                                   fontSize: 14,
                                                   letterSpacing: 0.2,
-                                                  color: CompanionAppTheme.lightText,
+                                                  color: CompanionAppTheme
+                                                      .lightText,
                                                 ),
                                               ),
-                                            );
-                                          }).toList(),
+                                            ),
+                                            ...userService.friendsListData
+                                                .map((FriendsData friend) {
+                                              return DropdownMenuItem<
+                                                  FriendsData>(
+                                                value: friend,
+                                                child: Text(
+                                                  friend.name,
+                                                  style: TextStyle(
+                                                    fontFamily:
+                                                        CompanionAppTheme
+                                                            .fontName,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 14,
+                                                    letterSpacing: 0.2,
+                                                    color: CompanionAppTheme
+                                                        .lightText,
+                                                  ),
+                                                ),
+                                              );
+                                            }).toList(),
+                                          ],
                                         ),
-                                        SizedBox(width: 16,)
+                                        SizedBox(
+                                          width: 16,
+                                        )
                                       ],
                                     ),
                                     SizedBox(
@@ -1615,18 +1895,17 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                     ),
                                     Row(
                                       mainAxisAlignment:
-                                      MainAxisAlignment.start,
+                                          MainAxisAlignment.start,
                                       children: [
                                         Text(
                                           'ultimates'.tr(context),
                                           style: TextStyle(
                                             fontFamily:
-                                            CompanionAppTheme.fontName,
+                                                CompanionAppTheme.fontName,
                                             fontWeight: FontWeight.bold,
                                             fontSize: 18,
                                             letterSpacing: 0.2,
-                                            color:
-                                            CompanionAppTheme.lightText,
+                                            color: CompanionAppTheme.lightText,
                                           ),
                                         ),
                                         Spacer(),
@@ -1635,17 +1914,15 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                           height: 44,
                                           child: TextFormField(
                                             onTapOutside: (event) {
-                                              FocusManager
-                                                  .instance.primaryFocus
+                                              FocusManager.instance.primaryFocus
                                                   ?.unfocus();
                                             },
                                             controller: _playerSixUltimates,
-                                            keyboardType:
-                                            TextInputType.number,
+                                            keyboardType: TextInputType.number,
                                             inputFormatters: <TextInputFormatter>[
                                               // for below version 2 use this
-                                              FilteringTextInputFormatter
-                                                  .allow(RegExp(r'[0-9]')),
+                                              FilteringTextInputFormatter.allow(
+                                                  RegExp(r'[0-9]')),
                                               // for version 2 and greater youcan also use this
                                               FilteringTextInputFormatter
                                                   .digitsOnly
@@ -1653,39 +1930,38 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                             decoration: InputDecoration(
                                               filled: true,
                                               fillColor:
-                                              CompanionAppTheme.lightText,
+                                                  CompanionAppTheme.lightText,
                                               hintText: '',
                                               contentPadding:
-                                              const EdgeInsets.only(
-                                                  left: 8.0,
-                                                  bottom: 4.0,
-                                                  top: 4.0),
-                                              focusedBorder:
-                                              OutlineInputBorder(
+                                                  const EdgeInsets.only(
+                                                      left: 8.0,
+                                                      bottom: 4.0,
+                                                      top: 4.0),
+                                              focusedBorder: OutlineInputBorder(
                                                 borderSide: BorderSide(
                                                     color: CompanionAppTheme
                                                         .lightText),
                                                 borderRadius:
-                                                BorderRadius.circular(
-                                                    12.5),
+                                                    BorderRadius.circular(12.5),
                                               ),
                                               enabledBorder:
-                                              UnderlineInputBorder(
+                                                  UnderlineInputBorder(
                                                 borderSide: BorderSide(
                                                     color: CompanionAppTheme
                                                         .lightText),
                                                 borderRadius:
-                                                BorderRadius.circular(
-                                                    12.5),
+                                                    BorderRadius.circular(12.5),
                                               ),
                                             ),
                                             cursorColor:
-                                            CompanionAppTheme.darkerText,
+                                                CompanionAppTheme.darkerText,
                                           ),
                                         ),
                                       ],
                                     ),
-                                    SizedBox(height: 16,)
+                                    SizedBox(
+                                      height: 16,
+                                    )
                                   ]
                                 ],
                               ),
@@ -1730,7 +2006,8 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                       Text(
                                         'Player 3'.tr(context),
                                         style: TextStyle(
-                                          fontFamily: CompanionAppTheme.fontName,
+                                          fontFamily:
+                                              CompanionAppTheme.fontName,
                                           fontWeight: FontWeight.bold,
                                           fontSize: 20,
                                           letterSpacing: 0.2,
@@ -1740,7 +2017,8 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                       SizedBox(
                                         height: 16,
                                       ),
-                                      Divider(color: CompanionAppTheme.lightText),
+                                      Divider(
+                                          color: CompanionAppTheme.lightText),
                                       SizedBox(
                                         height: 8,
                                       ),
@@ -1750,7 +2028,7 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                           'character_select'.tr(context),
                                           style: TextStyle(
                                             fontFamily:
-                                            CompanionAppTheme.fontName,
+                                                CompanionAppTheme.fontName,
                                             fontWeight: FontWeight.normal,
                                             fontSize: 14,
                                             letterSpacing: 0.2,
@@ -1771,12 +2049,12 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                               character.displayName,
                                               style: TextStyle(
                                                 fontFamily:
-                                                CompanionAppTheme.fontName,
+                                                    CompanionAppTheme.fontName,
                                                 fontWeight: FontWeight.bold,
                                                 fontSize: 14,
                                                 letterSpacing: 0.2,
                                                 color:
-                                                CompanionAppTheme.lightText,
+                                                    CompanionAppTheme.lightText,
                                               ),
                                             ),
                                           );
@@ -1791,24 +2069,36 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                               controller: _player3Controller,
                                               decoration: InputDecoration(
                                                 filled: true,
-                                                fillColor: CompanionAppTheme.lightText,
-                                                hintText: 'Player 3'.tr(context),
-                                                contentPadding: const EdgeInsets.only(
-                                                    left: 14.0, bottom: 8.0, top: 8.0),
-                                                focusedBorder: OutlineInputBorder(
+                                                fillColor:
+                                                    CompanionAppTheme.lightText,
+                                                hintText:
+                                                    'Player 3'.tr(context),
+                                                contentPadding:
+                                                    const EdgeInsets.only(
+                                                        left: 14.0,
+                                                        bottom: 8.0,
+                                                        top: 8.0),
+                                                focusedBorder:
+                                                    OutlineInputBorder(
                                                   borderSide: BorderSide(
-                                                      color: CompanionAppTheme.lightText),
+                                                      color: CompanionAppTheme
+                                                          .lightText),
                                                   borderRadius:
-                                                  BorderRadius.circular(25.7),
+                                                      BorderRadius.circular(
+                                                          25.7),
                                                 ),
-                                                enabledBorder: UnderlineInputBorder(
+                                                enabledBorder:
+                                                    UnderlineInputBorder(
                                                   borderSide: BorderSide(
-                                                      color: CompanionAppTheme.lightText),
+                                                      color: CompanionAppTheme
+                                                          .lightText),
                                                   borderRadius:
-                                                  BorderRadius.circular(25.7),
+                                                      BorderRadius.circular(
+                                                          25.7),
                                                 ),
                                               ),
-                                              cursorColor: CompanionAppTheme.darkerText,
+                                              cursorColor:
+                                                  CompanionAppTheme.darkerText,
                                             ),
                                           ),
                                           Spacer(),
@@ -1817,11 +2107,13 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                             hint: Text(
                                               'friend_select'.tr(context),
                                               style: TextStyle(
-                                                fontFamily: CompanionAppTheme.fontName,
+                                                fontFamily:
+                                                    CompanionAppTheme.fontName,
                                                 fontWeight: FontWeight.normal,
                                                 fontSize: 14,
                                                 letterSpacing: 0.2,
-                                                color: CompanionAppTheme.lightText,
+                                                color:
+                                                    CompanionAppTheme.lightText,
                                               ),
                                             ),
                                             value: _friendsThree,
@@ -1830,42 +2122,66 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                                 _friendsThree = newValue;
                                               });
                                             },
-                                            items: userService.friendsListData
-                                                .map((FriendsData friend) {
-                                              return DropdownMenuItem<FriendsData>(
-                                                value: friend,
+                                            items: [
+                                              DropdownMenuItem<FriendsData>(
+                                                value: null,
                                                 child: Text(
-                                                  friend.name,
+                                                  'friend_unselect'.tr(context),
                                                   style: TextStyle(
                                                     fontFamily:
-                                                    CompanionAppTheme.fontName,
+                                                        CompanionAppTheme
+                                                            .fontName,
                                                     fontWeight: FontWeight.bold,
                                                     fontSize: 14,
                                                     letterSpacing: 0.2,
-                                                    color: CompanionAppTheme.lightText,
+                                                    color: CompanionAppTheme
+                                                        .lightText,
                                                   ),
                                                 ),
-                                              );
-                                            }).toList(),
+                                              ),
+                                              ...userService.friendsListData
+                                                  .map((FriendsData friend) {
+                                                return DropdownMenuItem<
+                                                    FriendsData>(
+                                                  value: friend,
+                                                  child: Text(
+                                                    friend.name,
+                                                    style: TextStyle(
+                                                      fontFamily:
+                                                          CompanionAppTheme
+                                                              .fontName,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 14,
+                                                      letterSpacing: 0.2,
+                                                      color: CompanionAppTheme
+                                                          .lightText,
+                                                    ),
+                                                  ),
+                                                );
+                                              }).toList(),
+                                            ],
                                           ),
-                                          SizedBox(width: 16,)
+                                          SizedBox(
+                                            width: 16,
+                                          )
                                         ],
                                       ),
                                       SizedBox(height: 16),
                                       Row(
                                         mainAxisAlignment:
-                                        MainAxisAlignment.start,
+                                            MainAxisAlignment.start,
                                         children: [
                                           Text(
                                             'ultimates'.tr(context),
                                             style: TextStyle(
                                               fontFamily:
-                                              CompanionAppTheme.fontName,
+                                                  CompanionAppTheme.fontName,
                                               fontWeight: FontWeight.bold,
                                               fontSize: 18,
                                               letterSpacing: 0.2,
                                               color:
-                                              CompanionAppTheme.lightText,
+                                                  CompanionAppTheme.lightText,
                                             ),
                                           ),
                                           Spacer(),
@@ -1880,7 +2196,7 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                               },
                                               controller: _playerThreeUltimates,
                                               keyboardType:
-                                              TextInputType.number,
+                                                  TextInputType.number,
                                               inputFormatters: <TextInputFormatter>[
                                                 // for below version 2 use this
                                                 FilteringTextInputFormatter
@@ -1892,34 +2208,34 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                               decoration: InputDecoration(
                                                 filled: true,
                                                 fillColor:
-                                                CompanionAppTheme.lightText,
+                                                    CompanionAppTheme.lightText,
                                                 hintText: '',
                                                 contentPadding:
-                                                const EdgeInsets.only(
-                                                    left: 8.0,
-                                                    bottom: 4.0,
-                                                    top: 4.0),
+                                                    const EdgeInsets.only(
+                                                        left: 8.0,
+                                                        bottom: 4.0,
+                                                        top: 4.0),
                                                 focusedBorder:
-                                                OutlineInputBorder(
+                                                    OutlineInputBorder(
                                                   borderSide: BorderSide(
                                                       color: CompanionAppTheme
                                                           .lightText),
                                                   borderRadius:
-                                                  BorderRadius.circular(
-                                                      12.5),
+                                                      BorderRadius.circular(
+                                                          12.5),
                                                 ),
                                                 enabledBorder:
-                                                UnderlineInputBorder(
+                                                    UnderlineInputBorder(
                                                   borderSide: BorderSide(
                                                       color: CompanionAppTheme
                                                           .lightText),
                                                   borderRadius:
-                                                  BorderRadius.circular(
-                                                      12.5),
+                                                      BorderRadius.circular(
+                                                          12.5),
                                                 ),
                                               ),
                                               cursorColor:
-                                              CompanionAppTheme.darkerText,
+                                                  CompanionAppTheme.darkerText,
                                             ),
                                           ),
                                         ],
@@ -1965,7 +2281,8 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                       Text(
                                         'Player 4'.tr(context),
                                         style: TextStyle(
-                                          fontFamily: CompanionAppTheme.fontName,
+                                          fontFamily:
+                                              CompanionAppTheme.fontName,
                                           fontWeight: FontWeight.bold,
                                           fontSize: 20,
                                           letterSpacing: 0.2,
@@ -1975,7 +2292,8 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                       SizedBox(
                                         height: 16,
                                       ),
-                                      Divider(color: CompanionAppTheme.lightText),
+                                      Divider(
+                                          color: CompanionAppTheme.lightText),
                                       SizedBox(
                                         height: 8,
                                       ),
@@ -1985,7 +2303,7 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                           'character_select'.tr(context),
                                           style: TextStyle(
                                             fontFamily:
-                                            CompanionAppTheme.fontName,
+                                                CompanionAppTheme.fontName,
                                             fontWeight: FontWeight.normal,
                                             fontSize: 14,
                                             letterSpacing: 0.2,
@@ -2006,12 +2324,12 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                               character.displayName,
                                               style: TextStyle(
                                                 fontFamily:
-                                                CompanionAppTheme.fontName,
+                                                    CompanionAppTheme.fontName,
                                                 fontWeight: FontWeight.bold,
                                                 fontSize: 14,
                                                 letterSpacing: 0.2,
                                                 color:
-                                                CompanionAppTheme.lightText,
+                                                    CompanionAppTheme.lightText,
                                               ),
                                             ),
                                           );
@@ -2026,24 +2344,36 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                               controller: _player4Controller,
                                               decoration: InputDecoration(
                                                 filled: true,
-                                                fillColor: CompanionAppTheme.lightText,
-                                                hintText: 'Player 4'.tr(context),
-                                                contentPadding: const EdgeInsets.only(
-                                                    left: 14.0, bottom: 8.0, top: 8.0),
-                                                focusedBorder: OutlineInputBorder(
+                                                fillColor:
+                                                    CompanionAppTheme.lightText,
+                                                hintText:
+                                                    'Player 4'.tr(context),
+                                                contentPadding:
+                                                    const EdgeInsets.only(
+                                                        left: 14.0,
+                                                        bottom: 8.0,
+                                                        top: 8.0),
+                                                focusedBorder:
+                                                    OutlineInputBorder(
                                                   borderSide: BorderSide(
-                                                      color: CompanionAppTheme.lightText),
+                                                      color: CompanionAppTheme
+                                                          .lightText),
                                                   borderRadius:
-                                                  BorderRadius.circular(25.7),
+                                                      BorderRadius.circular(
+                                                          25.7),
                                                 ),
-                                                enabledBorder: UnderlineInputBorder(
+                                                enabledBorder:
+                                                    UnderlineInputBorder(
                                                   borderSide: BorderSide(
-                                                      color: CompanionAppTheme.lightText),
+                                                      color: CompanionAppTheme
+                                                          .lightText),
                                                   borderRadius:
-                                                  BorderRadius.circular(25.7),
+                                                      BorderRadius.circular(
+                                                          25.7),
                                                 ),
                                               ),
-                                              cursorColor: CompanionAppTheme.darkerText,
+                                              cursorColor:
+                                                  CompanionAppTheme.darkerText,
                                             ),
                                           ),
                                           Spacer(),
@@ -2052,11 +2382,13 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                             hint: Text(
                                               'friend_select'.tr(context),
                                               style: TextStyle(
-                                                fontFamily: CompanionAppTheme.fontName,
+                                                fontFamily:
+                                                    CompanionAppTheme.fontName,
                                                 fontWeight: FontWeight.normal,
                                                 fontSize: 14,
                                                 letterSpacing: 0.2,
-                                                color: CompanionAppTheme.lightText,
+                                                color:
+                                                    CompanionAppTheme.lightText,
                                               ),
                                             ),
                                             value: _friendsFour,
@@ -2065,42 +2397,66 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                                 _friendsFour = newValue;
                                               });
                                             },
-                                            items: userService.friendsListData
-                                                .map((FriendsData friend) {
-                                              return DropdownMenuItem<FriendsData>(
-                                                value: friend,
+                                            items: [
+                                              DropdownMenuItem<FriendsData>(
+                                                value: null,
                                                 child: Text(
-                                                  friend.name,
+                                                  'friend_unselect'.tr(context),
                                                   style: TextStyle(
                                                     fontFamily:
-                                                    CompanionAppTheme.fontName,
+                                                        CompanionAppTheme
+                                                            .fontName,
                                                     fontWeight: FontWeight.bold,
                                                     fontSize: 14,
                                                     letterSpacing: 0.2,
-                                                    color: CompanionAppTheme.lightText,
+                                                    color: CompanionAppTheme
+                                                        .lightText,
                                                   ),
                                                 ),
-                                              );
-                                            }).toList(),
+                                              ),
+                                              ...userService.friendsListData
+                                                  .map((FriendsData friend) {
+                                                return DropdownMenuItem<
+                                                    FriendsData>(
+                                                  value: friend,
+                                                  child: Text(
+                                                    friend.name,
+                                                    style: TextStyle(
+                                                      fontFamily:
+                                                          CompanionAppTheme
+                                                              .fontName,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 14,
+                                                      letterSpacing: 0.2,
+                                                      color: CompanionAppTheme
+                                                          .lightText,
+                                                    ),
+                                                  ),
+                                                );
+                                              }).toList(),
+                                            ],
                                           ),
-                                          SizedBox(width: 16,)
+                                          SizedBox(
+                                            width: 16,
+                                          )
                                         ],
                                       ),
                                       SizedBox(height: 16),
                                       Row(
                                         mainAxisAlignment:
-                                        MainAxisAlignment.start,
+                                            MainAxisAlignment.start,
                                         children: [
                                           Text(
                                             'ultimates'.tr(context),
                                             style: TextStyle(
                                               fontFamily:
-                                              CompanionAppTheme.fontName,
+                                                  CompanionAppTheme.fontName,
                                               fontWeight: FontWeight.bold,
                                               fontSize: 18,
                                               letterSpacing: 0.2,
                                               color:
-                                              CompanionAppTheme.lightText,
+                                                  CompanionAppTheme.lightText,
                                             ),
                                           ),
                                           Spacer(),
@@ -2115,7 +2471,7 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                               },
                                               controller: _playerFourUltimates,
                                               keyboardType:
-                                              TextInputType.number,
+                                                  TextInputType.number,
                                               inputFormatters: <TextInputFormatter>[
                                                 // for below version 2 use this
                                                 FilteringTextInputFormatter
@@ -2127,34 +2483,34 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                               decoration: InputDecoration(
                                                 filled: true,
                                                 fillColor:
-                                                CompanionAppTheme.lightText,
+                                                    CompanionAppTheme.lightText,
                                                 hintText: '',
                                                 contentPadding:
-                                                const EdgeInsets.only(
-                                                    left: 8.0,
-                                                    bottom: 4.0,
-                                                    top: 4.0),
+                                                    const EdgeInsets.only(
+                                                        left: 8.0,
+                                                        bottom: 4.0,
+                                                        top: 4.0),
                                                 focusedBorder:
-                                                OutlineInputBorder(
+                                                    OutlineInputBorder(
                                                   borderSide: BorderSide(
                                                       color: CompanionAppTheme
                                                           .lightText),
                                                   borderRadius:
-                                                  BorderRadius.circular(
-                                                      12.5),
+                                                      BorderRadius.circular(
+                                                          12.5),
                                                 ),
                                                 enabledBorder:
-                                                UnderlineInputBorder(
+                                                    UnderlineInputBorder(
                                                   borderSide: BorderSide(
                                                       color: CompanionAppTheme
                                                           .lightText),
                                                   borderRadius:
-                                                  BorderRadius.circular(
-                                                      12.5),
+                                                      BorderRadius.circular(
+                                                          12.5),
                                                 ),
                                               ),
                                               cursorColor:
-                                              CompanionAppTheme.darkerText,
+                                                  CompanionAppTheme.darkerText,
                                             ),
                                           ),
                                         ],
@@ -2201,7 +2557,8 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                       Text(
                                         'Player 5'.tr(context),
                                         style: TextStyle(
-                                          fontFamily: CompanionAppTheme.fontName,
+                                          fontFamily:
+                                              CompanionAppTheme.fontName,
                                           fontWeight: FontWeight.bold,
                                           fontSize: 20,
                                           letterSpacing: 0.2,
@@ -2211,7 +2568,8 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                       SizedBox(
                                         height: 16,
                                       ),
-                                      Divider(color: CompanionAppTheme.lightText),
+                                      Divider(
+                                          color: CompanionAppTheme.lightText),
                                       SizedBox(
                                         height: 8,
                                       ),
@@ -2221,7 +2579,7 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                           'character_select'.tr(context),
                                           style: TextStyle(
                                             fontFamily:
-                                            CompanionAppTheme.fontName,
+                                                CompanionAppTheme.fontName,
                                             fontWeight: FontWeight.normal,
                                             fontSize: 14,
                                             letterSpacing: 0.2,
@@ -2242,12 +2600,12 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                               character.displayName,
                                               style: TextStyle(
                                                 fontFamily:
-                                                CompanionAppTheme.fontName,
+                                                    CompanionAppTheme.fontName,
                                                 fontWeight: FontWeight.bold,
                                                 fontSize: 14,
                                                 letterSpacing: 0.2,
                                                 color:
-                                                CompanionAppTheme.lightText,
+                                                    CompanionAppTheme.lightText,
                                               ),
                                             ),
                                           );
@@ -2262,24 +2620,36 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                               controller: _player5Controller,
                                               decoration: InputDecoration(
                                                 filled: true,
-                                                fillColor: CompanionAppTheme.lightText,
-                                                hintText: 'Player 5'.tr(context),
-                                                contentPadding: const EdgeInsets.only(
-                                                    left: 14.0, bottom: 8.0, top: 8.0),
-                                                focusedBorder: OutlineInputBorder(
+                                                fillColor:
+                                                    CompanionAppTheme.lightText,
+                                                hintText:
+                                                    'Player 5'.tr(context),
+                                                contentPadding:
+                                                    const EdgeInsets.only(
+                                                        left: 14.0,
+                                                        bottom: 8.0,
+                                                        top: 8.0),
+                                                focusedBorder:
+                                                    OutlineInputBorder(
                                                   borderSide: BorderSide(
-                                                      color: CompanionAppTheme.lightText),
+                                                      color: CompanionAppTheme
+                                                          .lightText),
                                                   borderRadius:
-                                                  BorderRadius.circular(25.7),
+                                                      BorderRadius.circular(
+                                                          25.7),
                                                 ),
-                                                enabledBorder: UnderlineInputBorder(
+                                                enabledBorder:
+                                                    UnderlineInputBorder(
                                                   borderSide: BorderSide(
-                                                      color: CompanionAppTheme.lightText),
+                                                      color: CompanionAppTheme
+                                                          .lightText),
                                                   borderRadius:
-                                                  BorderRadius.circular(25.7),
+                                                      BorderRadius.circular(
+                                                          25.7),
                                                 ),
                                               ),
-                                              cursorColor: CompanionAppTheme.darkerText,
+                                              cursorColor:
+                                                  CompanionAppTheme.darkerText,
                                             ),
                                           ),
                                           Spacer(),
@@ -2288,11 +2658,13 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                             hint: Text(
                                               'friend_select'.tr(context),
                                               style: TextStyle(
-                                                fontFamily: CompanionAppTheme.fontName,
+                                                fontFamily:
+                                                    CompanionAppTheme.fontName,
                                                 fontWeight: FontWeight.normal,
                                                 fontSize: 14,
                                                 letterSpacing: 0.2,
-                                                color: CompanionAppTheme.lightText,
+                                                color:
+                                                    CompanionAppTheme.lightText,
                                               ),
                                             ),
                                             value: _friendsFive,
@@ -2301,42 +2673,66 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                                 _friendsFive = newValue;
                                               });
                                             },
-                                            items: userService.friendsListData
-                                                .map((FriendsData friend) {
-                                              return DropdownMenuItem<FriendsData>(
-                                                value: friend,
+                                            items: [
+                                              DropdownMenuItem<FriendsData>(
+                                                value: null,
                                                 child: Text(
-                                                  friend.name,
+                                                  'friend_unselect'.tr(context),
                                                   style: TextStyle(
                                                     fontFamily:
-                                                    CompanionAppTheme.fontName,
+                                                        CompanionAppTheme
+                                                            .fontName,
                                                     fontWeight: FontWeight.bold,
                                                     fontSize: 14,
                                                     letterSpacing: 0.2,
-                                                    color: CompanionAppTheme.lightText,
+                                                    color: CompanionAppTheme
+                                                        .lightText,
                                                   ),
                                                 ),
-                                              );
-                                            }).toList(),
+                                              ),
+                                              ...userService.friendsListData
+                                                  .map((FriendsData friend) {
+                                                return DropdownMenuItem<
+                                                    FriendsData>(
+                                                  value: friend,
+                                                  child: Text(
+                                                    friend.name,
+                                                    style: TextStyle(
+                                                      fontFamily:
+                                                          CompanionAppTheme
+                                                              .fontName,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 14,
+                                                      letterSpacing: 0.2,
+                                                      color: CompanionAppTheme
+                                                          .lightText,
+                                                    ),
+                                                  ),
+                                                );
+                                              }).toList(),
+                                            ],
                                           ),
-                                          SizedBox(width: 16,)
+                                          SizedBox(
+                                            width: 16,
+                                          )
                                         ],
                                       ),
                                       SizedBox(height: 16),
                                       Row(
                                         mainAxisAlignment:
-                                        MainAxisAlignment.start,
+                                            MainAxisAlignment.start,
                                         children: [
                                           Text(
                                             'ultimates'.tr(context),
                                             style: TextStyle(
                                               fontFamily:
-                                              CompanionAppTheme.fontName,
+                                                  CompanionAppTheme.fontName,
                                               fontWeight: FontWeight.bold,
                                               fontSize: 18,
                                               letterSpacing: 0.2,
                                               color:
-                                              CompanionAppTheme.lightText,
+                                                  CompanionAppTheme.lightText,
                                             ),
                                           ),
                                           Spacer(),
@@ -2351,7 +2747,7 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                               },
                                               controller: _playerFiveUltimates,
                                               keyboardType:
-                                              TextInputType.number,
+                                                  TextInputType.number,
                                               inputFormatters: <TextInputFormatter>[
                                                 // for below version 2 use this
                                                 FilteringTextInputFormatter
@@ -2363,34 +2759,34 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                               decoration: InputDecoration(
                                                 filled: true,
                                                 fillColor:
-                                                CompanionAppTheme.lightText,
+                                                    CompanionAppTheme.lightText,
                                                 hintText: '',
                                                 contentPadding:
-                                                const EdgeInsets.only(
-                                                    left: 8.0,
-                                                    bottom: 4.0,
-                                                    top: 4.0),
+                                                    const EdgeInsets.only(
+                                                        left: 8.0,
+                                                        bottom: 4.0,
+                                                        top: 4.0),
                                                 focusedBorder:
-                                                OutlineInputBorder(
+                                                    OutlineInputBorder(
                                                   borderSide: BorderSide(
                                                       color: CompanionAppTheme
                                                           .lightText),
                                                   borderRadius:
-                                                  BorderRadius.circular(
-                                                      12.5),
+                                                      BorderRadius.circular(
+                                                          12.5),
                                                 ),
                                                 enabledBorder:
-                                                UnderlineInputBorder(
+                                                    UnderlineInputBorder(
                                                   borderSide: BorderSide(
                                                       color: CompanionAppTheme
                                                           .lightText),
                                                   borderRadius:
-                                                  BorderRadius.circular(
-                                                      12.5),
+                                                      BorderRadius.circular(
+                                                          12.5),
                                                 ),
                                               ),
                                               cursorColor:
-                                              CompanionAppTheme.darkerText,
+                                                  CompanionAppTheme.darkerText,
                                             ),
                                           ),
                                         ],
@@ -2437,7 +2833,8 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                       Text(
                                         'Player 6'.tr(context),
                                         style: TextStyle(
-                                          fontFamily: CompanionAppTheme.fontName,
+                                          fontFamily:
+                                              CompanionAppTheme.fontName,
                                           fontWeight: FontWeight.bold,
                                           fontSize: 20,
                                           letterSpacing: 0.2,
@@ -2447,7 +2844,8 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                       SizedBox(
                                         height: 16,
                                       ),
-                                      Divider(color: CompanionAppTheme.lightText),
+                                      Divider(
+                                          color: CompanionAppTheme.lightText),
                                       SizedBox(
                                         height: 8,
                                       ),
@@ -2457,7 +2855,7 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                           'character_select'.tr(context),
                                           style: TextStyle(
                                             fontFamily:
-                                            CompanionAppTheme.fontName,
+                                                CompanionAppTheme.fontName,
                                             fontWeight: FontWeight.normal,
                                             fontSize: 14,
                                             letterSpacing: 0.2,
@@ -2478,12 +2876,12 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                               character.displayName,
                                               style: TextStyle(
                                                 fontFamily:
-                                                CompanionAppTheme.fontName,
+                                                    CompanionAppTheme.fontName,
                                                 fontWeight: FontWeight.bold,
                                                 fontSize: 14,
                                                 letterSpacing: 0.2,
                                                 color:
-                                                CompanionAppTheme.lightText,
+                                                    CompanionAppTheme.lightText,
                                               ),
                                             ),
                                           );
@@ -2498,24 +2896,36 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                               controller: _player6Controller,
                                               decoration: InputDecoration(
                                                 filled: true,
-                                                fillColor: CompanionAppTheme.lightText,
-                                                hintText: 'Player 6'.tr(context),
-                                                contentPadding: const EdgeInsets.only(
-                                                    left: 14.0, bottom: 8.0, top: 8.0),
-                                                focusedBorder: OutlineInputBorder(
+                                                fillColor:
+                                                    CompanionAppTheme.lightText,
+                                                hintText:
+                                                    'Player 6'.tr(context),
+                                                contentPadding:
+                                                    const EdgeInsets.only(
+                                                        left: 14.0,
+                                                        bottom: 8.0,
+                                                        top: 8.0),
+                                                focusedBorder:
+                                                    OutlineInputBorder(
                                                   borderSide: BorderSide(
-                                                      color: CompanionAppTheme.lightText),
+                                                      color: CompanionAppTheme
+                                                          .lightText),
                                                   borderRadius:
-                                                  BorderRadius.circular(25.7),
+                                                      BorderRadius.circular(
+                                                          25.7),
                                                 ),
-                                                enabledBorder: UnderlineInputBorder(
+                                                enabledBorder:
+                                                    UnderlineInputBorder(
                                                   borderSide: BorderSide(
-                                                      color: CompanionAppTheme.lightText),
+                                                      color: CompanionAppTheme
+                                                          .lightText),
                                                   borderRadius:
-                                                  BorderRadius.circular(25.7),
+                                                      BorderRadius.circular(
+                                                          25.7),
                                                 ),
                                               ),
-                                              cursorColor: CompanionAppTheme.darkerText,
+                                              cursorColor:
+                                                  CompanionAppTheme.darkerText,
                                             ),
                                           ),
                                           Spacer(),
@@ -2524,11 +2934,13 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                             hint: Text(
                                               'friend_select'.tr(context),
                                               style: TextStyle(
-                                                fontFamily: CompanionAppTheme.fontName,
+                                                fontFamily:
+                                                    CompanionAppTheme.fontName,
                                                 fontWeight: FontWeight.normal,
                                                 fontSize: 14,
                                                 letterSpacing: 0.2,
-                                                color: CompanionAppTheme.lightText,
+                                                color:
+                                                    CompanionAppTheme.lightText,
                                               ),
                                             ),
                                             value: _friendsSix,
@@ -2537,42 +2949,66 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                                 _friendsSix = newValue;
                                               });
                                             },
-                                            items: userService.friendsListData
-                                                .map((FriendsData friend) {
-                                              return DropdownMenuItem<FriendsData>(
-                                                value: friend,
+                                            items: [
+                                              DropdownMenuItem<FriendsData>(
+                                                value: null,
                                                 child: Text(
-                                                  friend.name,
+                                                  'friend_unselect'.tr(context),
                                                   style: TextStyle(
                                                     fontFamily:
-                                                    CompanionAppTheme.fontName,
+                                                        CompanionAppTheme
+                                                            .fontName,
                                                     fontWeight: FontWeight.bold,
                                                     fontSize: 14,
                                                     letterSpacing: 0.2,
-                                                    color: CompanionAppTheme.lightText,
+                                                    color: CompanionAppTheme
+                                                        .lightText,
                                                   ),
                                                 ),
-                                              );
-                                            }).toList(),
+                                              ),
+                                              ...userService.friendsListData
+                                                  .map((FriendsData friend) {
+                                                return DropdownMenuItem<
+                                                    FriendsData>(
+                                                  value: friend,
+                                                  child: Text(
+                                                    friend.name,
+                                                    style: TextStyle(
+                                                      fontFamily:
+                                                          CompanionAppTheme
+                                                              .fontName,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 14,
+                                                      letterSpacing: 0.2,
+                                                      color: CompanionAppTheme
+                                                          .lightText,
+                                                    ),
+                                                  ),
+                                                );
+                                              }).toList(),
+                                            ],
                                           ),
-                                          SizedBox(width: 16,)
+                                          SizedBox(
+                                            width: 16,
+                                          )
                                         ],
                                       ),
                                       SizedBox(height: 16),
                                       Row(
                                         mainAxisAlignment:
-                                        MainAxisAlignment.start,
+                                            MainAxisAlignment.start,
                                         children: [
                                           Text(
                                             'ultimates'.tr(context),
                                             style: TextStyle(
                                               fontFamily:
-                                              CompanionAppTheme.fontName,
+                                                  CompanionAppTheme.fontName,
                                               fontWeight: FontWeight.bold,
                                               fontSize: 18,
                                               letterSpacing: 0.2,
                                               color:
-                                              CompanionAppTheme.lightText,
+                                                  CompanionAppTheme.lightText,
                                             ),
                                           ),
                                           Spacer(),
@@ -2587,7 +3023,7 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                               },
                                               controller: _playerSixUltimates,
                                               keyboardType:
-                                              TextInputType.number,
+                                                  TextInputType.number,
                                               inputFormatters: <TextInputFormatter>[
                                                 // for below version 2 use this
                                                 FilteringTextInputFormatter
@@ -2599,34 +3035,34 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                               decoration: InputDecoration(
                                                 filled: true,
                                                 fillColor:
-                                                CompanionAppTheme.lightText,
+                                                    CompanionAppTheme.lightText,
                                                 hintText: '',
                                                 contentPadding:
-                                                const EdgeInsets.only(
-                                                    left: 8.0,
-                                                    bottom: 4.0,
-                                                    top: 4.0),
+                                                    const EdgeInsets.only(
+                                                        left: 8.0,
+                                                        bottom: 4.0,
+                                                        top: 4.0),
                                                 focusedBorder:
-                                                OutlineInputBorder(
+                                                    OutlineInputBorder(
                                                   borderSide: BorderSide(
                                                       color: CompanionAppTheme
                                                           .lightText),
                                                   borderRadius:
-                                                  BorderRadius.circular(
-                                                      12.5),
+                                                      BorderRadius.circular(
+                                                          12.5),
                                                 ),
                                                 enabledBorder:
-                                                UnderlineInputBorder(
+                                                    UnderlineInputBorder(
                                                   borderSide: BorderSide(
                                                       color: CompanionAppTheme
                                                           .lightText),
                                                   borderRadius:
-                                                  BorderRadius.circular(
-                                                      12.5),
+                                                      BorderRadius.circular(
+                                                          12.5),
                                                 ),
                                               ),
                                               cursorColor:
-                                              CompanionAppTheme.darkerText,
+                                                  CompanionAppTheme.darkerText,
                                             ),
                                           ),
                                         ],
@@ -2801,19 +3237,40 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
     final userService = Provider.of<UserService>(context);
 
     return Container(
-      color: CompanionAppTheme.background,
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        body: Stack(
-          children: <Widget>[
-            getMainListViewUI(userService),
-            getAppBarUI(),
-            SizedBox(
-              height: MediaQuery.of(context).padding.bottom,
-            )
-          ],
-        ),
-      ),
-    );
+        color: CompanionAppTheme.background,
+        child: OverlayTooltipScaffold(
+            overlayColor: Colors.red.withOpacity(.4),
+            tooltipAnimationCurve: Curves.linear,
+            tooltipAnimationDuration: const Duration(milliseconds: 1000),
+            controller: _controller,
+            // if you need to have control over the background overlay for gestures
+            preferredOverlay: GestureDetector(
+              onTap: () {
+                _controller.dismiss();
+                //move the overlay forward or backwards, or dismiss the overlay
+              },
+              child: Container(
+                height: double.infinity,
+                width: double.infinity,
+                color: CompanionAppTheme.background.withOpacity(.75),
+              ),
+            ),
+            startWhen: (initializedWidgetLength) async {
+              await Future.delayed(const Duration(milliseconds: 500));
+              bool shouldShowTooltip = await _shouldShowTooltip();
+              return initializedWidgetLength == 1 && shouldShowTooltip;
+            },
+            builder: (context) => Scaffold(
+                  backgroundColor: Colors.transparent,
+                  body: Stack(
+                    children: <Widget>[
+                      getMainListViewUI(userService),
+                      getAppBarUI(),
+                      SizedBox(
+                        height: MediaQuery.of(context).padding.bottom,
+                      )
+                    ],
+                  ),
+                )));
   }
 }

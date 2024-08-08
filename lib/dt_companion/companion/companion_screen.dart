@@ -58,7 +58,7 @@ class _CompanionScreenState extends State<CompanionScreen>
     _getInAppReviewStatus();
     _analytics();
     /*_inAppReview();*/
-    _loadAd();
+    /*_loadAd();*/
 
     scrollController.addListener(() {
       if (scrollController.offset >= 24) {
@@ -197,7 +197,7 @@ class _CompanionScreenState extends State<CompanionScreen>
                             Interval((1 / 8) * 2, 1.0, curve: Curves.fastOutSlowIn))),
                         animationController: widget.animationController!
                     ),
-                    AnimatedBuilder(
+                    /*AnimatedBuilder(
                       animation: widget.animationController!,
                       builder: (BuildContext context, Widget? child) {
                         return FadeTransition(
@@ -223,8 +223,8 @@ class _CompanionScreenState extends State<CompanionScreen>
                           ),
                         );
                       },
-                    ),
-                    SizedBox(height: 8,),
+                    ),*/
+                    SizedBox(height: 16,),
                     TitleView(
                       titleTxt: 'heroes_stats'.tr(context),
                       subTxt: 'more'.tr(context),
