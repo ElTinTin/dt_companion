@@ -131,6 +131,8 @@ class _FriendsStatisticsViewState extends State<FriendsStatisticsView>
                 child: Column(
                   children: [
                     InkWell(
+                      highlightColor: Colors.transparent,
+                      splashColor: Colors.transparent,
                       onTap: () {
                         setState(() {
                           _isExpanded = !_isExpanded;
