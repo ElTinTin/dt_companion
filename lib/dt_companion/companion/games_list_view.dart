@@ -41,22 +41,20 @@ class _GamesListViewState extends State<GamesListView>
 
   Widget getGamesList(List<GamesData> gamesListData) {
     return ListView.builder(
-      padding: const EdgeInsets.only(
-          top: 0, bottom: 0, right: 16, left: 16),
+      padding: const EdgeInsets.only(top: 0, bottom: 0, right: 16, left: 16),
       itemCount: gamesListData.length,
       scrollDirection: Axis.horizontal,
       itemBuilder: (BuildContext context, int index) {
-        final Animation<double> animation =
-        Tween<double>(begin: 0.0, end: 1.0).animate(
-            CurvedAnimation(
+        final Animation<double> animation = Tween<double>(begin: 0.0, end: 1.0)
+            .animate(CurvedAnimation(
                 parent: animationController!,
                 curve: Interval((1 / gamesListData.length) * index, 1.0,
                     curve: Curves.fastOutSlowIn)));
         animationController?.forward();
 
         return Padding(
-          padding: const EdgeInsets.only(
-              top: 0, bottom: 0, right: 12, left: 12),
+          padding:
+              const EdgeInsets.only(top: 0, bottom: 0, right: 12, left: 12),
           child: GameView(
             gamesListData: gamesListData[index],
             animation: animation,
@@ -77,9 +75,9 @@ class _GamesListViewState extends State<GamesListView>
         final count = userService.gamesListData.isEmpty ? 1 : 10;
         final Animation<double> animation = Tween<double>(begin: 0.0, end: 1.0)
             .animate(CurvedAnimation(
-            parent: animationController!,
-            curve: Interval((1 / count) * 1, 1.0,
-                curve: Curves.fastOutSlowIn)));
+                parent: animationController!,
+                curve: Interval((1 / count) * 1, 1.0,
+                    curve: Curves.fastOutSlowIn)));
         animationController?.forward();
 
         return FadeTransition(
@@ -88,24 +86,23 @@ class _GamesListViewState extends State<GamesListView>
             transform: Matrix4.translationValues(
                 0.0, 30 * (1.0 - widget.mainScreenAnimation!.value), 0.0),
             child: Container(
-              height: 216,
-              width: double.infinity,
-              child: Stack(
-                children: [
-                  if (!userService.gamesListData.isEmpty)
-                    getGamesList(userService.gamesListData.take(10).toList())
-                  else
-                    Padding(
-                      padding: const EdgeInsets.only(
-                          top: 0, left: 16, right: 8, bottom: 8),
-                      child: EmptyStatsView(
-                        animation: animation,
-                        animationController: animationController!,
-                      ),
-                    )
-                ],
-              )
-            ),
+                height: 216,
+                width: double.infinity,
+                child: Stack(
+                  children: [
+                    if (!userService.gamesListData.isEmpty)
+                      getGamesList(userService.gamesListData.take(10).toList())
+                    else
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            top: 0, left: 16, right: 8, bottom: 8),
+                        child: EmptyStatsView(
+                          animation: animation,
+                          animationController: animationController!,
+                        ),
+                      )
+                  ],
+                )),
           ),
         );
       },
@@ -122,15 +119,22 @@ class GameView extends StatelessWidget {
   final AnimationController? animationController;
   final Animation<double>? animation;
 
-
-  String getPlayerText(String? playerName, String customText, BuildContext context) {
-    return (playerName ?? "") == customText ? "$customText".tr(context) : playerName ?? "";
+  String getPlayerText(
+      String? playerName, String customText, BuildContext context) {
+    if (playerName == customText || playerName == customText.tr(context)) {
+      return "$customText".tr(context);
+    } else {
+      return playerName ?? "";
+    }
   }
 
   Color getBorderColorOne(String winner, BuildContext context) {
-    if (winner == 'Draw'.tr(context)) {
+    if (winner == 'Draw'.tr(context) || winner == 'Draw') {
       return CompanionAppTheme.drawOrange;
-    } else if (winner == 'Team 1'.tr(context) || winner == 'You'.tr(context)){
+    } else if (winner == 'Team 1'.tr(context) ||
+        winner == 'You'.tr(context) ||
+        winner == 'Team 1' ||
+        winner == "You") {
       return CompanionAppTheme.victoryGreen;
     } else {
       return CompanionAppTheme.defeatRed;
@@ -138,9 +142,12 @@ class GameView extends StatelessWidget {
   }
 
   Color getBorderColorTwo(String winner, BuildContext context) {
-    if (winner == 'Draw'.tr(context)) {
+    if (winner == 'Draw'.tr(context) || winner == 'Draw') {
       return CompanionAppTheme.drawOrange;
-    } else if (winner == 'Team 2'.tr(context) || winner == 'Player 2'.tr(context)) {
+    } else if (winner == 'Team 2'.tr(context) ||
+        winner == 'Player 2'.tr(context) ||
+        winner == 'Team 2' ||
+        winner == 'Player 2') {
       return CompanionAppTheme.victoryGreen;
     } else {
       return CompanionAppTheme.defeatRed;
@@ -148,9 +155,9 @@ class GameView extends StatelessWidget {
   }
 
   Color getBorderColorThree(String winner, BuildContext context) {
-    if (winner == 'Draw'.tr(context)) {
+    if (winner == 'Draw'.tr(context) || winner == 'Draw') {
       return CompanionAppTheme.drawOrange;
-    } else if (winner == 'Player 3'.tr(context)){
+    } else if (winner == 'Player 3'.tr(context) || winner == 'Player 3') {
       return CompanionAppTheme.victoryGreen;
     } else {
       return CompanionAppTheme.defeatRed;
@@ -175,12 +182,12 @@ class GameView extends StatelessWidget {
                     padding: const EdgeInsets.only(
                         top: 32, left: 8, right: 8, bottom: 16),
                     child: Container(
-                      width: gamesListData?.gamemode != Mode.onevsone ? 180 : 150,
+                      width:
+                          gamesListData?.gamemode != Mode.onevsone ? 180 : 150,
                       decoration: BoxDecoration(
                         boxShadow: <BoxShadow>[
                           BoxShadow(
-                              color: HexColor("#313A44")
-                                  .withOpacity(0.6),
+                              color: HexColor("#313A44").withOpacity(0.6),
                               offset: const Offset(1.1, 4.0),
                               blurRadius: 8.0),
                         ],
@@ -196,201 +203,224 @@ class GameView extends StatelessWidget {
                           bottomRight: Radius.circular(8.0),
                           bottomLeft: Radius.circular(54.0),
                           topLeft: Radius.circular(8.0),
-                          topRight: gamesListData?.gamemode == Mode.koth ? Radius.circular(8.0) : Radius.circular(54.0),
+                          topRight: gamesListData?.gamemode == Mode.koth
+                              ? Radius.circular(8.0)
+                              : Radius.circular(54.0),
                         ),
                       ),
                       child: Padding(
-                        padding: const EdgeInsets.only(
-                            top: 8, left: 8, right: 8, bottom: 8),
-                        child: Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                              if (gamesListData?.gamemode == Mode.twovstwo)
-                                Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      '${gamesListData?.playerOne}'.tr(context),
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontFamily: CompanionAppTheme.fontName,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 14,
-                                        letterSpacing: 0.2,
-                                        color: CompanionAppTheme.lightText,
+                          padding: const EdgeInsets.only(
+                              top: 8, left: 8, right: 8, bottom: 8),
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
+                                if (gamesListData?.gamemode == Mode.twovstwo)
+                                  Row(
+                                    mainAxisSize: MainAxisSize.max,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        '${gamesListData?.playerOne}'
+                                            .tr(context),
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontFamily:
+                                              CompanionAppTheme.fontName,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 14,
+                                          letterSpacing: 0.2,
+                                          color: CompanionAppTheme.lightText,
+                                        ),
                                       ),
-                                    ),
-                                    Text(
-                                      ' - ${getPlayerText(gamesListData?.playerThree, "Player 3", context)}',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontFamily: CompanionAppTheme.fontName,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 14,
-                                        letterSpacing: 0.2,
-                                        color: CompanionAppTheme.lightText,
+                                      Text(
+                                        ' - ${getPlayerText(gamesListData?.playerThree, "Player 3", context)}',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontFamily:
+                                              CompanionAppTheme.fontName,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 14,
+                                          letterSpacing: 0.2,
+                                          color: CompanionAppTheme.lightText,
+                                        ),
                                       ),
+                                    ],
+                                  ),
+                                if (gamesListData?.gamemode == Mode.onevsone)
+                                  Text(
+                                    '${gamesListData?.playerOne}'.tr(context),
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontFamily: CompanionAppTheme.fontName,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14,
+                                      letterSpacing: 0.2,
+                                      color: CompanionAppTheme.lightText,
                                     ),
-                                  ],
+                                  ),
+                                if (gamesListData?.gamemode == Mode.koth)
+                                  Row(
+                                    children: [
+                                      SizedBox(
+                                        width: 16,
+                                      ),
+                                      Text(
+                                        '${gamesListData?.playerOne}'
+                                            .tr(context),
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontFamily:
+                                              CompanionAppTheme.fontName,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 14,
+                                          letterSpacing: 0.2,
+                                          color: CompanionAppTheme.lightText,
+                                        ),
+                                      ),
+                                      Spacer(),
+                                      Text(
+                                        '${getPlayerText(gamesListData?.playerTwo, "Player 2", context)}',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontFamily:
+                                              CompanionAppTheme.fontName,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 14,
+                                          letterSpacing: 0.2,
+                                          color: CompanionAppTheme.lightText,
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 16,
+                                      ),
+                                    ],
+                                  ),
+                                if (gamesListData?.gamemode ==
+                                    Mode.threevsthree)
+                                  Text(
+                                    '${gamesListData?.playerOne.tr(context) ?? ""} - '
+                                    '${getPlayerText(gamesListData?.playerTwo, "Player 2", context)} - '
+                                    '${getPlayerText(gamesListData?.playerFive, "Player 5", context)}',
+                                    textAlign: TextAlign.center,
+                                    overflow: TextOverflow.fade,
+                                    maxLines: 1,
+                                    softWrap: false,
+                                    style: TextStyle(
+                                      fontFamily: CompanionAppTheme.fontName,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14,
+                                      letterSpacing: 0.2,
+                                      color: CompanionAppTheme.lightText,
+                                    ),
+                                  ),
+                                SizedBox(
+                                  height: 8,
                                 ),
-                              if (gamesListData?.gamemode == Mode.onevsone)
                                 Text(
-                                   '${gamesListData?.playerOne}'.tr(context),
+                                  "vs.",
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     fontFamily: CompanionAppTheme.fontName,
-                                    fontWeight: FontWeight.bold,
+                                    fontWeight: FontWeight.normal,
                                     fontSize: 14,
                                     letterSpacing: 0.2,
                                     color: CompanionAppTheme.lightText,
                                   ),
                                 ),
-                              if (gamesListData?.gamemode == Mode.koth)
-                                Row(
-                                  children: [
-                                    SizedBox(width: 16,),
-                                    Text(
-                                      '${gamesListData?.playerOne}'.tr(context),
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontFamily: CompanionAppTheme.fontName,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 14,
-                                        letterSpacing: 0.2,
-                                        color: CompanionAppTheme.lightText,
-                                      ),
-                                    ),
-                                    Spacer(),
-                                    Text(
-                                      '${getPlayerText(gamesListData?.playerTwo, "Player 2", context)}',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontFamily: CompanionAppTheme.fontName,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 14,
-                                        letterSpacing: 0.2,
-                                        color: CompanionAppTheme.lightText,
-                                      ),
-                                    ),
-                                    SizedBox(width: 16,),
-                                  ],
-                                ),
-                              if (gamesListData?.gamemode == Mode.threevsthree)
-                                Text(
-                                  '${gamesListData?.playerOne.tr(context) ?? ""} - '
-                                      '${getPlayerText(gamesListData?.playerTwo, "Player 2", context)} - '
-                                      '${getPlayerText(gamesListData?.playerFive, "Player 5", context)}',
-                                  textAlign: TextAlign.center,
-                                  overflow: TextOverflow.fade,
-                                  maxLines: 1,
-                                  softWrap: false,
-                                  style: TextStyle(
-                                    fontFamily: CompanionAppTheme.fontName,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14,
-                                    letterSpacing: 0.2,
-                                    color: CompanionAppTheme.lightText,
+                                if (gamesListData?.gamemode == Mode.koth)
+                                  SizedBox(
+                                    height: 16,
+                                  )
+                                else
+                                  SizedBox(
+                                    height: 8,
                                   ),
-                                ),
-                              SizedBox(height: 8,),
-                              Text(
-                                "vs.",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontFamily: CompanionAppTheme.fontName,
-                                  fontWeight: FontWeight.normal,
-                                  fontSize: 14,
-                                  letterSpacing: 0.2,
-                                  color: CompanionAppTheme.lightText,
-                                ),
-                              ),
-                              if (gamesListData?.gamemode == Mode.koth)
-                                SizedBox(height: 16,)
-                              else
-                                SizedBox(height: 8,),
-                              if (gamesListData?.gamemode == Mode.twovstwo)
-                                Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      '${getPlayerText(gamesListData?.playerTwo, "Player 2", context)}',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontFamily: CompanionAppTheme.fontName,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 14,
-                                        letterSpacing: 0.2,
-                                        color: CompanionAppTheme.lightText,
+                                if (gamesListData?.gamemode == Mode.twovstwo)
+                                  Row(
+                                    mainAxisSize: MainAxisSize.max,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        '${getPlayerText(gamesListData?.playerTwo, "Player 2", context)}',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontFamily:
+                                              CompanionAppTheme.fontName,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 14,
+                                          letterSpacing: 0.2,
+                                          color: CompanionAppTheme.lightText,
+                                        ),
                                       ),
-                                    ),
-                                    Text(
-                                      ' - ' + '${getPlayerText(gamesListData?.playerFour, "Player 4", context)}',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontFamily: CompanionAppTheme.fontName,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 14,
-                                        letterSpacing: 0.2,
-                                        color: CompanionAppTheme.lightText,
+                                      Text(
+                                        ' - ' +
+                                            '${getPlayerText(gamesListData?.playerFour, "Player 4", context)}',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontFamily:
+                                              CompanionAppTheme.fontName,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 14,
+                                          letterSpacing: 0.2,
+                                          color: CompanionAppTheme.lightText,
+                                        ),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                              if (gamesListData?.gamemode == Mode.onevsone)
-                                Text(
-                                  '${getPlayerText(gamesListData?.playerTwo, "Player 2", context)}',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontFamily: CompanionAppTheme.fontName,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14,
-                                    letterSpacing: 0.2,
-                                    color: CompanionAppTheme.lightText,
+                                    ],
                                   ),
-                                ),
-                              if (gamesListData?.gamemode == Mode.koth)
-                                Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      '${getPlayerText(gamesListData?.playerThree, "Player 3", context)}',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontFamily: CompanionAppTheme.fontName,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 14,
-                                        letterSpacing: 0.2,
-                                        color: CompanionAppTheme.lightText,
-                                      ),
+                                if (gamesListData?.gamemode == Mode.onevsone)
+                                  Text(
+                                    '${getPlayerText(gamesListData?.playerTwo, "Player 2", context)}',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontFamily: CompanionAppTheme.fontName,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14,
+                                      letterSpacing: 0.2,
+                                      color: CompanionAppTheme.lightText,
                                     ),
-                                  ],
-                                ),
-                              if (gamesListData?.gamemode == Mode.threevsthree)
-                                Text(
-                                  '${getPlayerText(gamesListData?.playerThree, "Player 3", context)} - '
-                                      '${getPlayerText(gamesListData?.playerFour, "Player 4", context)} - '
-                                      '${getPlayerText(gamesListData?.playerSix, "Player 6", context)}',
-                                  textAlign: TextAlign.center,
-                                  overflow: TextOverflow.fade,
-                                  maxLines: 1,
-                                  softWrap: false,
-                                  style: TextStyle(
-                                    fontFamily: CompanionAppTheme.fontName,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14,
-                                    letterSpacing: 0.2,
-                                    color: CompanionAppTheme.lightText,
                                   ),
-                                ),
-                            ],
-                          ),
-                        )
-                      ),
+                                if (gamesListData?.gamemode == Mode.koth)
+                                  Row(
+                                    mainAxisSize: MainAxisSize.max,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        '${getPlayerText(gamesListData?.playerThree, "Player 3", context)}',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontFamily:
+                                              CompanionAppTheme.fontName,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 14,
+                                          letterSpacing: 0.2,
+                                          color: CompanionAppTheme.lightText,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                if (gamesListData?.gamemode ==
+                                    Mode.threevsthree)
+                                  Text(
+                                    '${getPlayerText(gamesListData?.playerThree, "Player 3", context)} - '
+                                    '${getPlayerText(gamesListData?.playerFour, "Player 4", context)} - '
+                                    '${getPlayerText(gamesListData?.playerSix, "Player 6", context)}',
+                                    textAlign: TextAlign.center,
+                                    overflow: TextOverflow.fade,
+                                    maxLines: 1,
+                                    softWrap: false,
+                                    style: TextStyle(
+                                      fontFamily: CompanionAppTheme.fontName,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14,
+                                      letterSpacing: 0.2,
+                                      color: CompanionAppTheme.lightText,
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          )),
                     ),
                   ),
                   Positioned(
@@ -406,7 +436,8 @@ class GameView extends StatelessWidget {
                               width: 54,
                               height: 54,
                               decoration: BoxDecoration(
-                                color: getBorderColorOne(gamesListData?.winner ?? "", context),
+                                color: getBorderColorOne(
+                                    gamesListData?.winner ?? "", context),
                                 borderRadius: BorderRadius.circular(27),
                               ),
                             ),
@@ -440,7 +471,8 @@ class GameView extends StatelessWidget {
                                 width: 54,
                                 height: 54,
                                 decoration: BoxDecoration(
-                                  color: getBorderColorTwo(gamesListData?.winner ?? "", context),
+                                  color: getBorderColorTwo(
+                                      gamesListData?.winner ?? "", context),
                                   borderRadius: BorderRadius.circular(27),
                                 ),
                               ),
@@ -460,9 +492,10 @@ class GameView extends StatelessWidget {
                         ),
                       ),
                     ),
-                  if (gamesListData?.gamemode == Mode.twovstwo || gamesListData?.gamemode == Mode.threevsthree)
+                  if (gamesListData?.gamemode == Mode.twovstwo ||
+                      gamesListData?.gamemode == Mode.threevsthree)
                     Positioned(
-                       top: 8,
+                      top: 8,
                       left: 60,
                       child: SizedBox(
                         width: 54,
@@ -474,7 +507,8 @@ class GameView extends StatelessWidget {
                                 width: 54,
                                 height: 54,
                                 decoration: BoxDecoration(
-                                  color: getBorderColorOne(gamesListData?.winner ?? "", context),
+                                  color: getBorderColorOne(
+                                      gamesListData?.winner ?? "", context),
                                   borderRadius: BorderRadius.circular(27),
                                 ),
                               ),
@@ -494,7 +528,8 @@ class GameView extends StatelessWidget {
                         ),
                       ),
                     ),
-                  if (gamesListData?.gamemode == Mode.twovstwo || gamesListData?.gamemode == Mode.threevsthree)
+                  if (gamesListData?.gamemode == Mode.twovstwo ||
+                      gamesListData?.gamemode == Mode.threevsthree)
                     Positioned(
                       bottom: 0,
                       right: 60,
@@ -508,7 +543,8 @@ class GameView extends StatelessWidget {
                                 width: 54,
                                 height: 54,
                                 decoration: BoxDecoration(
-                                  color: getBorderColorTwo(gamesListData?.winner ?? "", context),
+                                  color: getBorderColorTwo(
+                                      gamesListData?.winner ?? "", context),
                                   borderRadius: BorderRadius.circular(27),
                                 ),
                               ),
@@ -542,7 +578,8 @@ class GameView extends StatelessWidget {
                                 width: 54,
                                 height: 54,
                                 decoration: BoxDecoration(
-                                  color: getBorderColorTwo(gamesListData?.winner ?? "", context),
+                                  color: getBorderColorTwo(
+                                      gamesListData?.winner ?? "", context),
                                   borderRadius: BorderRadius.circular(27),
                                 ),
                               ),
@@ -576,7 +613,8 @@ class GameView extends StatelessWidget {
                                 width: 54,
                                 height: 54,
                                 decoration: BoxDecoration(
-                                  color: getBorderColorOne(gamesListData?.winner ?? "", context),
+                                  color: getBorderColorOne(
+                                      gamesListData?.winner ?? "", context),
                                   borderRadius: BorderRadius.circular(27),
                                 ),
                               ),
@@ -609,7 +647,8 @@ class GameView extends StatelessWidget {
                               width: 54,
                               height: 54,
                               decoration: BoxDecoration(
-                                color: getBorderColorTwo(gamesListData?.winner ?? "", context),
+                                color: getBorderColorTwo(
+                                    gamesListData?.winner ?? "", context),
                                 borderRadius: BorderRadius.circular(27),
                               ),
                             ),

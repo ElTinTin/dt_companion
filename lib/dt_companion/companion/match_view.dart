@@ -212,12 +212,10 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
     }
   }
 
-  void updatePlayerData(
-      FriendsData? playerData,
-      TextEditingController controller,
-      UserService userService) {
+  void updatePlayerData(FriendsData? playerData,
+      TextEditingController controller, UserService userService) {
     bool winner = (_winningTeam == "You".tr(context) ||
-            _winningTeam == "Team 1".tr(context));
+        _winningTeam == "Team 1".tr(context));
 
     if (playerData != null) {
       if (_winningTeam != 'Draw'.tr(context)) {
@@ -587,36 +585,74 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                       SizedBox(
                         height: 8,
                       ),
-                      CupertinoSegmentedControl<Mode>(
-                        selectedColor: CompanionAppTheme.lightText,
-                        borderColor: CompanionAppTheme.lightText,
-                        unselectedColor: CompanionAppTheme.dark_grey,
+                      CupertinoSlidingSegmentedControl<Mode>(
+                        backgroundColor:
+                            CompanionAppTheme.dark_grey.withOpacity(0.5),
+                        thumbColor: CompanionAppTheme.lightText,
                         children: {
                           Mode.onevsone: Padding(
                             padding: const EdgeInsets.symmetric(
                                 vertical: 10.0, horizontal: 16.0),
-                            child: Text('1v1'),
+                            child: Text(
+                              '1v1',
+                              style: TextStyle(
+                                fontFamily: CompanionAppTheme.fontName,
+                                fontWeight: _gamemode == Mode.onevsone ? FontWeight.bold : FontWeight.normal,
+                                fontSize: _gamemode == Mode.onevsone ? 18 : 14,
+                                letterSpacing: 0.2,
+                                color: _gamemode == Mode.onevsone ? CompanionAppTheme.darkerText : CompanionAppTheme.lightText,
+                              ),
+                            ),
                           ),
                           Mode.twovstwo: Padding(
                             padding: const EdgeInsets.symmetric(
                                 vertical: 10.0, horizontal: 16.0),
-                            child: Text('2v2'),
+                            child: Text(
+                              '2v2',
+                              style: TextStyle(
+                                fontFamily: CompanionAppTheme.fontName,
+                                fontWeight: _gamemode == Mode.twovstwo ? FontWeight.bold : FontWeight.normal,
+                                fontSize: _gamemode == Mode.twovstwo ? 18 : 14,
+                                letterSpacing: 0.2,
+                                color: _gamemode == Mode.twovstwo ? CompanionAppTheme.darkerText : CompanionAppTheme.lightText,
+                              ),
+                            ),
                           ),
                           Mode.koth: Padding(
                             padding: const EdgeInsets.symmetric(
                                 vertical: 10.0, horizontal: 16.0),
-                            child: Text('KOTH'),
+                            child: Text(
+                              'KOTH',
+                              style: TextStyle(
+                                fontFamily: CompanionAppTheme.fontName,
+                                fontWeight: _gamemode == Mode.koth ? FontWeight.bold : FontWeight.normal,
+                                fontSize: _gamemode == Mode.koth ? 18 : 14,
+                                letterSpacing: 0.2,
+                                color: _gamemode == Mode.koth ? CompanionAppTheme.darkerText : CompanionAppTheme.lightText,
+                              ),
+                            ),
                           ),
                           Mode.threevsthree: Padding(
                             padding: const EdgeInsets.symmetric(
                                 vertical: 10.0, horizontal: 16.0),
-                            child: Text('3v3'),
+                            child: Text(
+                              '3v3',
+                              style: TextStyle(
+                                fontFamily: CompanionAppTheme.fontName,
+                                fontWeight: _gamemode == Mode.threevsthree ? FontWeight.bold : FontWeight.normal,
+                                fontSize: _gamemode == Mode.threevsthree ? 18 : 14,
+                                letterSpacing: 0.2,
+                                color: _gamemode == Mode.threevsthree ? CompanionAppTheme.darkerText : CompanionAppTheme.lightText,
+                              ),
+                            ),
                           ),
                         },
-                        onValueChanged: (Mode value) {
-                          setState(() {
-                            _gamemode = value;
-                          });
+                        onValueChanged: (Mode? value) {
+                          if (value != null) {
+                            setState(() {
+                              _gamemode = value;
+                            });
+                          }
                         },
                         groupValue: _gamemode,
                       ),
@@ -938,26 +974,49 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                                 _friendsThree = newValue;
                                               });
                                             },
-                                            items: userService.friendsListData
-                                                .map((FriendsData friend) {
-                                              return DropdownMenuItem<
-                                                  FriendsData>(
-                                                value: friend,
+                                            items: [
+                                              DropdownMenuItem<FriendsData>(
+                                                value: null,
                                                 child: Text(
-                                                  friend.name,
+                                                  'friend_unselect'
+                                                      .tr(context),
                                                   style: TextStyle(
                                                     fontFamily:
-                                                        CompanionAppTheme
-                                                            .fontName,
-                                                    fontWeight: FontWeight.bold,
+                                                    CompanionAppTheme
+                                                        .fontName,
+                                                    fontWeight:
+                                                    FontWeight.bold,
                                                     fontSize: 14,
                                                     letterSpacing: 0.2,
                                                     color: CompanionAppTheme
                                                         .lightText,
                                                   ),
                                                 ),
-                                              );
-                                            }).toList(),
+                                              ),
+                                              ...userService.friendsListData
+                                                  .map(
+                                                      (FriendsData friend) {
+                                                    return DropdownMenuItem<
+                                                        FriendsData>(
+                                                      value: friend,
+                                                      child: Text(
+                                                        friend.name,
+                                                        style: TextStyle(
+                                                          fontFamily:
+                                                          CompanionAppTheme
+                                                              .fontName,
+                                                          fontWeight:
+                                                          FontWeight.bold,
+                                                          fontSize: 14,
+                                                          letterSpacing: 0.2,
+                                                          color:
+                                                          CompanionAppTheme
+                                                              .lightText,
+                                                        ),
+                                                      ),
+                                                    );
+                                                  }).toList(),
+                                            ],
                                           ),
                                           SizedBox(
                                             width: 16,
@@ -1150,26 +1209,49 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                                 _friendsFive = newValue;
                                               });
                                             },
-                                            items: userService.friendsListData
-                                                .map((FriendsData friend) {
-                                              return DropdownMenuItem<
-                                                  FriendsData>(
-                                                value: friend,
+                                            items: [
+                                              DropdownMenuItem<FriendsData>(
+                                                value: null,
                                                 child: Text(
-                                                  friend.name,
+                                                  'friend_unselect'
+                                                      .tr(context),
                                                   style: TextStyle(
                                                     fontFamily:
-                                                        CompanionAppTheme
-                                                            .fontName,
-                                                    fontWeight: FontWeight.bold,
+                                                    CompanionAppTheme
+                                                        .fontName,
+                                                    fontWeight:
+                                                    FontWeight.bold,
                                                     fontSize: 14,
                                                     letterSpacing: 0.2,
                                                     color: CompanionAppTheme
                                                         .lightText,
                                                   ),
                                                 ),
-                                              );
-                                            }).toList(),
+                                              ),
+                                              ...userService.friendsListData
+                                                  .map(
+                                                      (FriendsData friend) {
+                                                    return DropdownMenuItem<
+                                                        FriendsData>(
+                                                      value: friend,
+                                                      child: Text(
+                                                        friend.name,
+                                                        style: TextStyle(
+                                                          fontFamily:
+                                                          CompanionAppTheme
+                                                              .fontName,
+                                                          fontWeight:
+                                                          FontWeight.bold,
+                                                          fontSize: 14,
+                                                          letterSpacing: 0.2,
+                                                          color:
+                                                          CompanionAppTheme
+                                                              .lightText,
+                                                        ),
+                                                      ),
+                                                    );
+                                                  }).toList(),
+                                            ],
                                           ),
                                           SizedBox(
                                             width: 16,
@@ -1345,123 +1427,140 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                     }).toList(),
                                   ),
                                   OverlayTooltipItem(
-                                    tooltipVerticalPosition: TooltipVerticalPosition.TOP,
-                                    displayIndex: 0,
-                                    tooltip: (controller) {
-                                      return Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 15),
-                                        child: MTooltip(
-                                            title: 'tooltip_player_select'.tr(context),
-                                            controller: controller),
-                                      );
-                                    },
-                                    child: Column(
-                                      children: [
-                                        SizedBox(height: 32),
-                                        Row(
-                                          children: [
-                                            SizedBox(
-                                              width: 150,
-                                              child: TextField(
-                                                controller: _player2Controller,
-                                                decoration: InputDecoration(
-                                                  filled: true,
-                                                  fillColor:
-                                                  CompanionAppTheme.lightText,
-                                                  hintText: 'Player 2'.tr(context),
-                                                  contentPadding:
-                                                  const EdgeInsets.only(
-                                                      left: 14.0,
-                                                      bottom: 8.0,
-                                                      top: 8.0),
-                                                  focusedBorder: OutlineInputBorder(
-                                                    borderSide: BorderSide(
-                                                        color: CompanionAppTheme
-                                                            .lightText),
-                                                    borderRadius:
-                                                    BorderRadius.circular(25.7),
-                                                  ),
-                                                  enabledBorder:
-                                                  UnderlineInputBorder(
-                                                    borderSide: BorderSide(
-                                                        color: CompanionAppTheme
-                                                            .lightText),
-                                                    borderRadius:
-                                                    BorderRadius.circular(25.7),
-                                                  ),
-                                                ),
-                                                cursorColor:
-                                                CompanionAppTheme.darkerText,
-                                              ),
-                                            ),
-                                            Spacer(),
-                                            DropdownButton<FriendsData>(
-                                              menuMaxHeight: 200,
-                                              hint: Text(
-                                                'friend_select'.tr(context),
-                                                style: TextStyle(
-                                                  fontFamily:
-                                                  CompanionAppTheme.fontName,
-                                                  fontWeight: FontWeight.normal,
-                                                  fontSize: 14,
-                                                  letterSpacing: 0.2,
-                                                  color:
-                                                  CompanionAppTheme.lightText,
-                                                ),
-                                              ),
-                                              value: _friendsTwo,
-                                              onChanged: (FriendsData? newValue) {
-                                                setState(() {
-                                                  _friendsTwo = newValue;
-                                                });
-                                              },
-                                              items: [
-                                                DropdownMenuItem<FriendsData>(
-                                                  value: null,
-                                                  child: Text(
-                                                    'friend_unselect'.tr(context),
-                                                    style: TextStyle(
-                                                      fontFamily: CompanionAppTheme
-                                                          .fontName,
-                                                      fontWeight: FontWeight.bold,
-                                                      fontSize: 14,
-                                                      letterSpacing: 0.2,
-                                                      color: CompanionAppTheme
-                                                          .lightText,
+                                      tooltipVerticalPosition:
+                                          TooltipVerticalPosition.TOP,
+                                      displayIndex: 0,
+                                      tooltip: (controller) {
+                                        return Padding(
+                                          padding:
+                                              const EdgeInsets.only(left: 15),
+                                          child: MTooltip(
+                                              title: 'tooltip_player_select'
+                                                  .tr(context),
+                                              controller: controller),
+                                        );
+                                      },
+                                      child: Column(
+                                        children: [
+                                          SizedBox(height: 32),
+                                          Row(
+                                            children: [
+                                              SizedBox(
+                                                width: 150,
+                                                child: TextField(
+                                                  controller:
+                                                      _player2Controller,
+                                                  decoration: InputDecoration(
+                                                    filled: true,
+                                                    fillColor: CompanionAppTheme
+                                                        .lightText,
+                                                    hintText:
+                                                        'Player 2'.tr(context),
+                                                    contentPadding:
+                                                        const EdgeInsets.only(
+                                                            left: 14.0,
+                                                            bottom: 8.0,
+                                                            top: 8.0),
+                                                    focusedBorder:
+                                                        OutlineInputBorder(
+                                                      borderSide: BorderSide(
+                                                          color:
+                                                              CompanionAppTheme
+                                                                  .lightText),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              25.7),
+                                                    ),
+                                                    enabledBorder:
+                                                        UnderlineInputBorder(
+                                                      borderSide: BorderSide(
+                                                          color:
+                                                              CompanionAppTheme
+                                                                  .lightText),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              25.7),
                                                     ),
                                                   ),
+                                                  cursorColor: CompanionAppTheme
+                                                      .darkerText,
                                                 ),
-                                                ...userService.friendsListData
-                                                    .map((FriendsData friend) {
-                                                  return DropdownMenuItem<
-                                                      FriendsData>(
-                                                    value: friend,
-                                                    child: Text(
-                                                      friend.name,
-                                                      style: TextStyle(
-                                                        fontFamily:
+                                              ),
+                                              Spacer(),
+                                              DropdownButton<FriendsData>(
+                                                menuMaxHeight: 200,
+                                                hint: Text(
+                                                  'friend_select'.tr(context),
+                                                  style: TextStyle(
+                                                    fontFamily:
                                                         CompanionAppTheme
                                                             .fontName,
-                                                        fontWeight: FontWeight.bold,
+                                                    fontWeight:
+                                                        FontWeight.normal,
+                                                    fontSize: 14,
+                                                    letterSpacing: 0.2,
+                                                    color: CompanionAppTheme
+                                                        .lightText,
+                                                  ),
+                                                ),
+                                                value: _friendsTwo,
+                                                onChanged:
+                                                    (FriendsData? newValue) {
+                                                  setState(() {
+                                                    _friendsTwo = newValue;
+                                                  });
+                                                },
+                                                items: [
+                                                  DropdownMenuItem<FriendsData>(
+                                                    value: null,
+                                                    child: Text(
+                                                      'friend_unselect'
+                                                          .tr(context),
+                                                      style: TextStyle(
+                                                        fontFamily:
+                                                            CompanionAppTheme
+                                                                .fontName,
+                                                        fontWeight:
+                                                            FontWeight.bold,
                                                         fontSize: 14,
                                                         letterSpacing: 0.2,
                                                         color: CompanionAppTheme
                                                             .lightText,
                                                       ),
                                                     ),
-                                                  );
-                                                }).toList(),
-                                              ],
-                                            ),
-                                            SizedBox(
-                                              width: 16,
-                                            )
-                                          ],
-                                        ),
-                                      ],
-                                    )
-                                  ),
+                                                  ),
+                                                  ...userService.friendsListData
+                                                      .map(
+                                                          (FriendsData friend) {
+                                                    return DropdownMenuItem<
+                                                        FriendsData>(
+                                                      value: friend,
+                                                      child: Text(
+                                                        friend.name,
+                                                        style: TextStyle(
+                                                          fontFamily:
+                                                              CompanionAppTheme
+                                                                  .fontName,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontSize: 14,
+                                                          letterSpacing: 0.2,
+                                                          color:
+                                                              CompanionAppTheme
+                                                                  .lightText,
+                                                        ),
+                                                      ),
+                                                    );
+                                                  }).toList(),
+                                                ],
+                                              ),
+                                              SizedBox(
+                                                width: 16,
+                                              )
+                                            ],
+                                          ),
+                                        ],
+                                      )),
                                   SizedBox(height: 16),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.start,

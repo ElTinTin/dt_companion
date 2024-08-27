@@ -87,6 +87,20 @@ class _DTAAddViewState extends State<DTAAddView> with TickerProviderStateMixin {
     return min + random.nextInt(max - min + 1);
   }
 
+  String difficultyLabel(int difficulty) {
+    if (difficulty == 2) {
+      return 'dta_difficulty_nice'.tr(context);
+    } else if (difficulty == 0) {
+      return 'dta_difficulty_normal'.tr(context);
+    } else if (difficulty == 1) {
+      return 'dta_difficulty_veteran'.tr(context);
+    } else if (difficulty == 3) {
+      return 'dta_difficulty_insane'.tr(context);
+    } else {
+      return 'dta_difficulty_hardcore'.tr(context);
+    }
+  }
+
   Future<void> _submit(UserService userService) async {
     if (_isFormValid) {
       List<Player> players = [
@@ -279,7 +293,8 @@ class _DTAAddViewState extends State<DTAAddView> with TickerProviderStateMixin {
                                                 filled: true,
                                                 fillColor:
                                                     CompanionAppTheme.lightText,
-                                                hintText: 'dta_add_required'.tr(context),
+                                                hintText: 'dta_add_required'
+                                                    .tr(context),
                                                 contentPadding:
                                                     const EdgeInsets.only(
                                                         left: 14.0,
@@ -321,7 +336,8 @@ class _DTAAddViewState extends State<DTAAddView> with TickerProviderStateMixin {
                                           Row(
                                             children: [
                                               Text(
-                                                'dta_add_number_players'.tr(context),
+                                                'dta_add_number_players'
+                                                    .tr(context),
                                                 style: TextStyle(
                                                   fontFamily: CompanionAppTheme
                                                       .fontName,
@@ -426,7 +442,8 @@ class _DTAAddViewState extends State<DTAAddView> with TickerProviderStateMixin {
                                           Row(
                                             children: [
                                               Text(
-                                                'dta_add_difficulty'.tr(context),
+                                                'dta_add_difficulty'
+                                                    .tr(context),
                                                 style: TextStyle(
                                                   fontFamily: CompanionAppTheme
                                                       .fontName,
@@ -442,38 +459,88 @@ class _DTAAddViewState extends State<DTAAddView> with TickerProviderStateMixin {
                                           SizedBox(
                                             height: 8,
                                           ),
-                                          CupertinoSegmentedControl<int>(
-                                            selectedColor:
-                                                CompanionAppTheme.lightText,
-                                            borderColor:
-                                                CompanionAppTheme.lightText,
-                                            unselectedColor:
+                                          CupertinoSlidingSegmentedControl<int>(
+                                            backgroundColor:
                                                 CompanionAppTheme.dark_grey,
+                                            thumbColor:
+                                                CompanionAppTheme.lightText,
                                             children: {
+                                              2: Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 8.0,
+                                                        horizontal: 8.0),
+                                                child: Image.asset(
+                                                    'assets/dt_companion/difficulty_1.png',
+                                                    height:
+                                                        24.0), // Image pour "Facile"
+                                              ),
                                               0: Padding(
                                                 padding:
                                                     const EdgeInsets.symmetric(
-                                                        vertical: 10.0,
-                                                        horizontal: 16.0),
-                                                child: Text('dta_difficulty_normal'.tr(context)),
+                                                        vertical: 8.0,
+                                                        horizontal: 8.0),
+                                                child: Image.asset(
+                                                    'assets/dt_companion/difficulty_2.png',
+                                                    height:
+                                                        24.0), // Image pour "Normal"
                                               ),
                                               1: Padding(
                                                 padding:
                                                     const EdgeInsets.symmetric(
-                                                        vertical: 10.0,
-                                                        horizontal: 16.0),
-                                                child: Text('dta_difficulty_veteran'.tr(context)),
+                                                        vertical: 8.0,
+                                                        horizontal: 8.0),
+                                                child: Image.asset(
+                                                    'assets/dt_companion/difficulty_3.png',
+                                                    height:
+                                                        24.0), // Image pour "Vétéran"
+                                              ),
+                                              3: Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 8.0,
+                                                        horizontal: 8.0),
+                                                child: Image.asset(
+                                                    'assets/dt_companion/difficulty_4.png',
+                                                    height:
+                                                        24.0), // Image pour "Insensé"
+                                              ),
+                                              4: Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 8.0,
+                                                        horizontal: 8.0),
+                                                child: Image.asset(
+                                                    'assets/dt_companion/difficulty_5.png',
+                                                    height:
+                                                        24.0), // Image pour "Hardcore"
                                               ),
                                             },
-                                            onValueChanged: (int value) {
-                                              setState(() {
-                                                _difficulty = value;
-                                              });
-                                            },
                                             groupValue: _difficulty,
+                                            onValueChanged: (int? value) {
+                                              if (value != null) {
+                                                setState(() {
+                                                  _difficulty = value;
+                                                });
+                                              }
+                                            },
                                           ),
                                         ],
                                       )),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 8.0, horizontal: 16.0),
+                                    child: Text(
+                                      difficultyLabel(_difficulty),
+                                      style: TextStyle(
+                                        fontFamily: CompanionAppTheme.fontName,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20,
+                                        letterSpacing: 0.2,
+                                        color: CompanionAppTheme.lightText,
+                                      ),
+                                    ),
+                                  ),
                                   Divider(
                                     color: CompanionAppTheme.lightText,
                                   ),
@@ -542,7 +609,8 @@ class _DTAAddViewState extends State<DTAAddView> with TickerProviderStateMixin {
                                               DropdownButton<Character>(
                                                 menuMaxHeight: 300,
                                                 hint: Text(
-                                                  'character_select'.tr(context),
+                                                  'character_select'
+                                                      .tr(context),
                                                   style: TextStyle(
                                                     fontFamily:
                                                         CompanionAppTheme
@@ -615,7 +683,8 @@ class _DTAAddViewState extends State<DTAAddView> with TickerProviderStateMixin {
                                                 DropdownButton<Character>(
                                                   menuMaxHeight: 300,
                                                   hint: Text(
-                                                    'character_select'.tr(context),
+                                                    'character_select'
+                                                        .tr(context),
                                                     style: TextStyle(
                                                       fontFamily:
                                                           CompanionAppTheme
@@ -671,7 +740,8 @@ class _DTAAddViewState extends State<DTAAddView> with TickerProviderStateMixin {
                                                       fillColor:
                                                           CompanionAppTheme
                                                               .lightText,
-                                                      hintText: 'Player 2'.tr(context),
+                                                      hintText: 'Player 2'
+                                                          .tr(context),
                                                       contentPadding:
                                                           const EdgeInsets.only(
                                                               left: 14.0,
@@ -735,7 +805,8 @@ class _DTAAddViewState extends State<DTAAddView> with TickerProviderStateMixin {
                                                 DropdownButton<Character>(
                                                   menuMaxHeight: 300,
                                                   hint: Text(
-                                                    'character_select'.tr(context),
+                                                    'character_select'
+                                                        .tr(context),
                                                     style: TextStyle(
                                                       fontFamily:
                                                           CompanionAppTheme
@@ -791,7 +862,8 @@ class _DTAAddViewState extends State<DTAAddView> with TickerProviderStateMixin {
                                                       fillColor:
                                                           CompanionAppTheme
                                                               .lightText,
-                                                      hintText: 'Player 3'.tr(context),
+                                                      hintText: 'Player 3'
+                                                          .tr(context),
                                                       contentPadding:
                                                           const EdgeInsets.only(
                                                               left: 14.0,
@@ -855,7 +927,8 @@ class _DTAAddViewState extends State<DTAAddView> with TickerProviderStateMixin {
                                                 DropdownButton<Character>(
                                                   menuMaxHeight: 300,
                                                   hint: Text(
-                                                    'character_select'.tr(context),
+                                                    'character_select'
+                                                        .tr(context),
                                                     style: TextStyle(
                                                       fontFamily:
                                                           CompanionAppTheme
@@ -911,7 +984,8 @@ class _DTAAddViewState extends State<DTAAddView> with TickerProviderStateMixin {
                                                       fillColor:
                                                           CompanionAppTheme
                                                               .lightText,
-                                                      hintText: 'Player 4'.tr(context),
+                                                      hintText: 'Player 4'
+                                                          .tr(context),
                                                       contentPadding:
                                                           const EdgeInsets.only(
                                                               left: 14.0,

@@ -5,6 +5,8 @@ import 'package:dt_companion/dt_companion/companion_app_theme.dart';
 import 'package:dt_companion/dt_companion/init/initialization_view.dart';
 import 'package:dt_companion/dt_companion/init/introduction_view.dart';
 import 'package:dt_companion/dt_companion/service.dart';
+import 'package:dt_companion/dt_companion/ui_view/auth_gate.dart';
+import 'package:dt_companion/dt_companion/ui_view/signin_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -58,7 +60,6 @@ class MyApp extends StatelessWidget {
         title: 'DT Companion',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-          primarySwatch: Colors.blue,
           textTheme: CompanionAppTheme.textTheme,
           platform: TargetPlatform.iOS,
         ),
@@ -80,7 +81,7 @@ class MyApp extends StatelessWidget {
         initialRoute: initScreen == 0 ? "first" : "/",
         routes: {
           '/': (context) => InitializationWidget(
-            child: CompanionAppHomeScreen(index: 0,),
+            child: AuthGate(),
           ),
           "first": (context) => InitializationWidget(
             child: OnBoarding(),

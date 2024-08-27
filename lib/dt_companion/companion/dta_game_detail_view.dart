@@ -87,6 +87,34 @@ class _DTAGameDetailViewState extends State<DTAGameDetailView>
     return "assets/dt_companion/${CharacterExtension.fromDisplayName(character)?.nameWithoutEnum}.png";
   }
 
+  String difficultyLabel(int difficulty) {
+    if (difficulty == 2) {
+      return 'dta_difficulty_nice'.tr(context);
+    } else if (difficulty == 0) {
+      return 'dta_difficulty_normal'.tr(context);
+    } else if (difficulty == 1) {
+      return 'dta_difficulty_veteran'.tr(context);
+    } else if (difficulty == 3) {
+      return 'dta_difficulty_insane'.tr(context);
+    } else {
+      return 'dta_difficulty_hardcore'.tr(context);
+    }
+  }
+
+  int difficultyPoints(int difficulty) {
+    if (difficulty == 2) {
+      return 10;
+    } else if (difficulty == 0) {
+      return 20;
+    } else if (difficulty == 1) {
+      return 30;
+    } else if (difficulty == 3) {
+      return 40;
+    } else {
+      return 50;
+    }
+  }
+
   @override
   void dispose() {
     super.dispose();
@@ -271,9 +299,7 @@ class _DTAGameDetailViewState extends State<DTAGameDetailView>
                                       padding: EdgeInsets.only(
                                           right: 6, top: 4, bottom: 24),
                                       child: Text(
-                                        widget.dtaListData.difficulty == 0
-                                            ? 'dta_difficulty_normal'.tr(context)
-                                            : 'dta_difficulty_veteran'.tr(context),
+                                        difficultyLabel(widget.dtaListData.difficulty),
                                         style: TextStyle(
                                           fontFamily:
                                               CompanionAppTheme.fontName,
@@ -766,7 +792,7 @@ class _DTAGameDetailViewState extends State<DTAGameDetailView>
                         ],
                       ),
                       Spacer(),
-                      Text('${widget.dtaListData.difficulty == 0 ? 20 : 30}',
+                      Text('${difficultyPoints(widget.dtaListData.difficulty)}',
                           style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w400,
@@ -868,7 +894,7 @@ class _DTAGameDetailViewState extends State<DTAGameDetailView>
             int.parse(_unspentGold.text) +
             int.parse(_unclaimedBossLoot.text) +
             (_exploredAllTiles ? 5 : 0) +
-            (widget.dtaListData.difficulty == 0 ? 20 : 30);
+            (difficultyPoints(widget.dtaListData.difficulty));
       } else {
         return -10;
       }
@@ -1251,7 +1277,7 @@ class _DTAGameDetailViewState extends State<DTAGameDetailView>
                             ),
                             Spacer(),
                             Text(
-                              '${widget.dtaListData.difficulty == 0 ? 20 : 30}',
+                              '${difficultyPoints(widget.dtaListData.difficulty)}',
                               style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,

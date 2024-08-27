@@ -24,12 +24,12 @@ class FriendsStatisticsView extends StatefulWidget {
 
 class _FriendsStatisticsViewState extends State<FriendsStatisticsView>
     with TickerProviderStateMixin {
-
   double getWinPercentage(int victories, int defeats) {
     return (victories / (victories + defeats) * 100);
   }
 
   bool _isExpanded = false;
+  bool _isEditing = false;
 
   @override
   void initState() {
@@ -48,7 +48,7 @@ class _FriendsStatisticsViewState extends State<FriendsStatisticsView>
       },
       style: ButtonStyle(
         backgroundColor:
-        MaterialStateProperty.all<Color>(CompanionAppTheme.dark_grey),
+            MaterialStateProperty.all<Color>(CompanionAppTheme.dark_grey),
       ),
     );
     Widget continueButton = TextButton(
@@ -58,11 +58,11 @@ class _FriendsStatisticsViewState extends State<FriendsStatisticsView>
       ),
       onPressed: () {
         Navigator.of(context).pop();
-        service.deleteFriendsData(widget.friendsData?.name ?? "");
+        service.deleteFriendsData(widget.friendsData);
       },
       style: ButtonStyle(
         backgroundColor:
-        MaterialStateProperty.all<Color>(CompanionAppTheme.darkerText),
+            MaterialStateProperty.all<Color>(CompanionAppTheme.darkerText),
       ),
     );
 
@@ -168,36 +168,52 @@ class _FriendsStatisticsViewState extends State<FriendsStatisticsView>
                       height: _isExpanded ? null : 0,
                       child: _isExpanded
                           ? Column(
-                        children: [
-                          _buildStatisticsRow(context),
-                          Divider(
-                            color: CompanionAppTheme.lightText,
-                            thickness: 1,
-                          ),
-                          Row(
-                            mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Spacer(),
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    right: 16, bottom: 8),
-                                child: InkWell(
-                                  onTap: () =>
-                                  {
-                                    showAlertDialog(context, userService)
-                                  },
-                                  child: Icon(
-                                    Icons.delete_forever,
-                                    color: CompanionAppTheme.lightText,
-                                    size: 26,
-                                  ),
+                              children: [
+                                _buildStatisticsRow(context),
+                                Divider(
+                                  color: CompanionAppTheme.lightText,
+                                  thickness: 1,
                                 ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      )
+                                Row(
+                                  mainAxisSize: MainAxisSize.max,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Spacer(),
+                                    Padding(
+                                        padding: const EdgeInsets.only(
+                                            right: 16, bottom: 8),
+                                        child: InkWell(
+                                          onTap: () => {
+                                            setState(() {
+                                              _isEditing = !_isEditing;
+                                            })
+                                          },
+                                          child: Icon(
+                                            _isEditing
+                                                ? Icons.done
+                                                : Icons.edit,
+                                            color: CompanionAppTheme.lightText,
+                                            size: 26,
+                                          ),
+                                        )),
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          right: 16, bottom: 8),
+                                      child: InkWell(
+                                        onTap: () => {
+                                          showAlertDialog(context, userService)
+                                        },
+                                        child: Icon(
+                                          Icons.delete_forever,
+                                          color: CompanionAppTheme.lightText,
+                                          size: 26,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            )
                           : null,
                     ),
                   ],
@@ -213,7 +229,9 @@ class _FriendsStatisticsViewState extends State<FriendsStatisticsView>
   Widget _buildStatisticsRow(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(top: 16, left: 16, right: 16, bottom: 8),
-      child: Column(
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           _buildStatisticsItem(
               context,
@@ -223,8 +241,12 @@ class _FriendsStatisticsViewState extends State<FriendsStatisticsView>
               CompanionAppTheme.victoryGreen,
               'defeats',
               widget.friendsData?.defeatsAgainst ?? 0,
-              CompanionAppTheme.defeatRed
-          ),
+              CompanionAppTheme.defeatRed,
+              _isEditing,
+              () => setState(() => widget.friendsData?.victoriesAgainst++),
+              () => setState(() => widget.friendsData?.victoriesAgainst--),
+              () => setState(() => widget.friendsData?.defeatsAgainst++),
+              () => setState(() => widget.friendsData?.defeatsAgainst--)),
           _buildStatisticsItem(
               context,
               'assets/dt_companion/handshake.png',
@@ -233,20 +255,35 @@ class _FriendsStatisticsViewState extends State<FriendsStatisticsView>
               CompanionAppTheme.victoryGreen,
               'defeats',
               widget.friendsData?.defeatsWith ?? 0,
-              CompanionAppTheme.defeatRed
-          ),
-          // Ajoutez plus de statistiques ici si nécessaire
+              CompanionAppTheme.defeatRed,
+              _isEditing,
+              () => setState(() => widget.friendsData?.victoriesWith++),
+              () => setState(() => widget.friendsData?.victoriesWith--),
+              () => setState(() => widget.friendsData?.defeatsWith++),
+              () => setState(() => widget.friendsData?.defeatsWith--)),
         ],
       ),
     );
   }
 
-  Widget _buildStatisticsItem(BuildContext context, String imagePath,
-      String victoryLabelKey, int victoryValue, Color victoryColor,
-      String defeatLabelKey, int defeatValue, Color defeatColor) {
+  Widget _buildStatisticsItem(
+    BuildContext context,
+    String imagePath,
+    String victoryLabelKey,
+    int victoryValue,
+    Color victoryColor,
+    String defeatLabelKey,
+    int defeatValue,
+    Color defeatColor,
+    bool isEditing, // Ajout de l'indicateur de mode d'édition
+    VoidCallback onVictoryIncrement,
+    VoidCallback onVictoryDecrement,
+    VoidCallback onDefeatIncrement,
+    VoidCallback onDefeatDecrement,
+  ) {
     return Padding(
       padding: const EdgeInsets.only(left: 8, right: 8, top: 4),
-      child: Row(
+      child: Column(
         children: <Widget>[
           SizedBox(
             width: 44,
@@ -256,96 +293,132 @@ class _FriendsStatisticsViewState extends State<FriendsStatisticsView>
               fit: BoxFit.fitHeight,
             ),
           ),
-          SizedBox(width: 16,),
-          Container(
-            height: 48,
-            width: 2,
-            decoration: BoxDecoration(
-              color: victoryColor.withOpacity(0.75),
-              borderRadius: BorderRadius.all(Radius.circular(4.0)),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(left: 4, bottom: 2),
-                  child: Text(
-                    victoryLabelKey.tr(context),
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontFamily: CompanionAppTheme.fontName,
-                      fontWeight: FontWeight.w500,
-                      fontSize: 16,
-                      letterSpacing: -0.1,
-                      color: victoryColor.withOpacity(0.5),
-                    ),
-                  ),
+          SizedBox(width: 8),
+          Row(
+            children: [
+              Container(
+                height: 48,
+                width: 2,
+                decoration: BoxDecoration(
+                  color: victoryColor.withOpacity(0.75),
+                  borderRadius: BorderRadius.all(Radius.circular(4.0)),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 4, bottom: 3),
-                  child: Text(
-                    '$victoryValue',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontFamily: CompanionAppTheme.fontName,
-                      fontWeight: FontWeight.w600,
-                      fontSize: 20,
-                      color: CompanionAppTheme.lightText,
+              ),
+              Padding(
+                padding: const EdgeInsets.all(4.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.only(left: 4, bottom: 2),
+                      child: Text(
+                        victoryLabelKey.tr(context),
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontFamily: CompanionAppTheme.fontName,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 16,
+                          letterSpacing: -0.1,
+                          color: victoryColor.withOpacity(0.5),
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          SizedBox(width: 16,),
-          Container(
-            height: 48,
-            width: 2,
-            decoration: BoxDecoration(
-              color: defeatColor.withOpacity(0.75),
-              borderRadius: BorderRadius.all(Radius.circular(4.0)),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(left: 4, bottom: 2),
-                  child: Text(
-                    defeatLabelKey.tr(context),
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontFamily: CompanionAppTheme.fontName,
-                      fontWeight: FontWeight.w500,
-                      fontSize: 16,
-                      letterSpacing: -0.1,
-                      color: defeatColor.withOpacity(0.75),
+                    Row(
+                      children: [
+                        if (isEditing)
+                          IconButton(
+                            icon: Icon(Icons.remove_circle, size: 16),
+                            onPressed: onVictoryDecrement,
+                          ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 4, bottom: 4),
+                          child: Text(
+                            '$victoryValue',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontFamily: CompanionAppTheme.fontName,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 20,
+                              color: CompanionAppTheme.lightText,
+                            ),
+                          ),
+                        ),
+                        if (isEditing)
+                          IconButton(
+                            icon: Icon(Icons.add_circle, size: 16),
+                            onPressed: onVictoryIncrement,
+                          ),
+                      ],
                     ),
-                  ),
+                  ],
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 4, bottom: 3),
-                  child: Text(
-                    '$defeatValue',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontFamily: CompanionAppTheme.fontName,
-                      fontWeight: FontWeight.w600,
-                      fontSize: 20,
-                      color: CompanionAppTheme.lightText,
-                    ),
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
+          SizedBox(width: 8),
+          Row(
+            children: [
+              Container(
+                height: 48,
+                width: 2,
+                decoration: BoxDecoration(
+                  color: defeatColor.withOpacity(0.75),
+                  borderRadius: BorderRadius.all(Radius.circular(4.0)),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(4.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.only(left: 4, bottom: 2),
+                      child: Text(
+                        defeatLabelKey.tr(context),
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontFamily: CompanionAppTheme.fontName,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 16,
+                          letterSpacing: -0.1,
+                          color: defeatColor.withOpacity(0.75),
+                        ),
+                      ),
+                    ),
+                    Row(
+                      children: [
+                        if (isEditing)
+                          IconButton(
+                            icon: Icon(Icons.remove_circle, size: 16),
+                            onPressed: onDefeatDecrement,
+                          ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 4, bottom: 4),
+                          child: Text(
+                            '$defeatValue',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontFamily: CompanionAppTheme.fontName,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 20,
+                              color: CompanionAppTheme.lightText,
+                            ),
+                          ),
+                        ),
+                        if (isEditing)
+                          IconButton(
+                            icon: Icon(Icons.add_circle, size: 16),
+                            onPressed: onDefeatIncrement,
+                          ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          )
         ],
       ),
     );

@@ -2,6 +2,7 @@ import 'package:dt_companion/dt_companion/companion/all_games_list_view.dart';
 import 'package:dt_companion/dt_companion/companion/all_heroes_list_view.dart';
 import 'package:dt_companion/dt_companion/companion/games_list_view.dart';
 import 'package:dt_companion/dt_companion/extension/localization_extension.dart';
+import 'package:dt_companion/dt_companion/service.dart';
 import 'package:dt_companion/dt_companion/ui_view/overall_statistics_view.dart';
 import 'package:dt_companion/dt_companion/ui_view/title_view.dart';
 import 'package:dt_companion/dt_companion/companion_app_theme.dart';
@@ -10,6 +11,7 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:in_app_review/in_app_review.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:io';
 
@@ -33,6 +35,8 @@ class _CompanionScreenState extends State<CompanionScreen>
 
   int inAppReviewStatus = 0;
   int inAppReviewDate = 0;
+  int dataSavedOnFirebase = 0;
+  UserService? userService;
 
   final AdSize adSize = AdSize.banner;
   BannerAd? _bannerAdOne;
@@ -55,10 +59,8 @@ class _CompanionScreenState extends State<CompanionScreen>
             parent: widget.animationController!,
             curve: Interval(0, 0.5, curve: Curves.fastOutSlowIn)));
 
-    _getInAppReviewStatus();
     _analytics();
-    /*_inAppReview();*/
-    /*_loadAd();*/
+    userService?.fetchAllData();
 
     scrollController.addListener(() {
       if (scrollController.offset >= 24) {
@@ -89,6 +91,16 @@ class _CompanionScreenState extends State<CompanionScreen>
     // Analytics
     await FirebaseAnalytics.instance
         .logScreenView(screenName: 'HomeView');
+  }
+
+  Future<void> _saveStats(UserService userService) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    dataSavedOnFirebase = await prefs.getInt("dataSavedOnFirebase") ?? 0;
+    if (dataSavedOnFirebase == 0) {
+      userService.backupDataToFirestore(context);
+      dataSavedOnFirebase = 1;
+      await prefs.setInt("dataSavedOnFirebase", 1);
+    }
   }
 
   Future<void> _inAppReview() async {
@@ -144,6 +156,10 @@ class _CompanionScreenState extends State<CompanionScreen>
 
   @override
   Widget build(BuildContext context) {
+    final userService = Provider.of<UserService>(context);
+    this.userService = userService;
+    _saveStats(userService);
+
     return Container(
       color: CompanionAppTheme.background,
       child: Scaffold(

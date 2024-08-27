@@ -17,7 +17,6 @@ class GamesDAO {
       return GamesData.fromMap(maps[i]);
     });
 
-    // Trier par date décroissante (du plus récent au plus ancien)
     gamesList.sort((a, b) => DateTime.fromMillisecondsSinceEpoch(b.date).compareTo(DateTime.fromMillisecondsSinceEpoch(a.date)));
 
     return gamesList;

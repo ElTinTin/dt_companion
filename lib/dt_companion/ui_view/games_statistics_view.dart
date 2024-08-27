@@ -87,9 +87,9 @@ class _GamesStatisticsViewState extends State<GamesStatisticsView>
   }
 
   Color getBorderColorOne(String winner) {
-    if (winner == 'Draw') {
+    if (winner == 'Draw'.tr(context)) {
       return CompanionAppTheme.drawOrange;
-    } else if (winner == 'Team 1' || winner == 'You') {
+    } else if (winner == 'Team 1'.tr(context) || winner == 'You'.tr(context)) {
       return CompanionAppTheme.victoryGreen;
     } else {
       return CompanionAppTheme.defeatRed;
@@ -97,9 +97,9 @@ class _GamesStatisticsViewState extends State<GamesStatisticsView>
   }
 
   Color getBorderColorTwo(String winner) {
-    if (winner == 'Draw') {
+    if (winner == 'Draw'.tr(context)) {
       return CompanionAppTheme.drawOrange;
-    } else if (winner == 'Team 2' || winner == 'Player 2') {
+    } else if (winner == 'Team 2'.tr(context) || winner == 'Player 2'.tr(context)) {
       return CompanionAppTheme.victoryGreen;
     } else {
       return CompanionAppTheme.defeatRed;
@@ -107,9 +107,9 @@ class _GamesStatisticsViewState extends State<GamesStatisticsView>
   }
 
   Color getBorderColorThree(String winner) {
-    if (winner == 'Draw') {
+    if (winner == 'Draw'.tr(context)) {
       return CompanionAppTheme.drawOrange;
-    } else if (winner == 'Player 3') {
+    } else if (winner == 'Player 3'.tr(context)) {
       return CompanionAppTheme.victoryGreen;
     } else {
       return CompanionAppTheme.defeatRed;
@@ -126,10 +126,10 @@ class _GamesStatisticsViewState extends State<GamesStatisticsView>
     if (hero.totalGamesPlayed == 1) {
       service.deleteHeroesData(fileName);
     } else {
-      if (widget.gamesListData?.winner == 'You' ||
-          widget.gamesListData?.playerOne == 'Team 1') {
+      if (widget.gamesListData?.winner == 'You'.tr(context) ||
+          widget.gamesListData?.playerOne == 'Team 1'.tr(context)) {
         hero.victories -= 1;
-      } else if (widget.gamesListData?.winner == 'Draw') {
+      } else if (widget.gamesListData?.winner == 'Draw'.tr(context)) {
         hero.draws -= 1;
       } else {
         hero.defeats -= 1;
@@ -146,28 +146,28 @@ class _GamesStatisticsViewState extends State<GamesStatisticsView>
     final winner = widget.gamesListData?.winner;
 
     if (widget.gamesListData?.gamemode == Mode.onevsone) {
-      if (winner == 'You') {
-        return widget.gamesListData?.playerOne ?? '';
+      if (winner == 'You'.tr(context) || winner == 'You') {
+        return widget.gamesListData?.playerOne.tr(context) ?? '';
       } else {
         return '${getPlayerText(widget.gamesListData?.playerTwo, "Player 2", context)}';
       }
     } else if (widget.gamesListData?.gamemode == Mode.twovstwo) {
-      if (winner == 'Team 1') {
-        return '${widget.gamesListData?.playerOne} \n${getPlayerText(widget.gamesListData?.playerThree, "Player 3", context)}';
+      if (winner == 'Team 1'.tr(context) || winner == 'Team 1') {
+        return '${widget.gamesListData?.playerOne.tr(context)} \n${getPlayerText(widget.gamesListData?.playerThree, "Player 3", context)}';
       } else {
         return '${getPlayerText(widget.gamesListData?.playerTwo, "Player 2", context)} \n${getPlayerText(widget.gamesListData?.playerFour, "Player 4", context)}';
       }
     } else if (widget.gamesListData?.gamemode == Mode.koth) {
-      if (winner == 'You') {
-        return '${widget.gamesListData?.playerOne}';
-      } else if (winner == 'Player 2') {
+      if (winner == 'You'.tr(context) || winner == 'You') {
+        return '${widget.gamesListData?.playerOne.tr(context)}';
+      } else if (winner == 'Player 2'.tr(context) || winner == 'Player 2') {
         return '${getPlayerText(widget.gamesListData?.playerTwo, "Player 2", context)}';
       } else {
         return '${getPlayerText(widget.gamesListData?.playerThree, "Player 3", context)}';
       }
     } else {
-      if (winner == 'Team 1') {
-        return '${widget.gamesListData?.playerOne} \n${getPlayerText(widget.gamesListData?.playerTwo, "Player 2", context)} \n${getPlayerText(widget.gamesListData?.playerFive, "Player 5", context)}';
+      if (winner == 'Team 1'.tr(context) || winner == 'Team 1') {
+        return '${widget.gamesListData?.playerOne.tr(context)} \n${getPlayerText(widget.gamesListData?.playerTwo, "Player 2", context)} \n${getPlayerText(widget.gamesListData?.playerFive, "Player 5", context)}';
       } else {
         return '${getPlayerText(widget.gamesListData?.playerThree, "Player 3", context)} \n${getPlayerText(widget.gamesListData?.playerFour, "Player 4", context)} \n${getPlayerText(widget.gamesListData?.playerSix, "Player 6", context)}';
       }
@@ -178,28 +178,28 @@ class _GamesStatisticsViewState extends State<GamesStatisticsView>
     final winner = widget.gamesListData?.winner;
 
     if (widget.gamesListData?.gamemode == Mode.onevsone) {
-      if (winner == 'Player 2') {
-        return widget.gamesListData?.playerOne ?? '';
+      if (winner == 'Player 2'.tr(context) || winner == 'Player 2') {
+        return widget.gamesListData?.playerOne.tr(context) ?? '';
       } else {
         return '${getPlayerText(widget.gamesListData?.playerTwo, "Player 2", context)}';
       }
     } else if (widget.gamesListData?.gamemode == Mode.twovstwo) {
-      if (winner == 'Team 2') {
-        return '${widget.gamesListData?.playerOne} \n${getPlayerText(widget.gamesListData?.playerThree, "Player 3", context)}';
+      if (winner == 'Team 2'.tr(context) || winner == 'Team 2') {
+        return '${widget.gamesListData?.playerOne.tr(context)} \n${getPlayerText(widget.gamesListData?.playerThree, "Player 3", context)}';
       } else {
         return '${getPlayerText(widget.gamesListData?.playerTwo, "Player 2", context)} \n${getPlayerText(widget.gamesListData?.playerFour, "Player 4", context)}';
       }
     } else if (widget.gamesListData?.gamemode == Mode.koth) {
-      if (winner == 'You') {
+      if (winner == 'You'.tr(context) || winner == 'You') {
         return '${getPlayerText(widget.gamesListData?.playerTwo, "Player 2", context)} \n${getPlayerText(widget.gamesListData?.playerThree, "Player 3", context)}';
-      } else if (winner == 'Player 2') {
-        return '${widget.gamesListData?.playerOne} \n${getPlayerText(widget.gamesListData?.playerThree, "Player 3", context)}';
+      } else if (winner == 'Player 2'.tr(context) || winner == 'Player 2') {
+        return '${widget.gamesListData?.playerOne.tr(context)} \n${getPlayerText(widget.gamesListData?.playerThree, "Player 3", context)}';
       } else {
-        return '${widget.gamesListData?.playerOne} \n${getPlayerText(widget.gamesListData?.playerTwo, "Player 2", context)}';
+        return '${widget.gamesListData?.playerOne.tr(context)} \n${getPlayerText(widget.gamesListData?.playerTwo, "Player 2", context)}';
       }
     } else {
-      if (winner == 'Team 2') {
-        return '${widget.gamesListData?.playerOne} \n${getPlayerText(widget.gamesListData?.playerTwo, "Player 2", context)} \n${getPlayerText(widget.gamesListData?.playerFive, "Player 5", context)}';
+      if (winner == 'Team 2'.tr(context) || winner == 'Team 2') {
+        return '${widget.gamesListData?.playerOne.tr(context)} \n${getPlayerText(widget.gamesListData?.playerTwo, "Player 2", context)} \n${getPlayerText(widget.gamesListData?.playerFive, "Player 5", context)}';
       } else {
         return '${getPlayerText(widget.gamesListData?.playerThree, "Player 3", context)} \n${getPlayerText(widget.gamesListData?.playerFour, "Player 4", context)} \n${getPlayerText(widget.gamesListData?.playerSix, "Player 6", context)}';
       }

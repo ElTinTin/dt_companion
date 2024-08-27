@@ -2,10 +2,11 @@ import 'package:dt_companion/dt_companion/extension/localization_extension.dart'
 import 'package:dt_companion/dt_companion/profile/faq_screen.dart';
 import 'package:dt_companion/dt_companion/profile/friends_list_view.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_donation_buttons/donationButtons/ko-fiButton.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 
 import '../companion_app_theme.dart';
-import '../ui_view/google_signin_view.dart';
 import '../ui_view/title_view.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -118,9 +119,9 @@ class _ProfileScreenState extends State<ProfileScreen>
                             (1.0 -
                                 Tween<double>(begin: 0.0, end: 1.0)
                                     .animate(CurvedAnimation(
-                                    parent: widget.animationController!,
-                                    curve: Interval((1 / 5) * 4, 1.0,
-                                        curve: Curves.fastOutSlowIn)))
+                                        parent: widget.animationController!,
+                                        curve: Interval((1 / 5) * 4, 1.0,
+                                            curve: Curves.fastOutSlowIn)))
                                     .value),
                         0.0),
                     child: Container(
@@ -146,7 +147,9 @@ class _ProfileScreenState extends State<ProfileScreen>
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => FriendsListView(animationController: widget.animationController!)),
+                                    builder: (context) => FriendsListView(
+                                        animationController:
+                                            widget.animationController!)),
                               );
                             },
                           ),
@@ -171,9 +174,9 @@ class _ProfileScreenState extends State<ProfileScreen>
                             (1.0 -
                                 Tween<double>(begin: 0.0, end: 1.0)
                                     .animate(CurvedAnimation(
-                                    parent: widget.animationController!,
-                                    curve: Interval((1 / 5) * 4, 1.0,
-                                        curve: Curves.fastOutSlowIn)))
+                                        parent: widget.animationController!,
+                                        curve: Interval((1 / 5) * 4, 1.0,
+                                            curve: Curves.fastOutSlowIn)))
                                     .value),
                         0.0),
                     child: Container(
@@ -208,16 +211,6 @@ class _ProfileScreenState extends State<ProfileScreen>
                 );
               },
             ),
-            TitleView(
-              titleTxt: 'profile_import_export'.tr(context),
-              subTxt: '',
-              animation: Tween<double>(begin: 0.0, end: 1.0).animate(
-                  CurvedAnimation(
-                      parent: widget.animationController!,
-                      curve: Interval((1 / 5) * 1, 1.0,
-                          curve: Curves.fastOutSlowIn))),
-              animationController: widget.animationController!,
-            ),
             AnimatedBuilder(
               animation: widget.animationController!,
               builder: (BuildContext context, Widget? child) {
@@ -225,7 +218,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                   opacity: Tween<double>(begin: 0.0, end: 1.0).animate(
                       CurvedAnimation(
                           parent: widget.animationController!,
-                          curve: Interval((1 / 2) * 2, 1.0,
+                          curve: Interval((1 / 5) * 4, 1.0,
                               curve: Curves.fastOutSlowIn))),
                   child: new Transform(
                     transform: new Matrix4.translationValues(
@@ -235,14 +228,17 @@ class _ProfileScreenState extends State<ProfileScreen>
                                 Tween<double>(begin: 0.0, end: 1.0)
                                     .animate(CurvedAnimation(
                                         parent: widget.animationController!,
-                                        curve: Interval((1 / 5) * 2, 1.0,
+                                        curve: Interval((1 / 5) * 4, 1.0,
                                             curve: Curves.fastOutSlowIn)))
                                     .value),
                         0.0),
                     child: Container(
+                        height: 80,
+                        width: MediaQuery.of(context).size.width * 0.8,
                         child: Padding(
-                            padding: EdgeInsets.all(16),
-                            child: GoogleSignInView())),
+                          padding: EdgeInsets.all(16),
+                          child: const SignOutButton(),
+                        )),
                   ),
                 );
               },
@@ -264,7 +260,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                   opacity: Tween<double>(begin: 0.0, end: 1.0).animate(
                       CurvedAnimation(
                           parent: widget.animationController!,
-                          curve: Interval((1 / 5) * 5, 1.0,
+                          curve: Interval((1 / 5) * 4, 1.0,
                               curve: Curves.fastOutSlowIn))),
                   child: new Transform(
                     transform: new Matrix4.translationValues(
@@ -274,72 +270,121 @@ class _ProfileScreenState extends State<ProfileScreen>
                                 Tween<double>(begin: 0.0, end: 1.0)
                                     .animate(CurvedAnimation(
                                         parent: widget.animationController!,
-                                        curve: Interval((1 / 5) * 5, 1.0,
+                                        curve: Interval((1 / 5) * 4, 1.0,
                                             curve: Curves.fastOutSlowIn)))
                                     .value),
                         0.0),
                     child: Container(
-                      width: MediaQuery.of(context).size.width * 0.8,
-                      child: Padding(
-                        padding: EdgeInsets.all(16),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            SizedBox(
-                              width: double.infinity,
-                              child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  foregroundColor: CompanionAppTheme.darkerText,
-                                  backgroundColor: CompanionAppTheme.lightText,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  elevation: 15.0,
-                                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                                  textStyle: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    color: CompanionAppTheme.darkerText,
-                                  ),
-                                ),
-                                child: Text('profile_terms'.tr(context)),
-                                onPressed: () {
-                                  _launchUrl(_termsURL);
-                                },
-                              ),
+                        height: 80,
+                        width: MediaQuery.of(context).size.width * 0.8,
+                        child: Padding(
+                          padding: EdgeInsets.all(16),
+                          child: KofiButton(
+                            style: ButtonStyle(
+                              foregroundColor: MaterialStateProperty.all<Color>(
+                                Color(0xffffffff),
+                              ), //text (and icon)
                             ),
-                            SizedBox(
-                              height: 32,
-                            ),
-                            SizedBox(
-                              width: double.infinity,
-                              child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  foregroundColor: CompanionAppTheme.darkerText,
-                                  backgroundColor: CompanionAppTheme.lightText,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  elevation: 15.0,
-                                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                                  textStyle: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    color: CompanionAppTheme.darkerText,
-                                  ),
-                                ),
-                                child: Text('profile_privacy'.tr(context)),
-                                onPressed: () {
-                                  _launchUrl(_privacyURL);
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    )
+                            kofiName: "quentindfabrik",
+                            kofiColor: KofiColor.Red,
+                            onDonation: () {
+                              // Runs after the button has been pressed
+                              debugPrint("On donation");
+                            },
+                          ),
+                        )),
                   ),
+                );
+              },
+            ),
+            AnimatedBuilder(
+              animation: widget.animationController!,
+              builder: (BuildContext context, Widget? child) {
+                return FadeTransition(
+                  opacity: Tween<double>(begin: 0.0, end: 1.0).animate(
+                      CurvedAnimation(
+                          parent: widget.animationController!,
+                          curve: Interval((1 / 5) * 5, 1.0,
+                              curve: Curves.fastOutSlowIn))),
+                  child: new Transform(
+                      transform: new Matrix4.translationValues(
+                          0.0,
+                          30 *
+                              (1.0 -
+                                  Tween<double>(begin: 0.0, end: 1.0)
+                                      .animate(CurvedAnimation(
+                                          parent: widget.animationController!,
+                                          curve: Interval((1 / 5) * 5, 1.0,
+                                              curve: Curves.fastOutSlowIn)))
+                                      .value),
+                          0.0),
+                      child: Container(
+                        width: MediaQuery.of(context).size.width * 0.8,
+                        child: Padding(
+                          padding: EdgeInsets.all(16),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.max,
+                            children: [
+                              SizedBox(
+                                width: double.infinity,
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    foregroundColor:
+                                        CompanionAppTheme.darkerText,
+                                    backgroundColor:
+                                        CompanionAppTheme.lightText,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    elevation: 15.0,
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 8, vertical: 16),
+                                    textStyle: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: CompanionAppTheme.darkerText,
+                                    ),
+                                  ),
+                                  child: Text('profile_terms'.tr(context)),
+                                  onPressed: () {
+                                    _launchUrl(_termsURL);
+                                  },
+                                ),
+                              ),
+                              SizedBox(
+                                height: 32,
+                              ),
+                              SizedBox(
+                                width: double.infinity,
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    foregroundColor:
+                                        CompanionAppTheme.darkerText,
+                                    backgroundColor:
+                                        CompanionAppTheme.lightText,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    elevation: 15.0,
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 8, vertical: 16),
+                                    textStyle: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: CompanionAppTheme.darkerText,
+                                    ),
+                                  ),
+                                  child: Text('profile_privacy'.tr(context)),
+                                  onPressed: () {
+                                    _launchUrl(_privacyURL);
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      )),
                 );
               },
             )
@@ -362,7 +407,8 @@ class _ProfileScreenState extends State<ProfileScreen>
                     0.0, 30 * (1.0 - topBarAnimation!.value), 0.0),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: CompanionAppTheme.dark_grey.withOpacity(topBarOpacity),
+                    color:
+                        CompanionAppTheme.dark_grey.withOpacity(topBarOpacity),
                     borderRadius: const BorderRadius.only(
                       bottomLeft: Radius.circular(32.0),
                     ),
