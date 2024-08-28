@@ -227,6 +227,8 @@ class _FriendsStatisticsViewState extends State<FriendsStatisticsView>
   }
 
   Widget _buildStatisticsRow(BuildContext context) {
+    final userService = Provider.of<UserService>(context);
+
     return Padding(
       padding: const EdgeInsets.only(top: 16, left: 16, right: 16, bottom: 8),
       child: Row(
@@ -234,33 +236,60 @@ class _FriendsStatisticsViewState extends State<FriendsStatisticsView>
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           _buildStatisticsItem(
-              context,
-              'assets/dt_companion/fight.png',
-              'victories',
-              widget.friendsData?.victoriesAgainst ?? 0,
-              CompanionAppTheme.victoryGreen,
-              'defeats',
-              widget.friendsData?.defeatsAgainst ?? 0,
-              CompanionAppTheme.defeatRed,
-              _isEditing,
-              () => setState(() => widget.friendsData?.victoriesAgainst++),
-              () => setState(() => widget.friendsData?.victoriesAgainst--),
-              () => setState(() => widget.friendsData?.defeatsAgainst++),
-              () => setState(() => widget.friendsData?.defeatsAgainst--)),
+            context,
+            'assets/dt_companion/fight.png',
+            'victories',
+            widget.friendsData?.victoriesAgainst ?? 0,
+            CompanionAppTheme.victoryGreen,
+            'defeats',
+            widget.friendsData?.defeatsAgainst ?? 0,
+            CompanionAppTheme.defeatRed,
+            _isEditing,
+                () {
+              setState(() => widget.friendsData?.victoriesAgainst++);
+              userService.updateFriendsData(widget.friendsData!);
+            },
+                () {
+              setState(() => widget.friendsData?.victoriesAgainst--);
+              userService.updateFriendsData(widget.friendsData!);
+            },
+                () {
+              setState(() => widget.friendsData?.defeatsAgainst++);
+              userService.updateFriendsData(widget.friendsData!);
+            },
+                () {
+              setState(() => widget.friendsData?.defeatsAgainst--);
+              userService.updateFriendsData(widget.friendsData!);
+            },
+          ),
+          SizedBox(width: _isEditing ? 0 : 32,),
           _buildStatisticsItem(
-              context,
-              'assets/dt_companion/handshake.png',
-              'victories',
-              widget.friendsData?.victoriesWith ?? 0,
-              CompanionAppTheme.victoryGreen,
-              'defeats',
-              widget.friendsData?.defeatsWith ?? 0,
-              CompanionAppTheme.defeatRed,
-              _isEditing,
-              () => setState(() => widget.friendsData?.victoriesWith++),
-              () => setState(() => widget.friendsData?.victoriesWith--),
-              () => setState(() => widget.friendsData?.defeatsWith++),
-              () => setState(() => widget.friendsData?.defeatsWith--)),
+            context,
+            'assets/dt_companion/handshake.png',
+            'victories',
+            widget.friendsData?.victoriesWith ?? 0,
+            CompanionAppTheme.victoryGreen,
+            'defeats',
+            widget.friendsData?.defeatsWith ?? 0,
+            CompanionAppTheme.defeatRed,
+            _isEditing,
+                () {
+              setState(() => widget.friendsData?.victoriesWith++);
+              userService.updateFriendsData(widget.friendsData!);
+            },
+                () {
+              setState(() => widget.friendsData?.victoriesWith--);
+              userService.updateFriendsData(widget.friendsData!);
+            },
+                () {
+              setState(() => widget.friendsData?.defeatsWith++);
+              userService.updateFriendsData(widget.friendsData!);
+            },
+                () {
+              setState(() => widget.friendsData?.defeatsWith--);
+              userService.updateFriendsData(widget.friendsData!);
+            },
+          ),
         ],
       ),
     );
