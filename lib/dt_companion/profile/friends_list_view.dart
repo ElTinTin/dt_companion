@@ -65,6 +65,10 @@ class _FriendsListScreenState extends State<FriendsListView>
     await FirebaseAnalytics.instance.logScreenView(screenName: 'FriendsListView');
   }
 
+  bool isNameUnique(String name, List<FriendsData> friends) {
+    return !friends.map((e) => e.name).contains(name);
+  }
+
   void showAlertDialog(BuildContext context, UserService service) {
     // set up the buttons
     Widget cancelButton = TextButton(
@@ -86,9 +90,14 @@ class _FriendsListScreenState extends State<FriendsListView>
         style: TextStyle(color: CompanionAppTheme.lightText),
       ),
       onPressed: () {
-        Navigator.of(context).pop();
-        service.insertFriendsData(FriendsData(name: _newFriend.text));
-        _newFriend.text = "";
+        if (isNameUnique(_newFriend.text, service.friendsListData)) {
+          Navigator.of(context).pop();
+          service.insertFriendsData(FriendsData(name: _newFriend.text));
+          _newFriend.text = "";
+        } else {
+          String nonUniqueMessage = 'The following name is not unique: ${_newFriend.text}';
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(nonUniqueMessage)));
+        }
       },
       style: ButtonStyle(
         backgroundColor:

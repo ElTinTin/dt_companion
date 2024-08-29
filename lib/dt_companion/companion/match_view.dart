@@ -221,7 +221,7 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
       if (_winningTeam != 'Draw'.tr(context)) {
         if (winner) {
           if (playerData == _friendsTwo) {
-            playerData.defeatsAgainst += 1;
+            playerData.victoriesAgainst += 1;
           } else if (playerData == _friendsThree) {
             if (_gamemode == Mode.twovstwo || _gamemode == Mode.threevsthree) {
               playerData.victoriesWith += 1;
@@ -229,35 +229,35 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
               playerData.defeatsAgainst += 1;
             }
           } else if (playerData == _friendsFour) {
-            playerData.defeatsAgainst += 1;
+            playerData.victoriesAgainst += 1;
           } else if (playerData == _friendsFive) {
             if (_gamemode == Mode.twovstwo || _gamemode == Mode.threevsthree) {
-              playerData.victoriesWith += 1;
+              playerData.defeatsWith += 1;
             } else {
-              playerData.defeatsAgainst += 1;
+              playerData.victoriesAgainst += 1;
             }
           } else {
-            playerData.defeatsAgainst += 1;
+            playerData.victoriesAgainst += 1;
           }
         } else {
           if (playerData == _friendsTwo) {
-            playerData.victoriesAgainst += 1;
+            playerData.defeatsAgainst += 1;
           } else if (playerData == _friendsThree) {
             if (_gamemode == Mode.twovstwo || _gamemode == Mode.threevsthree) {
               playerData.defeatsWith += 1;
             } else {
-              playerData.victoriesAgainst += 1;
+              playerData.defeatsAgainst += 1;
             }
           } else if (playerData == _friendsFour) {
-            playerData.victoriesAgainst += 1;
+            playerData.defeatsAgainst += 1;
           } else if (playerData == _friendsFive) {
             if (_gamemode == Mode.twovstwo || _gamemode == Mode.threevsthree) {
               playerData.defeatsWith += 1;
             } else {
-              playerData.victoriesAgainst += 1;
+              playerData.defeatsAgainst += 1;
             }
           } else {
-            playerData.victoriesAgainst += 1;
+            playerData.defeatsAgainst += 1;
           }
         }
       } else {
@@ -286,44 +286,44 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
       FriendsData newPlayer = FriendsData(name: controller.text);
       if (_winningTeam != 'Draw'.tr(context)) {
         if (winner) {
-          if (newPlayer == _friendsTwo) {
-            newPlayer.defeatsAgainst += 1;
-          } else if (newPlayer == _friendsThree) {
+          if (controller == _player2Controller) {
+            newPlayer.victoriesAgainst += 1;
+          } else if (controller == _player3Controller) {
             if (_gamemode == Mode.twovstwo || _gamemode == Mode.threevsthree) {
               newPlayer.victoriesWith += 1;
             } else {
-              newPlayer.defeatsAgainst += 1;
+              newPlayer.victoriesAgainst += 1;
             }
-          } else if (newPlayer == _friendsFour) {
-            newPlayer.defeatsAgainst += 1;
-          } else if (newPlayer == _friendsFive) {
+          } else if (controller == _player4Controller) {
+            newPlayer.victoriesAgainst += 1;
+          } else if (controller == _player5Controller) {
             if (_gamemode == Mode.twovstwo || _gamemode == Mode.threevsthree) {
               newPlayer.victoriesWith += 1;
             } else {
               newPlayer.defeatsAgainst += 1;
             }
           } else {
-            newPlayer.defeatsAgainst += 1;
+            newPlayer.victoriesAgainst += 1;
           }
         } else {
-          if (newPlayer == _friendsTwo) {
-            newPlayer.victoriesAgainst += 1;
+          if (controller == _player2Controller) {
+            newPlayer.defeatsAgainst += 1;
           } else if (newPlayer == _friendsThree) {
             if (_gamemode == Mode.twovstwo || _gamemode == Mode.threevsthree) {
               newPlayer.defeatsWith += 1;
             } else {
-              newPlayer.victoriesAgainst += 1;
+              newPlayer.defeatsAgainst += 1;
             }
-          } else if (newPlayer == _friendsFour) {
-            newPlayer.victoriesAgainst += 1;
-          } else if (newPlayer == _friendsFive) {
+          } else if (controller == _player4Controller) {
+            newPlayer.defeatsAgainst += 1;
+          } else if (controller == _player5Controller) {
             if (_gamemode == Mode.twovstwo || _gamemode == Mode.threevsthree) {
               newPlayer.defeatsWith += 1;
             } else {
-              newPlayer.victoriesAgainst += 1;
+              newPlayer.defeatsAgainst += 1;
             }
           } else {
-            newPlayer.victoriesAgainst += 1;
+            newPlayer.defeatsAgainst += 1;
           }
         }
       } else {
@@ -351,124 +351,160 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
     }
   }
 
+  bool isNameUnique(String name, List<FriendsData> friends) {
+    return !friends.map((e) => e.name).contains(name);
+  }
+
+  List<String> findNonUniqueNames(UserService userService) {
+    List<String> nonUniqueNames = [];
+
+    if (!isNameUnique(_player2Controller.text, userService.friendsListData)) {
+      nonUniqueNames.add(_player2Controller.text);
+    }
+    if (!isNameUnique(_player3Controller.text, userService.friendsListData)) {
+      nonUniqueNames.add(_player3Controller.text);
+    }
+    if (!isNameUnique(_player4Controller.text, userService.friendsListData)) {
+      nonUniqueNames.add(_player4Controller.text);
+    }
+    if (!isNameUnique(_player5Controller.text, userService.friendsListData)) {
+      nonUniqueNames.add(_player5Controller.text);
+    }
+    if (!isNameUnique(_player6Controller.text, userService.friendsListData)) {
+      nonUniqueNames.add(_player6Controller.text);
+    }
+
+    return nonUniqueNames;
+  }
+
   Future<void> _submit(UserService userService) async {
-    if (_isFormValid) {
-      var winner = (_winningTeam == "You".tr(context) ||
-              _winningTeam == "Team 1".tr(context))
-          ? true
-          : false;
+    if (isNameUnique(_player2Controller.text, userService.friendsListData) &&
+        isNameUnique(_player3Controller.text, userService.friendsListData) &&
+        isNameUnique(_player4Controller.text, userService.friendsListData) &&
+        isNameUnique(_player5Controller.text, userService.friendsListData) &&
+        isNameUnique(_player6Controller.text, userService.friendsListData)) {
+      if (_isFormValid) {
+        var winner = (_winningTeam == "You".tr(context) ||
+                _winningTeam == "Team 1".tr(context))
+            ? true
+            : false;
 
-      var heroesData = HeroesData(
-          name: _playerOne!.displayName,
-          imagePath: "assets/dt_companion/${_playerOne!.name}.png",
-          victories: 0,
-          defeats: 0,
-          draws: 0);
+        var heroesData = HeroesData(
+            name: _playerOne!.displayName,
+            imagePath: "assets/dt_companion/${_playerOne!.name}.png",
+            victories: 0,
+            defeats: 0,
+            draws: 0);
 
-      try {
         try {
-          HeroesData hero = userService.heroesListData
-              .firstWhere((hero) => hero.name == heroesData.name);
-          if (_winningTeam != 'Draw'.tr(context)) {
-            if (winner) {
-              heroesData.victories = hero.victories + 1;
-              heroesData.defeats = hero.defeats;
-              heroesData.draws = hero.draws;
+          try {
+            HeroesData hero = userService.heroesListData
+                .firstWhere((hero) => hero.name == heroesData.name);
+            if (_winningTeam != 'Draw'.tr(context)) {
+              if (winner) {
+                heroesData.victories = hero.victories + 1;
+                heroesData.defeats = hero.defeats;
+                heroesData.draws = hero.draws;
+              } else {
+                heroesData.victories = hero.victories;
+                heroesData.defeats = hero.defeats + 1;
+                heroesData.draws = hero.draws;
+              }
             } else {
               heroesData.victories = hero.victories;
-              heroesData.defeats = hero.defeats + 1;
-              heroesData.draws = hero.draws;
+              heroesData.defeats = hero.defeats;
+              heroesData.draws = hero.draws + 1;
             }
-          } else {
-            heroesData.victories = hero.victories;
-            heroesData.defeats = hero.defeats;
-            heroesData.draws = hero.draws + 1;
-          }
-          userService.updateHeroesData(heroesData);
-        } catch (e) {
-          if (_winningTeam != 'Draw'.tr(context)) {
-            if (winner) {
-              heroesData.victories += 1;
+            userService.updateHeroesData(heroesData);
+          } catch (e) {
+            if (_winningTeam != 'Draw'.tr(context)) {
+              if (winner) {
+                heroesData.victories += 1;
+              } else {
+                heroesData.defeats += 1;
+              }
             } else {
-              heroesData.defeats += 1;
+              heroesData.draws += 1;
             }
-          } else {
-            heroesData.draws += 1;
+
+            userService.insertHeroesData(heroesData);
           }
-
-          userService.insertHeroesData(heroesData);
+        } catch (e) {
+          print(e);
         }
-      } catch (e) {
-        print(e);
+
+        try {
+          var gameData = GamesData(
+              playerOneImagePath: "assets/dt_companion/${_playerOne!.name}.png",
+              playerOne: 'You',
+              playerOneUltimates: int.parse(_playerOneUltimates.text),
+              playerTwoImagePath: "assets/dt_companion/${_playerTwo!.name}.png",
+              playerTwo: getPlayer(_player2Controller, 2, _friendsTwo),
+              playerTwoUltimates: int.parse(_playerTwoUltimates.text),
+              playerThreeImagePath: _playerThree != null
+                  ? "assets/dt_companion/${_playerThree!.name}.png"
+                  : "",
+              playerThree: getPlayer(_player3Controller, 3, _friendsThree),
+              playerThreeUltimates: int.parse(_playerThreeUltimates.text),
+              playerFourImagePath: _playerFour != null
+                  ? "assets/dt_companion/${_playerFour!.name}.png"
+                  : "",
+              playerFourUltimates: int.parse(_playerFourUltimates.text),
+              playerFour: getPlayer(_player4Controller, 4, _friendsFour),
+              playerFiveImagePath: _playerFive != null
+                  ? "assets/dt_companion/${_playerFive!.name}.png"
+                  : "",
+              playerFive: getPlayer(_player5Controller, 5, _friendsFive),
+              playerFiveUltimates: int.parse(_playerFiveUltimates.text),
+              playerSixImagePath: _playerSix != null
+                  ? "assets/dt_companion/${_playerSix!.name}.png"
+                  : "",
+              playerSix: getPlayer(_player6Controller, 6, _friendsSix),
+              playerSixUltimates: int.parse(_playerSixUltimates.text),
+              gamemode: _gamemode,
+              id: generateRandomId(),
+              winner: _winningTeam ?? "",
+              winnerHealth: _winnerHealth,
+              date: DateTime.now().millisecondsSinceEpoch);
+          userService.insertGamesData(gameData);
+        } catch (e) {
+          print(e);
+        }
+
+        try {
+          updatePlayerData(
+              _friendsTwo, _player2Controller, userService); // Joueur 2
+          updatePlayerData(_friendsThree, _player3Controller,
+              userService); // Joueur 3, condition inversée
+          updatePlayerData(
+              _friendsFour, _player4Controller, userService); // Joueur 4
+          updatePlayerData(_friendsFive, _player5Controller,
+              userService); // Joueur 5, condition inversée
+          updatePlayerData(
+              _friendsSix, _player6Controller, userService); // Joueur 6
+        } catch (e) {
+          print(e);
+        }
+
+        _setInAppReviewStatus();
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('snack_match_submitted'.tr(context))),
+        );
+
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => CompanionAppHomeScreen(index: 0)));
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('snack_match_missing'.tr(context))),
+        );
       }
-
-      try {
-        var gameData = GamesData(
-            playerOneImagePath: "assets/dt_companion/${_playerOne!.name}.png",
-            playerOne: 'You',
-            playerOneUltimates: int.parse(_playerOneUltimates.text),
-            playerTwoImagePath: "assets/dt_companion/${_playerTwo!.name}.png",
-            playerTwo: getPlayer(_player2Controller, 2, _friendsTwo),
-            playerTwoUltimates: int.parse(_playerTwoUltimates.text),
-            playerThreeImagePath: _playerThree != null
-                ? "assets/dt_companion/${_playerThree!.name}.png"
-                : "",
-            playerThree: getPlayer(_player3Controller, 3, _friendsThree),
-            playerThreeUltimates: int.parse(_playerThreeUltimates.text),
-            playerFourImagePath: _playerFour != null
-                ? "assets/dt_companion/${_playerFour!.name}.png"
-                : "",
-            playerFourUltimates: int.parse(_playerFourUltimates.text),
-            playerFour: getPlayer(_player4Controller, 4, _friendsFour),
-            playerFiveImagePath: _playerFive != null
-                ? "assets/dt_companion/${_playerFive!.name}.png"
-                : "",
-            playerFive: getPlayer(_player5Controller, 5, _friendsFive),
-            playerFiveUltimates: int.parse(_playerFiveUltimates.text),
-            playerSixImagePath: _playerSix != null
-                ? "assets/dt_companion/${_playerSix!.name}.png"
-                : "",
-            playerSix: getPlayer(_player6Controller, 6, _friendsSix),
-            playerSixUltimates: int.parse(_playerSixUltimates.text),
-            gamemode: _gamemode,
-            id: generateRandomId(),
-            winner: _winningTeam ?? "",
-            winnerHealth: _winnerHealth,
-            date: DateTime.now().millisecondsSinceEpoch);
-        userService.insertGamesData(gameData);
-      } catch (e) {
-        print(e);
-      }
-
-      try {
-        updatePlayerData(
-            _friendsTwo, _player2Controller, userService); // Joueur 2
-        updatePlayerData(_friendsThree, _player3Controller,
-            userService); // Joueur 3, condition inversée
-        updatePlayerData(
-            _friendsFour, _player4Controller, userService); // Joueur 4
-        updatePlayerData(_friendsFive, _player5Controller,
-            userService); // Joueur 5, condition inversée
-        updatePlayerData(
-            _friendsSix, _player6Controller, userService); // Joueur 6
-      } catch (e) {
-        print(e);
-      }
-
-      _setInAppReviewStatus();
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('snack_match_submitted'.tr(context))),
-      );
-
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => CompanionAppHomeScreen(index: 0)));
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('snack_match_missing'.tr(context))),
-      );
+      List<String> nonUniqueNames = findNonUniqueNames(userService);
+      String nonUniqueMessage = 'The following names are not unique: ${nonUniqueNames.join(', ')}';
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(nonUniqueMessage)));
     }
   }
 
@@ -597,10 +633,14 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                               '1v1',
                               style: TextStyle(
                                 fontFamily: CompanionAppTheme.fontName,
-                                fontWeight: _gamemode == Mode.onevsone ? FontWeight.bold : FontWeight.normal,
+                                fontWeight: _gamemode == Mode.onevsone
+                                    ? FontWeight.bold
+                                    : FontWeight.normal,
                                 fontSize: _gamemode == Mode.onevsone ? 18 : 14,
                                 letterSpacing: 0.2,
-                                color: _gamemode == Mode.onevsone ? CompanionAppTheme.darkerText : CompanionAppTheme.lightText,
+                                color: _gamemode == Mode.onevsone
+                                    ? CompanionAppTheme.darkerText
+                                    : CompanionAppTheme.lightText,
                               ),
                             ),
                           ),
@@ -611,10 +651,14 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                               '2v2',
                               style: TextStyle(
                                 fontFamily: CompanionAppTheme.fontName,
-                                fontWeight: _gamemode == Mode.twovstwo ? FontWeight.bold : FontWeight.normal,
+                                fontWeight: _gamemode == Mode.twovstwo
+                                    ? FontWeight.bold
+                                    : FontWeight.normal,
                                 fontSize: _gamemode == Mode.twovstwo ? 18 : 14,
                                 letterSpacing: 0.2,
-                                color: _gamemode == Mode.twovstwo ? CompanionAppTheme.darkerText : CompanionAppTheme.lightText,
+                                color: _gamemode == Mode.twovstwo
+                                    ? CompanionAppTheme.darkerText
+                                    : CompanionAppTheme.lightText,
                               ),
                             ),
                           ),
@@ -625,10 +669,14 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                               'KOTH',
                               style: TextStyle(
                                 fontFamily: CompanionAppTheme.fontName,
-                                fontWeight: _gamemode == Mode.koth ? FontWeight.bold : FontWeight.normal,
+                                fontWeight: _gamemode == Mode.koth
+                                    ? FontWeight.bold
+                                    : FontWeight.normal,
                                 fontSize: _gamemode == Mode.koth ? 18 : 14,
                                 letterSpacing: 0.2,
-                                color: _gamemode == Mode.koth ? CompanionAppTheme.darkerText : CompanionAppTheme.lightText,
+                                color: _gamemode == Mode.koth
+                                    ? CompanionAppTheme.darkerText
+                                    : CompanionAppTheme.lightText,
                               ),
                             ),
                           ),
@@ -639,10 +687,15 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                               '3v3',
                               style: TextStyle(
                                 fontFamily: CompanionAppTheme.fontName,
-                                fontWeight: _gamemode == Mode.threevsthree ? FontWeight.bold : FontWeight.normal,
-                                fontSize: _gamemode == Mode.threevsthree ? 18 : 14,
+                                fontWeight: _gamemode == Mode.threevsthree
+                                    ? FontWeight.bold
+                                    : FontWeight.normal,
+                                fontSize:
+                                    _gamemode == Mode.threevsthree ? 18 : 14,
                                 letterSpacing: 0.2,
-                                color: _gamemode == Mode.threevsthree ? CompanionAppTheme.darkerText : CompanionAppTheme.lightText,
+                                color: _gamemode == Mode.threevsthree
+                                    ? CompanionAppTheme.darkerText
+                                    : CompanionAppTheme.lightText,
                               ),
                             ),
                           ),
@@ -978,14 +1031,12 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                               DropdownMenuItem<FriendsData>(
                                                 value: null,
                                                 child: Text(
-                                                  'friend_unselect'
-                                                      .tr(context),
+                                                  'friend_unselect'.tr(context),
                                                   style: TextStyle(
                                                     fontFamily:
-                                                    CompanionAppTheme
-                                                        .fontName,
-                                                    fontWeight:
-                                                    FontWeight.bold,
+                                                        CompanionAppTheme
+                                                            .fontName,
+                                                    fontWeight: FontWeight.bold,
                                                     fontSize: 14,
                                                     letterSpacing: 0.2,
                                                     color: CompanionAppTheme
@@ -994,28 +1045,26 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                                 ),
                                               ),
                                               ...userService.friendsListData
-                                                  .map(
-                                                      (FriendsData friend) {
-                                                    return DropdownMenuItem<
-                                                        FriendsData>(
-                                                      value: friend,
-                                                      child: Text(
-                                                        friend.name,
-                                                        style: TextStyle(
-                                                          fontFamily:
+                                                  .map((FriendsData friend) {
+                                                return DropdownMenuItem<
+                                                    FriendsData>(
+                                                  value: friend,
+                                                  child: Text(
+                                                    friend.name,
+                                                    style: TextStyle(
+                                                      fontFamily:
                                                           CompanionAppTheme
                                                               .fontName,
-                                                          fontWeight:
+                                                      fontWeight:
                                                           FontWeight.bold,
-                                                          fontSize: 14,
-                                                          letterSpacing: 0.2,
-                                                          color:
-                                                          CompanionAppTheme
-                                                              .lightText,
-                                                        ),
-                                                      ),
-                                                    );
-                                                  }).toList(),
+                                                      fontSize: 14,
+                                                      letterSpacing: 0.2,
+                                                      color: CompanionAppTheme
+                                                          .lightText,
+                                                    ),
+                                                  ),
+                                                );
+                                              }).toList(),
                                             ],
                                           ),
                                           SizedBox(
@@ -1213,14 +1262,12 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                               DropdownMenuItem<FriendsData>(
                                                 value: null,
                                                 child: Text(
-                                                  'friend_unselect'
-                                                      .tr(context),
+                                                  'friend_unselect'.tr(context),
                                                   style: TextStyle(
                                                     fontFamily:
-                                                    CompanionAppTheme
-                                                        .fontName,
-                                                    fontWeight:
-                                                    FontWeight.bold,
+                                                        CompanionAppTheme
+                                                            .fontName,
+                                                    fontWeight: FontWeight.bold,
                                                     fontSize: 14,
                                                     letterSpacing: 0.2,
                                                     color: CompanionAppTheme
@@ -1229,28 +1276,26 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                                                 ),
                                               ),
                                               ...userService.friendsListData
-                                                  .map(
-                                                      (FriendsData friend) {
-                                                    return DropdownMenuItem<
-                                                        FriendsData>(
-                                                      value: friend,
-                                                      child: Text(
-                                                        friend.name,
-                                                        style: TextStyle(
-                                                          fontFamily:
+                                                  .map((FriendsData friend) {
+                                                return DropdownMenuItem<
+                                                    FriendsData>(
+                                                  value: friend,
+                                                  child: Text(
+                                                    friend.name,
+                                                    style: TextStyle(
+                                                      fontFamily:
                                                           CompanionAppTheme
                                                               .fontName,
-                                                          fontWeight:
+                                                      fontWeight:
                                                           FontWeight.bold,
-                                                          fontSize: 14,
-                                                          letterSpacing: 0.2,
-                                                          color:
-                                                          CompanionAppTheme
-                                                              .lightText,
-                                                        ),
-                                                      ),
-                                                    );
-                                                  }).toList(),
+                                                      fontSize: 14,
+                                                      letterSpacing: 0.2,
+                                                      color: CompanionAppTheme
+                                                          .lightText,
+                                                    ),
+                                                  ),
+                                                );
+                                              }).toList(),
                                             ],
                                           ),
                                           SizedBox(
