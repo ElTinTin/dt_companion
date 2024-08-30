@@ -269,18 +269,23 @@ class UserService with ChangeNotifier {
       String userEmail = currentUser.email!;
 
       FirebaseFirestore firestore = FirebaseFirestore.instance;
-      DocumentReference userDoc =
-          firestore.collection('backups').doc(userEmail);
+      DocumentReference userDoc = firestore.collection('backups').doc(userEmail);
 
       await firestore.runTransaction((transaction) async {
         DocumentSnapshot snapshot = await transaction.get(userDoc);
 
         if (snapshot.exists) {
+          // Vérifier si 'gamesListData' existe et n'est pas nul
           Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
 
-          List<GamesData> firebaseGamesData = (data['gamesListData'] as List)
-              .map((item) => GamesData.fromMap(item))
-              .toList();
+          List<GamesData> firebaseGamesData = [];
+
+          if (data.containsKey('gamesListData') && data['gamesListData'] != null) {
+            firebaseGamesData = (data['gamesListData'] as List)
+                .map((item) => GamesData.fromMap(item))
+                .toList();
+          }
+
           if (save) {
             firebaseGamesData.insert(0, game);
           } else {
@@ -288,17 +293,23 @@ class UserService with ChangeNotifier {
           }
 
           List<Map<String, dynamic>> gamesData =
-              firebaseGamesData.map((game) => game.toMap()).toList();
+          firebaseGamesData.map((game) => game.toMap()).toList();
 
           transaction.update(userDoc, {
             'gamesListData': gamesData,
             'timestamp': FieldValue.serverTimestamp(),
           });
         } else {
-          List<Map<String, dynamic>> gamesData =
-              gamesListData.map((game) => game.toMap()).toList();
+          List<GamesData> firebaseGamesData = [];
 
-          transaction.update(userDoc, {
+          if (save) {
+            firebaseGamesData.add(game);
+          }
+
+          List<Map<String, dynamic>> gamesData =
+          firebaseGamesData.map((game) => game.toMap()).toList();
+
+          transaction.set(userDoc, {
             'gamesListData': gamesData,
             'timestamp': FieldValue.serverTimestamp(),
           });
@@ -308,7 +319,7 @@ class UserService with ChangeNotifier {
       await FirebaseAnalytics.instance.logEvent(
         name: "error_game",
         parameters: {
-          "error": e,
+          "error": e.toString(),
         },
       );
     }
@@ -354,7 +365,7 @@ class UserService with ChangeNotifier {
           List<Map<String, dynamic>> heroesData =
               heroesListData.map((hero) => hero.toMap()).toList();
 
-          transaction.update(userDoc, {
+          transaction.set(userDoc, {
             'heroesListData': heroesData,
             'timestamp': FieldValue.serverTimestamp(),
           });
@@ -364,7 +375,7 @@ class UserService with ChangeNotifier {
       await FirebaseAnalytics.instance.logEvent(
         name: "error_hero",
         parameters: {
-          "error": e,
+          "error": e.toString(),
         },
       );
     }
@@ -408,7 +419,7 @@ class UserService with ChangeNotifier {
       await FirebaseAnalytics.instance.logEvent(
         name: "error_hero",
         parameters: {
-          "error": e,
+          "error": e.toString(),
         },
       );
     }
@@ -455,7 +466,7 @@ class UserService with ChangeNotifier {
           List<Map<String, dynamic>> friendsData =
               friendsListData.map((dta) => dta.toMap()).toList();
 
-          transaction.update(userDoc, {
+          transaction.set(userDoc, {
             'friendsListData': friendsData,
             'timestamp': FieldValue.serverTimestamp(),
           });
@@ -465,7 +476,7 @@ class UserService with ChangeNotifier {
       await FirebaseAnalytics.instance.logEvent(
         name: "error_friend",
         parameters: {
-          "error": e,
+          "error": e.toString(),
         },
       );
     }
@@ -512,7 +523,7 @@ class UserService with ChangeNotifier {
           List<Map<String, dynamic>> dtaData =
               dtaListData.map((dta) => dta.toMap()).toList();
 
-          transaction.update(userDoc, {
+          transaction.set(userDoc, {
             'dtaListData': dtaData,
             'timestamp': FieldValue.serverTimestamp(),
           });
@@ -522,7 +533,7 @@ class UserService with ChangeNotifier {
       await FirebaseAnalytics.instance.logEvent(
         name: "error_dta",
         parameters: {
-          "error": e,
+          "error": e.toString(),
         },
       );
     }
@@ -566,7 +577,7 @@ class UserService with ChangeNotifier {
       await FirebaseAnalytics.instance.logEvent(
         name: "error_hero",
         parameters: {
-          "error": e,
+          "error": e.toString(),
         },
       );
     }
@@ -610,7 +621,7 @@ class UserService with ChangeNotifier {
       await FirebaseAnalytics.instance.logEvent(
         name: "error_dta",
         parameters: {
-          "error": e,
+          "error": e.toString(),
         },
       );
     }
@@ -655,7 +666,7 @@ class UserService with ChangeNotifier {
       await FirebaseAnalytics.instance.logEvent(
         name: "error_friend",
         parameters: {
-          "error": e,
+          "error": e.toString(),
         },
       );
     }

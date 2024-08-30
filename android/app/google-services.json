@@ -22,6 +22,14 @@
           }
         },
         {
+          "client_id": "101254347872-ql5aoda1ujk1jkdufv35bvjjfv6umhi5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.deschampsquentin.dt_companion",
+            "certificate_hash": "be905ef3270c6c570252bb31b7d121a124a4c34a"
+          }
+        },
+        {
           "client_id": "101254347872-rja4feb037687v9b0qpg27esru0lb7bk.apps.googleusercontent.com",
           "client_type": 3
         }
