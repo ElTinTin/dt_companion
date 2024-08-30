@@ -5,6 +5,7 @@ import 'package:dt_companion/dt_companion/extension/localization_extension.dart'
 import 'package:dt_companion/dt_companion/models/friends_data.dart';
 import 'package:dt_companion/dt_companion/models/games_data.dart';
 import 'package:dt_companion/dt_companion/models/heroes_data.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -77,9 +78,19 @@ class UserService with ChangeNotifier {
         dtaListData = dtaData;
         friendsListData = friendsData;
 
+        await FirebaseAnalytics.instance.logLogin(
+          loginMethod: "google or apple",
+          parameters: {},
+        );
+
         notifyListeners();
       } else {
-        print('No backup data found');
+        await FirebaseAnalytics.instance.logEvent(
+          name: "error_load_data",
+          parameters: {
+            "error": "No data found",
+          },
+        );
       }
     } catch (e) {
       print('Error during restore: $e');
@@ -276,54 +287,30 @@ class UserService with ChangeNotifier {
             firebaseGamesData.removeWhere((item) => item.id == game.id);
           }
 
-          List<HeroesData> firebaseHeroesData = (data['heroesListData'] as List)
-              .map((item) => HeroesData.fromMap(item))
-              .toList();
-          List<DTAData> firebaseDtaData = (data['dtaListData'] as List)
-              .map((item) => DTAData.fromMap(item))
-              .toList();
-          List<FriendsData> firebaseFriendsData =
-              (data['friendsListData'] as List)
-                  .map((item) => FriendsData.fromMap(item))
-                  .toList();
-
           List<Map<String, dynamic>> gamesData =
               firebaseGamesData.map((game) => game.toMap()).toList();
-          List<Map<String, dynamic>> heroesData =
-              firebaseHeroesData.map((hero) => hero.toMap()).toList();
-          List<Map<String, dynamic>> dtaData =
-              firebaseDtaData.map((dta) => dta.toMap()).toList();
-          List<Map<String, dynamic>> friendsData =
-              firebaseFriendsData.map((dta) => dta.toMap()).toList();
 
           transaction.update(userDoc, {
             'gamesListData': gamesData,
-            'heroesListData': heroesData,
-            'dtaListData': dtaData,
-            'friendsListData': friendsData,
             'timestamp': FieldValue.serverTimestamp(),
           });
         } else {
           List<Map<String, dynamic>> gamesData =
               gamesListData.map((game) => game.toMap()).toList();
-          List<Map<String, dynamic>> heroesData =
-              heroesListData.map((hero) => hero.toMap()).toList();
-          List<Map<String, dynamic>> dtaData =
-              dtaListData.map((dta) => dta.toMap()).toList();
-          List<Map<String, dynamic>> friendsData =
-              friendsListData.map((dta) => dta.toMap()).toList();
 
           transaction.update(userDoc, {
             'gamesListData': gamesData,
-            'heroesListData': heroesData,
-            'dtaListData': dtaData,
-            'friendsListData': friendsData,
             'timestamp': FieldValue.serverTimestamp(),
           });
         }
       });
     } catch (e) {
-      print(e);
+      await FirebaseAnalytics.instance.logEvent(
+        name: "error_game",
+        parameters: {
+          "error": e,
+        },
+      );
     }
   }
 
@@ -347,9 +334,6 @@ class UserService with ChangeNotifier {
         if (snapshot.exists) {
           Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
 
-          List<GamesData> firebaseGamesData = (data['gamesListData'] as List)
-              .map((item) => GamesData.fromMap(item))
-              .toList();
           List<HeroesData> firebaseHeroesData = (data['heroesListData'] as List)
               .map((item) => HeroesData.fromMap(item))
               .toList();
@@ -358,51 +342,31 @@ class UserService with ChangeNotifier {
           } else {
             firebaseHeroesData.removeWhere((item) => item.name == hero.name);
           }
-          List<DTAData> firebaseDtaData = (data['dtaListData'] as List)
-              .map((item) => DTAData.fromMap(item))
-              .toList();
-          List<FriendsData> firebaseFriendsData =
-              (data['friendsListData'] as List)
-                  .map((item) => FriendsData.fromMap(item))
-                  .toList();
 
-          List<Map<String, dynamic>> gamesData =
-              firebaseGamesData.map((game) => game.toMap()).toList();
           List<Map<String, dynamic>> heroesData =
               firebaseHeroesData.map((hero) => hero.toMap()).toList();
-          List<Map<String, dynamic>> dtaData =
-              firebaseDtaData.map((dta) => dta.toMap()).toList();
-          List<Map<String, dynamic>> friendsData =
-              firebaseFriendsData.map((dta) => dta.toMap()).toList();
 
           transaction.update(userDoc, {
-            'gamesListData': gamesData,
             'heroesListData': heroesData,
-            'dtaListData': dtaData,
-            'friendsListData': friendsData,
             'timestamp': FieldValue.serverTimestamp(),
           });
         } else {
-          List<Map<String, dynamic>> gamesData =
-              gamesListData.map((game) => game.toMap()).toList();
           List<Map<String, dynamic>> heroesData =
               heroesListData.map((hero) => hero.toMap()).toList();
-          List<Map<String, dynamic>> dtaData =
-              dtaListData.map((dta) => dta.toMap()).toList();
-          List<Map<String, dynamic>> friendsData =
-              friendsListData.map((dta) => dta.toMap()).toList();
 
           transaction.update(userDoc, {
-            'gamesListData': gamesData,
             'heroesListData': heroesData,
-            'dtaListData': dtaData,
-            'friendsListData': friendsData,
             'timestamp': FieldValue.serverTimestamp(),
           });
         }
       });
     } catch (e) {
-      print(e);
+      await FirebaseAnalytics.instance.logEvent(
+        name: "error_hero",
+        parameters: {
+          "error": e,
+        },
+      );
     }
   }
 
@@ -425,42 +389,28 @@ class UserService with ChangeNotifier {
         if (snapshot.exists) {
           Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
 
-          List<GamesData> firebaseGamesData = (data['gamesListData'] as List)
-              .map((item) => GamesData.fromMap(item))
-              .toList();
           List<HeroesData> firebaseHeroesData = (data['heroesListData'] as List)
               .map((item) => HeroesData.fromMap(item))
               .toList();
           firebaseHeroesData.removeWhere(
                   (item) => p.basenameWithoutExtension(item.imagePath) == hero);
-          List<DTAData> firebaseDtaData = (data['dtaListData'] as List)
-              .map((item) => DTAData.fromMap(item))
-              .toList();
-          List<FriendsData> firebaseFriendsData =
-          (data['friendsListData'] as List)
-              .map((item) => FriendsData.fromMap(item))
-              .toList();
 
-          List<Map<String, dynamic>> gamesData =
-          firebaseGamesData.map((game) => game.toMap()).toList();
           List<Map<String, dynamic>> heroesData =
           firebaseHeroesData.map((hero) => hero.toMap()).toList();
-          List<Map<String, dynamic>> dtaData =
-          firebaseDtaData.map((dta) => dta.toMap()).toList();
-          List<Map<String, dynamic>> friendsData =
-          firebaseFriendsData.map((dta) => dta.toMap()).toList();
 
           transaction.update(userDoc, {
-            'gamesListData': gamesData,
             'heroesListData': heroesData,
-            'dtaListData': dtaData,
-            'friendsListData': friendsData,
             'timestamp': FieldValue.serverTimestamp(),
           });
         }
       });
     } catch (e) {
-      print(e);
+      await FirebaseAnalytics.instance.logEvent(
+        name: "error_hero",
+        parameters: {
+          "error": e,
+        },
+      );
     }
   }
 
@@ -484,15 +434,6 @@ class UserService with ChangeNotifier {
         if (snapshot.exists) {
           Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
 
-          List<GamesData> firebaseGamesData = (data['gamesListData'] as List)
-              .map((item) => GamesData.fromMap(item))
-              .toList();
-          List<HeroesData> firebaseHeroesData = (data['heroesListData'] as List)
-              .map((item) => HeroesData.fromMap(item))
-              .toList();
-          List<DTAData> firebaseDtaData = (data['dtaListData'] as List)
-              .map((item) => DTAData.fromMap(item))
-              .toList();
           List<FriendsData> firebaseFriendsData =
               (data['friendsListData'] as List)
                   .map((item) => FriendsData.fromMap(item))
@@ -503,43 +444,30 @@ class UserService with ChangeNotifier {
             firebaseFriendsData.removeWhere((item) => item.name == friend.name);
           }
 
-          List<Map<String, dynamic>> gamesData =
-              firebaseGamesData.map((game) => game.toMap()).toList();
-          List<Map<String, dynamic>> heroesData =
-              firebaseHeroesData.map((hero) => hero.toMap()).toList();
-          List<Map<String, dynamic>> dtaData =
-              firebaseDtaData.map((dta) => dta.toMap()).toList();
           List<Map<String, dynamic>> friendsData =
               firebaseFriendsData.map((dta) => dta.toMap()).toList();
 
           transaction.update(userDoc, {
-            'gamesListData': gamesData,
-            'heroesListData': heroesData,
-            'dtaListData': dtaData,
             'friendsListData': friendsData,
             'timestamp': FieldValue.serverTimestamp(),
           });
         } else {
-          List<Map<String, dynamic>> gamesData =
-              gamesListData.map((game) => game.toMap()).toList();
-          List<Map<String, dynamic>> heroesData =
-              heroesListData.map((hero) => hero.toMap()).toList();
-          List<Map<String, dynamic>> dtaData =
-              dtaListData.map((dta) => dta.toMap()).toList();
           List<Map<String, dynamic>> friendsData =
               friendsListData.map((dta) => dta.toMap()).toList();
 
           transaction.update(userDoc, {
-            'gamesListData': gamesData,
-            'heroesListData': heroesData,
-            'dtaListData': dtaData,
             'friendsListData': friendsData,
             'timestamp': FieldValue.serverTimestamp(),
           });
         }
       });
     } catch (e) {
-      print(e);
+      await FirebaseAnalytics.instance.logEvent(
+        name: "error_friend",
+        parameters: {
+          "error": e,
+        },
+      );
     }
   }
 
@@ -563,12 +491,6 @@ class UserService with ChangeNotifier {
         if (snapshot.exists) {
           Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
 
-          List<GamesData> firebaseGamesData = (data['gamesListData'] as List)
-              .map((item) => GamesData.fromMap(item))
-              .toList();
-          List<HeroesData> firebaseHeroesData = (data['heroesListData'] as List)
-              .map((item) => HeroesData.fromMap(item))
-              .toList();
           List<DTAData> firebaseDtaData = (data['dtaListData'] as List)
               .map((item) => DTAData.fromMap(item))
               .toList();
@@ -578,48 +500,31 @@ class UserService with ChangeNotifier {
             firebaseDtaData
                 .removeWhere((item) => item.teamName == dta.teamName);
           }
-          List<FriendsData> firebaseFriendsData =
-              (data['friendsListData'] as List)
-                  .map((item) => FriendsData.fromMap(item))
-                  .toList();
 
-          List<Map<String, dynamic>> gamesData =
-              firebaseGamesData.map((game) => game.toMap()).toList();
-          List<Map<String, dynamic>> heroesData =
-              firebaseHeroesData.map((hero) => hero.toMap()).toList();
           List<Map<String, dynamic>> dtaData =
               firebaseDtaData.map((dta) => dta.toMap()).toList();
-          List<Map<String, dynamic>> friendsData =
-              firebaseFriendsData.map((dta) => dta.toMap()).toList();
 
           transaction.update(userDoc, {
-            'gamesListData': gamesData,
-            'heroesListData': heroesData,
             'dtaListData': dtaData,
-            'friendsListData': friendsData,
             'timestamp': FieldValue.serverTimestamp(),
           });
         } else {
-          List<Map<String, dynamic>> gamesData =
-              gamesListData.map((game) => game.toMap()).toList();
-          List<Map<String, dynamic>> heroesData =
-              heroesListData.map((hero) => hero.toMap()).toList();
           List<Map<String, dynamic>> dtaData =
               dtaListData.map((dta) => dta.toMap()).toList();
-          List<Map<String, dynamic>> friendsData =
-              friendsListData.map((dta) => dta.toMap()).toList();
 
           transaction.update(userDoc, {
-            'gamesListData': gamesData,
-            'heroesListData': heroesData,
             'dtaListData': dtaData,
-            'friendsListData': friendsData,
             'timestamp': FieldValue.serverTimestamp(),
           });
         }
       });
     } catch (e) {
-      print(e);
+      await FirebaseAnalytics.instance.logEvent(
+        name: "error_dta",
+        parameters: {
+          "error": e,
+        },
+      );
     }
   }
 
@@ -642,42 +547,28 @@ class UserService with ChangeNotifier {
         if (snapshot.exists) {
           Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
 
-          List<GamesData> firebaseGamesData = (data['gamesListData'] as List)
-              .map((item) => GamesData.fromMap(item))
-              .toList();
           List<HeroesData> firebaseHeroesData = (data['heroesListData'] as List)
               .map((item) => HeroesData.fromMap(item))
               .toList();
           firebaseHeroesData.removeWhere((item) => item.name == hero.name);
           firebaseHeroesData.insert(0, hero);
-          List<DTAData> firebaseDtaData = (data['dtaListData'] as List)
-              .map((item) => DTAData.fromMap(item))
-              .toList();
-          List<FriendsData> firebaseFriendsData =
-          (data['friendsListData'] as List)
-              .map((item) => FriendsData.fromMap(item))
-              .toList();
 
-          List<Map<String, dynamic>> gamesData =
-          firebaseGamesData.map((game) => game.toMap()).toList();
           List<Map<String, dynamic>> heroesData =
           firebaseHeroesData.map((hero) => hero.toMap()).toList();
-          List<Map<String, dynamic>> dtaData =
-          firebaseDtaData.map((dta) => dta.toMap()).toList();
-          List<Map<String, dynamic>> friendsData =
-          firebaseFriendsData.map((dta) => dta.toMap()).toList();
 
           transaction.update(userDoc, {
-            'gamesListData': gamesData,
             'heroesListData': heroesData,
-            'dtaListData': dtaData,
-            'friendsListData': friendsData,
             'timestamp': FieldValue.serverTimestamp(),
           });
         }
       });
     } catch (e) {
-      print(e);
+      await FirebaseAnalytics.instance.logEvent(
+        name: "error_hero",
+        parameters: {
+          "error": e,
+        },
+      );
     }
   }
 
@@ -700,42 +591,28 @@ class UserService with ChangeNotifier {
         if (snapshot.exists) {
           Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
 
-          List<GamesData> firebaseGamesData = (data['gamesListData'] as List)
-              .map((item) => GamesData.fromMap(item))
-              .toList();
-          List<HeroesData> firebaseHeroesData = (data['heroesListData'] as List)
-              .map((item) => HeroesData.fromMap(item))
-              .toList();
           List<DTAData> firebaseDtaData = (data['dtaListData'] as List)
               .map((item) => DTAData.fromMap(item))
               .toList();
           firebaseDtaData.removeWhere((item) => item.id == game.id);
           firebaseDtaData.insert(0, game);
-          List<FriendsData> firebaseFriendsData =
-          (data['friendsListData'] as List)
-              .map((item) => FriendsData.fromMap(item))
-              .toList();
 
-          List<Map<String, dynamic>> gamesData =
-          firebaseGamesData.map((game) => game.toMap()).toList();
-          List<Map<String, dynamic>> heroesData =
-          firebaseHeroesData.map((hero) => hero.toMap()).toList();
           List<Map<String, dynamic>> dtaData =
           firebaseDtaData.map((dta) => dta.toMap()).toList();
-          List<Map<String, dynamic>> friendsData =
-          firebaseFriendsData.map((dta) => dta.toMap()).toList();
 
           transaction.update(userDoc, {
-            'gamesListData': gamesData,
-            'heroesListData': heroesData,
             'dtaListData': dtaData,
-            'friendsListData': friendsData,
             'timestamp': FieldValue.serverTimestamp(),
           });
         }
       });
     } catch (e) {
-      print(e);
+      await FirebaseAnalytics.instance.logEvent(
+        name: "error_dta",
+        parameters: {
+          "error": e,
+        },
+      );
     }
   }
 
@@ -758,15 +635,6 @@ class UserService with ChangeNotifier {
         if (snapshot.exists) {
           Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
 
-          List<GamesData> firebaseGamesData = (data['gamesListData'] as List)
-              .map((item) => GamesData.fromMap(item))
-              .toList();
-          List<HeroesData> firebaseHeroesData = (data['heroesListData'] as List)
-              .map((item) => HeroesData.fromMap(item))
-              .toList();
-          List<DTAData> firebaseDtaData = (data['dtaListData'] as List)
-              .map((item) => DTAData.fromMap(item))
-              .toList();
           List<FriendsData> firebaseFriendsData =
           (data['friendsListData'] as List)
               .map((item) => FriendsData.fromMap(item))
@@ -774,26 +642,22 @@ class UserService with ChangeNotifier {
           firebaseFriendsData.removeWhere((item) => item.name == friend.name);
           firebaseFriendsData.insert(0, friend);
 
-          List<Map<String, dynamic>> gamesData =
-          firebaseGamesData.map((game) => game.toMap()).toList();
-          List<Map<String, dynamic>> heroesData =
-          firebaseHeroesData.map((hero) => hero.toMap()).toList();
-          List<Map<String, dynamic>> dtaData =
-          firebaseDtaData.map((dta) => dta.toMap()).toList();
           List<Map<String, dynamic>> friendsData =
           firebaseFriendsData.map((dta) => dta.toMap()).toList();
 
           transaction.update(userDoc, {
-            'gamesListData': gamesData,
-            'heroesListData': heroesData,
-            'dtaListData': dtaData,
             'friendsListData': friendsData,
             'timestamp': FieldValue.serverTimestamp(),
           });
         }
       });
     } catch (e) {
-      print(e);
+      await FirebaseAnalytics.instance.logEvent(
+        name: "error_friend",
+        parameters: {
+          "error": e,
+        },
+      );
     }
   }
 
