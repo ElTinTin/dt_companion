@@ -84,5 +84,6 @@
   "legendary": "Légendaire",
   "tournament": "Tournoi",
   "alert_friends_title": "Ajouter un ami",
-  "alert_friends_delete_desc": "Voulez-vous supprimer cet ami ? Vous perdrez toutes ses données."
+  "alert_friends_delete_desc": "Voulez-vous supprimer cet ami ? Vous perdrez toutes ses données.",
+  "backup_done": "Vos données locales ont bien été transféré sur la base en ligne."
 }

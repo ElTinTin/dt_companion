@@ -124,10 +124,11 @@ class _GamesStatisticsViewState extends State<GamesStatisticsView>
         (hero) => p.basenameWithoutExtension(hero.imagePath) == fileName);
 
     if (hero.totalGamesPlayed == 1) {
-      service.deleteHeroesData(fileName);
+      service.deleteHeroesData(hero);
     } else {
       if (widget.gamesListData?.winner == 'You'.tr(context) ||
-          widget.gamesListData?.playerOne == 'Team 1'.tr(context)) {
+          widget.gamesListData?.winner == 'Team 1'.tr(context)
+      ) {
         hero.victories -= 1;
       } else if (widget.gamesListData?.winner == 'Draw'.tr(context)) {
         hero.draws -= 1;

@@ -486,8 +486,6 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
           print(e);
         }
 
-        _setInAppReviewStatus();
-
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('snack_match_submitted'.tr(context))),
         );
