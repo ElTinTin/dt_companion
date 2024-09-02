@@ -15,6 +15,8 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:io';
 
+import '../../main.dart';
+
 class CompanionScreen extends StatefulWidget {
   const CompanionScreen({Key? key, this.animationController}) : super(key: key);
 
@@ -352,26 +354,45 @@ class _CompanionScreenState extends State<CompanionScreen>
                                   ),
                                 )
                               ),
-                            Expanded(
-                              child: Padding(
-                                padding: EdgeInsets.only(
-                                    left: 8,
-                                    right: 8,
-                                    top: 24,
-                                    bottom: 8),
-                                child: Text(
-                                  "companion".tr(context),
-                                  textAlign: TextAlign.left,
-                                  style: TextStyle(
-                                    fontFamily: CompanionAppTheme.fontName,
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: 26 + 6 - 6 * topBarOpacity,
-                                    letterSpacing: 1.2,
-                                    color: CompanionAppTheme.lightText,
-                                  ),
+                            Padding(
+                              padding: EdgeInsets.only(
+                                  left: 8,
+                                  right: 8,
+                                  top: 24,
+                                  bottom: 8),
+                              child: Text(
+                                "companion".tr(context),
+                                textAlign: TextAlign.left,
+                                style: TextStyle(
+                                  fontFamily: CompanionAppTheme.fontName,
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 26 + 6 - 6 * topBarOpacity,
+                                  letterSpacing: 1.2,
+                                  color: CompanionAppTheme.lightText,
                                 ),
                               ),
-                            )
+                            ),
+                            Spacer(),
+                            Padding(
+                              padding: EdgeInsets.only(
+                                  right: 16,
+                                  top: 24,
+                                  bottom: 8),
+                              child: InkWell(
+                                onTap: () => {
+                                  userService?.fetchAllData()
+                                },
+                                child: SizedBox(
+                                  width: 20,
+                                  height: 22,
+                                  child: Icon(
+                                    Icons.refresh,
+                                    color: HexColor("#658595"),
+                                    size: 22,
+                                  ),
+                                ),
+                              )
+                            ),
                           ],
                         ),
                       )

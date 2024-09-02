@@ -177,7 +177,7 @@ class HeroView extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                 Text(
-                                  '${heroesListData?.victories} W - ${heroesListData?.draws} D - ${heroesListData?.defeats} L',
+                                  '${heroesListData?.victories} W - ${heroesListData?.defeats} L',
                                   style: TextStyle(
                                     fontFamily: CompanionAppTheme.fontName,
                                     fontWeight: FontWeight.bold,
