@@ -165,7 +165,6 @@ class _FriendsListScreenState extends State<FriendsListView>
   }
 
   Widget getFriendsList(List<FriendsData> friendsListData) {
-    friendsListData.sort((a, b) => a.name.compareTo(b.name));
     return ListView.builder(
       controller: scrollController,
       padding: EdgeInsets.only(

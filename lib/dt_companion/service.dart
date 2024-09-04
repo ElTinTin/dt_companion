@@ -61,15 +61,19 @@ class UserService with ChangeNotifier {
         List<GamesData> gamesData = (data['gamesListData'] as List)
             .map((item) => GamesData.fromMap(item))
             .toList();
+        gamesData.sort((a, b) => DateTime.fromMillisecondsSinceEpoch(b.date).compareTo(DateTime.fromMillisecondsSinceEpoch(a.date)));
         List<HeroesData> heroesData = (data['heroesListData'] as List)
             .map((item) => HeroesData.fromMap(item))
             .toList();
+        heroesData.sort((a, b) => b.totalGamesPlayed.compareTo(a.totalGamesPlayed));
         List<DTAData> dtaData = (data['dtaListData'] as List)
             .map((item) => DTAData.fromMap(item))
             .toList();
+        dtaData.sort((a, b) => DateTime.fromMillisecondsSinceEpoch(b.date).compareTo(DateTime.fromMillisecondsSinceEpoch(a.date)));
         List<FriendsData> friendsData = (data['friendsListData'] as List)
             .map((item) => FriendsData.fromMap(item))
             .toList();
+        friendsData.sort((a, b) => a.name.compareTo(b.name));
 
         gamesListData = gamesData;
         heroesListData = heroesData;

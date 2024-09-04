@@ -85,5 +85,7 @@
   "tournament": "Tournoi",
   "alert_friends_title": "Ajouter un ami",
   "alert_friends_delete_desc": "Voulez-vous supprimer cet ami ? Vous perdrez toutes ses données.",
-  "backup_done": "Vos données locales ont bien été transféré sur la base en ligne."
+  "backup_done": "Vos données locales ont bien été transféré sur la base en ligne.",
+  "alert_heroes_delete_desc": "Voulez-vous supprimer cet héros ? Vous perdrez toutes ses données.",
+  "alert_heroes_add_title" : "Ajouter un héros"
 }
