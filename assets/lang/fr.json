@@ -87,5 +87,7 @@
   "alert_friends_delete_desc": "Voulez-vous supprimer cet ami ? Vous perdrez toutes ses données.",
   "backup_done": "Vos données locales ont bien été transféré sur la base en ligne.",
   "alert_heroes_delete_desc": "Voulez-vous supprimer cet héros ? Vous perdrez toutes ses données.",
-  "alert_heroes_add_title" : "Ajouter un héros"
+  "alert_heroes_add_title" : "Ajouter un héros",
+  "profile_export_hint_first": "Si vous venez de mettre à jour vers la version 4.0.X et que vous ne récupérez pas vos données locales précédentes, vous pouvez cliquer sur ce bouton.",
+  "profile_export_hint_second": "Ne le faites pas après avoir ajouté d’autres données car cela les effacerait."
 }

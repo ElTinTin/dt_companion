@@ -220,46 +220,90 @@ class _ProfileScreenState extends State<ProfileScreen>
               builder: (BuildContext context, Widget? child) {
                 return FadeTransition(
                   opacity: Tween<double>(begin: 0.0, end: 1.0).animate(
-                      CurvedAnimation(
-                          parent: widget.animationController!,
-                          curve: Interval((1 / 5) * 4, 1.0,
-                              curve: Curves.fastOutSlowIn))),
-                  child: new Transform(
-                    transform: new Matrix4.translationValues(
-                        0.0,
-                        30 *
-                            (1.0 -
-                                Tween<double>(begin: 0.0, end: 1.0)
-                                    .animate(CurvedAnimation(
-                                    parent: widget.animationController!,
-                                    curve: Interval((1 / 5) * 4, 1.0,
-                                        curve: Curves.fastOutSlowIn)))
-                                    .value),
-                        0.0),
+                    CurvedAnimation(
+                      parent: widget.animationController!,
+                      curve: Interval((1 / 5) * 4, 1.0,
+                          curve: Curves.fastOutSlowIn),
+                    ),
+                  ),
+                  child: Transform(
+                    transform: Matrix4.translationValues(
+                      0.0,
+                      30 *
+                          (1.0 -
+                              Tween<double>(begin: 0.0, end: 1.0)
+                                  .animate(
+                                    CurvedAnimation(
+                                      parent: widget.animationController!,
+                                      curve: Interval((1 / 5) * 4, 1.0,
+                                          curve: Curves.fastOutSlowIn),
+                                    ),
+                                  )
+                                  .value),
+                      0.0,
+                    ),
                     child: Container(
-                        width: MediaQuery.of(context).size.width * 0.8,
-                        child: Padding(
-                          padding: EdgeInsets.all(16),
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                foregroundColor: CompanionAppTheme.darkerText,
-                                backgroundColor: CompanionAppTheme.lightText,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                elevation: 15.0,
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 8, vertical: 16),
-                                textStyle: TextStyle(
+                      width: MediaQuery.of(context).size.width * 0.8,
+                      child: Padding(
+                        padding: EdgeInsets.all(16),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            // Utilisation de SizedBox pour prendre la largeur complète
+                            SizedBox(
+                              width: double.infinity, // Prend toute la largeur
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  foregroundColor: CompanionAppTheme.darkerText,
+                                  backgroundColor: CompanionAppTheme.lightText,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  elevation: 15.0,
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 8, vertical: 16),
+                                  textStyle: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
-                                    color: CompanionAppTheme.darkerText)),
-                            child: const Text('Export local data'),
-                            onPressed: () {
-                              userService.backupDataToFirestore(context);
-                            },
-                          ),
-                        )),
+                                    color: CompanionAppTheme.darkerText,
+                                  ),
+                                ),
+                                child: const Text('Export local data'),
+                                onPressed: () {
+                                  userService.backupDataToFirestore(context);
+                                },
+                              ),
+                            ),
+                            SizedBox(height: 16),
+                            RichText(
+                              textAlign: TextAlign.center,
+                              text: TextSpan(
+                                style: TextStyle(
+                                  fontFamily: CompanionAppTheme.fontName,
+                                  fontWeight: FontWeight.w100,
+                                  fontSize: 12,
+                                  color: CompanionAppTheme.lightText,
+                                ),
+                                children: <TextSpan>[
+                                  TextSpan(
+                                    text:
+                                        'profile_export_hint_first'.tr(context),
+                                  ),
+                                  TextSpan(
+                                    text:
+                                        'profile_export_hint_second'.tr(context),
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 13),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
                 );
               },
