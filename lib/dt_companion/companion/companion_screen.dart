@@ -62,6 +62,7 @@ class _CompanionScreenState extends State<CompanionScreen>
             curve: Interval(0, 0.5, curve: Curves.fastOutSlowIn)));
 
     _analytics();
+    _loadAd();
     userService?.fetchAllData();
 
     scrollController.addListener(() {
@@ -160,7 +161,6 @@ class _CompanionScreenState extends State<CompanionScreen>
   Widget build(BuildContext context) {
     final userService = Provider.of<UserService>(context);
     this.userService = userService;
-    _saveStats(userService);
 
     return Container(
       color: CompanionAppTheme.background,
@@ -215,7 +215,7 @@ class _CompanionScreenState extends State<CompanionScreen>
                             Interval((1 / 8) * 2, 1.0, curve: Curves.fastOutSlowIn))),
                         animationController: widget.animationController!
                     ),
-                    /*AnimatedBuilder(
+                    AnimatedBuilder(
                       animation: widget.animationController!,
                       builder: (BuildContext context, Widget? child) {
                         return FadeTransition(
@@ -241,7 +241,7 @@ class _CompanionScreenState extends State<CompanionScreen>
                           ),
                         );
                       },
-                    ),*/
+                    ),
                     SizedBox(height: 16,),
                     TitleView(
                       titleTxt: 'heroes_stats'.tr(context),

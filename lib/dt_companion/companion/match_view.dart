@@ -10,7 +10,6 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:overlay_tooltip/overlay_tooltip.dart';
 import 'package:provider/provider.dart';
@@ -70,6 +69,8 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
 
   int _kothPlayers = 3;
   int _winnerHealth = 1;
+
+  List<Character> randomCharacters = List<Character>.from(Character.values);
 
   bool get _isFormValid {
     switch (_gamemode) {
@@ -153,6 +154,14 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
   Future<void> _analytics() async {
     // Analytics
     await FirebaseAnalytics.instance.logScreenView(screenName: 'MatchView');
+  }
+
+  void _scrollALittle() {
+    scrollController.animateTo(
+      scrollController.position.pixels + 1,
+      duration: Duration(seconds: 2),
+      curve: Curves.fastOutSlowIn,
+    );
   }
 
   @override
@@ -709,6 +718,70 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                       ),
                       SizedBox(
                         height: 16,
+                      ),
+                      Row(
+                        children: [
+                          Spacer(),
+                          Padding(
+                              padding: const EdgeInsets.only(
+                                  right: 16, bottom: 8),
+                              child: InkWell(
+                                onTap: () => {
+                                  showModalBottomSheet<void>(
+                                    context: context,
+                                    isScrollControlled: true,
+                                    builder:
+                                        (BuildContext context) {
+                                      return FractionallySizedBox(
+                                        heightFactor: 0.8,
+                                        child:
+                                        randomCharacterSelector(
+                                            userService),
+                                      );
+                                    },
+                                  )
+                                },
+                                child: Padding(
+                                  padding: EdgeInsets.only(
+                                      left: 0,
+                                      right: 16,
+                                      top: 0,
+                                      bottom: 0),
+                                  child: SizedBox(
+                                    width: 54,
+                                    height: 54,
+                                    child: Stack(
+                                      children: [
+                                        ClipOval(
+                                          child: Container(
+                                            width: 54,
+                                            height: 54,
+                                            decoration: BoxDecoration(
+                                              color: CompanionAppTheme.dark_grey,
+                                              borderRadius: BorderRadius.circular(27),
+                                            ),
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(6.0),
+                                          child: ClipOval(
+                                            child: Image.asset(
+                                              'assets/dt_companion/question-mark.png',
+                                              width: 42,
+                                              height: 42,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              )),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 8,
                       ),
                       if (_gamemode == Mode.koth) ...[
                         Text(
@@ -3414,5 +3487,143 @@ class _MatchViewState extends State<MatchView> with TickerProviderStateMixin {
                     ],
                   ),
                 )));
+  }
+
+  Widget randomCharacterSelector(UserService userService) {
+    return StatefulBuilder(
+      builder: (BuildContext context, StateSetter setState) {
+        return Container(
+          color: CompanionAppTheme.background,
+          child: SingleChildScrollView(
+            child: SizedBox(
+              child: Center(
+                child: Padding(
+                  padding: EdgeInsets.all(8),
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.all(16),
+                        child: Row(
+                          children: [
+                            Text(
+                              'Randomizer',
+                              style: TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                                color: CompanionAppTheme.lightText,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Wrap(
+                        spacing: 8.0,
+                        children: Character.values.map((character) {
+                          return ChoiceChip(
+                            label: Text(
+                                character.displayName),
+                            selected: randomCharacters.contains(character),
+                            onSelected: (selected) {
+                              setState(() {
+                                if (randomCharacters.contains(character)) {
+                                  randomCharacters.removeWhere((element) => element == character);
+                                } else {
+                                  randomCharacters.add(character);
+                                }
+                              });
+                            },
+                            selectedColor: CompanionAppTheme.lightText,
+                            backgroundColor: CompanionAppTheme.dark_grey,
+                            labelStyle: TextStyle(
+                              color: randomCharacters.contains(character)
+                                  ? CompanionAppTheme.darkerText
+                                  : CompanionAppTheme.lightText,
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: CompanionAppTheme.lightText,
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 50, vertical: 20),
+                            textStyle: TextStyle(
+                                fontSize: 30, fontWeight: FontWeight.bold)),
+                        onPressed: () {
+                          setState(() {
+                            switch(_gamemode) {
+                              case Mode.onevsone:
+                                _playerOne = getRandomCharacter(randomCharacters);
+                                _playerTwo = getRandomCharacter(randomCharacters);
+                              case Mode.twovstwo:
+                                _playerOne = getRandomCharacter(randomCharacters);
+                                _playerTwo = getRandomCharacter(randomCharacters);
+                                _playerThree = getRandomCharacter(randomCharacters);
+                                _playerFour = getRandomCharacter(randomCharacters);
+                              case Mode.koth:
+                                switch(_kothPlayers) {
+                                  case 3:
+                                    _playerOne = getRandomCharacter(randomCharacters);
+                                    _playerTwo = getRandomCharacter(randomCharacters);
+                                    _playerThree = getRandomCharacter(randomCharacters);
+                                  case 4:
+                                    _playerOne = getRandomCharacter(randomCharacters);
+                                    _playerTwo = getRandomCharacter(randomCharacters);
+                                    _playerThree = getRandomCharacter(randomCharacters);
+                                    _playerFour = getRandomCharacter(randomCharacters);
+                                  case 5:
+                                    _playerOne = getRandomCharacter(randomCharacters);
+                                    _playerTwo = getRandomCharacter(randomCharacters);
+                                    _playerThree = getRandomCharacter(randomCharacters);
+                                    _playerFour = getRandomCharacter(randomCharacters);
+                                    _playerFive = getRandomCharacter(randomCharacters);
+                                  case 6:
+                                    _playerOne = getRandomCharacter(randomCharacters);
+                                    _playerTwo = getRandomCharacter(randomCharacters);
+                                    _playerThree = getRandomCharacter(randomCharacters);
+                                    _playerFour = getRandomCharacter(randomCharacters);
+                                    _playerFive = getRandomCharacter(randomCharacters);
+                                    _playerSix = getRandomCharacter(randomCharacters);
+                                }
+                              case Mode.threevsthree:
+                                _playerOne = getRandomCharacter(randomCharacters);
+                                _playerTwo = getRandomCharacter(randomCharacters);
+                                _playerThree = getRandomCharacter(randomCharacters);
+                                _playerFour = getRandomCharacter(randomCharacters);
+                                _playerFive = getRandomCharacter(randomCharacters);
+                                _playerSix = getRandomCharacter(randomCharacters);
+                            }
+                            randomCharacters = List<Character>.from(Character.values);
+                            Navigator.pop(context);
+                            _scrollALittle();
+                          });
+                        },
+                        child: Text(
+                          'randomize_button'.tr(context),
+                          style: TextStyle(
+                            fontFamily: CompanionAppTheme.fontName,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                            letterSpacing: 0.2,
+                            color: CompanionAppTheme.darkerText,
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 88,)
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Character getRandomCharacter(List<Character> characters) {
+    final random = Random();
+    int index = random.nextInt(characters.length);
+    return characters.removeAt(index);
   }
 }

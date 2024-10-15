@@ -690,31 +690,37 @@ class UserService with ChangeNotifier {
       DocumentReference userDoc =
           firestore.collection('backups').doc(userEmail);
 
-      var gamesDAOListData = await gamesDAO.getGamesListData();
-      var heroesDAOListData = await heroesDAO.getHeroesListData();
-      var dtaDAOListData = await dtaDAO.getDTAListData();
-      var friendsDAOListData = await friendsDAO.getFriendsData();
+      await firestore.runTransaction((transaction) async {
+        DocumentSnapshot snapshot = await transaction.get(userDoc);
 
-      List<Map<String, dynamic>> gamesData =
-          gamesDAOListData.map((game) => game.toMap()).toList();
-      List<Map<String, dynamic>> heroesData =
-          heroesDAOListData.map((hero) => hero.toMap()).toList();
-      List<Map<String, dynamic>> dtaData =
-          dtaDAOListData.map((dta) => dta.toMap()).toList();
-      List<Map<String, dynamic>> friendsData =
-          friendsDAOListData.map((dta) => dta.toMap()).toList();
+        if (!snapshot.exists) {
+          var gamesDAOListData = await gamesDAO.getGamesListData();
+          var heroesDAOListData = await heroesDAO.getHeroesListData();
+          var dtaDAOListData = await dtaDAO.getDTAListData();
+          var friendsDAOListData = await friendsDAO.getFriendsData();
 
-      await userDoc.set({
-        'gamesListData': gamesData,
-        'heroesListData': heroesData,
-        'dtaListData': dtaData,
-        'friendsListData': friendsData,
-        'timestamp': FieldValue.serverTimestamp(),
+          List<Map<String, dynamic>> gamesData = [];
+          gamesData = gamesDAOListData.map((game) => game.toMap()).toList();
+          List<Map<String, dynamic>> heroesData = [];
+          heroesData = heroesDAOListData.map((hero) => hero.toMap()).toList();
+          List<Map<String, dynamic>> dtaData = [];
+          dtaData = dtaDAOListData.map((dta) => dta.toMap()).toList();
+          List<Map<String, dynamic>> friendsData = [];
+          friendsData = friendsDAOListData.map((dta) => dta.toMap()).toList();
+
+          transaction.set(userDoc, {
+            'gamesListData': gamesData,
+            'heroesListData': heroesData,
+            'dtaListData': dtaData,
+            'friendsListData': friendsData,
+            'timestamp': FieldValue.serverTimestamp(),
+          });
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('backup_done'.tr(context))),
+          );
+        }
       });
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('backup_done'.tr(context))),
-      );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error during backup: $e')),

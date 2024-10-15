@@ -89,5 +89,6 @@
   "alert_heroes_delete_desc": "Do you want to delete this hero? This action is irreversible. You'll lose all his data.",
   "alert_heroes_add_title" : "Add an hero",
   "profile_export_hint_first": "If you just updated to version 4.0.X and you do not retrieve your previous local data, you can click this button. ",
-  "profile_export_hint_second": "Do not do it after adding other data cause it will erase them."
+  "profile_export_hint_second": "Do not do it after adding other data cause it will erase them.",
+  "randomize_button": "Randomize"
 }
